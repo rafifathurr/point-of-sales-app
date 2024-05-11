@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Product\CategoryProductController;
 use App\Http\Controllers\Supplier\SupplierController;
@@ -71,7 +72,32 @@ Route::group(['middleware' => ['role:super-admin|admin']], function () {
     Route::group(['controller' => SupplierController::class, 'prefix' => 'supplier', 'as' => 'supplier.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
-    Route::resource('supplier', SupplierController::class, ['except' => ['create', 'store', 'edit', 'update']])->parameters(['supplier' => 'id']);
+    Route::resource('supplier', SupplierController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['supplier' => 'id']);
+});
+
+/**
+ * Admin and Cashier Route Access
+ */
+Route::group(['middleware' => ['role:admin|cashier']], function () {
+
+    /**
+     * Route Customer Module
+     */
+    Route::resource('customer', CustomerController::class, ['except' => ['index', 'show']])->parameters(['customer' => 'id']);
+});
+
+/**
+ * Super Admin, Admin and Cashier Route Access
+ */
+Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
+
+    /**
+     * Route Customer Module
+     */
+    Route::group(['controller' => CustomerController::class, 'prefix' => 'customer', 'as' => 'customer.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('customer', CustomerController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['customer' => 'id']);
 });
 
 /**
