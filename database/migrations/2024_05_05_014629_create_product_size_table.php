@@ -16,8 +16,7 @@ return new class extends Migration
             $table->integer('id')->autoIncrement();
             $table->integer('product_id');
             $table->string('size');
-            $table->string('dimension')->nullable();
-            $table->text('description')->nullable();
+            $table->integer('weight');
             $table->bigInteger('stock');
             $table->bigInteger('capital_price')->nullable();
             $table->bigInteger('sell_price');

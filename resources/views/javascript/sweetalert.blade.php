@@ -40,10 +40,22 @@
         });
     }
 
-    function sweetAlertError(messages) {
+    function sweetAlertError(message) {
         Swal.fire({
             icon: 'error',
-            title: messages,
+            title: message,
+            customClass: {
+                confirmButton: 'btn btn-primary mb-3',
+            },
+            buttonsStyling: false,
+            timer: 3000,
+        });
+    }
+
+    function sweetAlertWarning(message) {
+        Swal.fire({
+            icon: 'warning',
+            title: message,
             customClass: {
                 confirmButton: 'btn btn-primary mb-3',
             },

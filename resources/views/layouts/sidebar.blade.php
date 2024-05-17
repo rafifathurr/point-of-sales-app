@@ -62,7 +62,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../pages/ui-features/buttons.html">
+                            <a class="nav-link @if (Route::currentRouteName() == 'product.index') active @endif"
+                                href="{{ route('product.index') }}">
                                 Product
                             </a>
                         </li>
@@ -133,7 +134,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../pages/ui-features/buttons.html">
+                                <a class="nav-link @if (Route::currentRouteName() == 'product.index') active @endif"
+                                    href="{{ route('product.index') }}">
                                     Product
                                 </a>
                             </li>
@@ -160,8 +162,8 @@
                             <span class="menu-title">Customer</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
+                    <li class="nav-item @if (Route::currentRouteName() == 'product.index') active @endif">
+                        <a class="nav-link" href="{{ route('product.index') }}">
                             <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                             <span class="menu-title">Product</span>
                         </a>

@@ -113,13 +113,14 @@ class CustomerController extends Controller
                 /**
                  * Create Customer Record
                  */
-                $customer = Customer::create([
-                    'name' => $request->name,
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                    'created_by' => Auth::user()->id,
-                    'updated_by' => Auth::user()->id,
-                ]);
+                $customer = Customer::lockforUpdate()
+                    ->create([
+                        'name' => $request->name,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'created_by' => Auth::user()->id,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                 /**
                  * Validation Create Customer Record
@@ -308,7 +309,7 @@ class CustomerController extends Controller
                 session()->flash('failed', 'Failed Delete Customer');
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            session()->flash('failed', $e->getMessage());
         }
     }
 }

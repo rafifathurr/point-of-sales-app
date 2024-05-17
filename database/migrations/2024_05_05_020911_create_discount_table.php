@@ -16,8 +16,6 @@ return new class extends Migration
             $table->integer('id')->autoIncrement();
             $table->integer('product_size_id');
             $table->double('percentage');
-            $table->text('description')->nullable();
-            $table->tinyInteger('status')->default(1);
             $table->integer('created_by');
             $table->timestamp('created_at');
             $table->integer('updated_by');

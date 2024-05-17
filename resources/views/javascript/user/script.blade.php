@@ -36,7 +36,7 @@
             },
             columns: [{
                     data: 'DT_RowIndex',
-                    width: '10%',
+                    width: '5%',
                     searchable: false
                 },
                 {

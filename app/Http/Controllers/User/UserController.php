@@ -124,18 +124,18 @@ class UserController extends Controller
                 /**
                  * Create User Record
                  */
-                $user = User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'username' => $request->username,
-                    'password' => bcrypt($request->password),
-                ]);
+                $user = User::lockforUpdate()
+                    ->create([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'username' => $request->username,
+                        'password' => bcrypt($request->password),
+                    ]);
 
                 /**
                  * Assign Role of User Based on Requested
                  */
                 $model_has_role = $user->assignRole($request->roles);
-
 
                 /**
                  * Validation Create User Record and Assign Role User
@@ -409,7 +409,7 @@ class UserController extends Controller
                 session()->flash('failed', 'Failed Delete User');
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            session()->flash('failed', $e->getMessage());
         }
     }
 }

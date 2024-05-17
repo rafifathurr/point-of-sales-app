@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('supplier_id');
             $table->string('name');
             $table->text('picture')->nullable();
-            $table->double('weight');
             $table->text('description')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->integer('created_by');

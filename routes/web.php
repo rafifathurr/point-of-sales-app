@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Product\CategoryProductController;
+use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Stock\StockInController;
 use App\Http\Controllers\Supplier\SupplierController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -59,12 +61,25 @@ Route::group(['middleware' => ['role:super-admin']], function () {
 Route::group(['middleware' => ['role:super-admin|admin']], function () {
 
     /**
+     * Route Product Module
+     */
+    Route::resource('product', ProductController::class, ['except' => ['index', 'show']])->parameters(['product' => 'id']);
+
+    /**
      * Route Category Product Module
      */
     Route::group(['controller' => CategoryProductController::class, 'prefix' => 'category-product', 'as' => 'category-product.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
     Route::resource('category-product', CategoryProductController::class)->parameters(['category-product' => 'id']);
+
+    /**
+     * Route Stock In Module
+     */
+    Route::group(['controller' => StockInController::class, 'prefix' => 'stock-in', 'as' => 'stock-in.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('stock-in', StockInController::class)->parameters(['stock-in' => 'id']);
 
     /**
      * Route Supplier Module
@@ -90,6 +105,14 @@ Route::group(['middleware' => ['role:admin|cashier']], function () {
  * Super Admin, Admin and Cashier Route Access
  */
 Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
+
+    /**
+     * Route Product Module
+     */
+    Route::group(['controller' => ProductController::class, 'prefix' => 'product', 'as' => 'product.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('product', ProductController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['product' => 'id']);
 
     /**
      * Route Customer Module

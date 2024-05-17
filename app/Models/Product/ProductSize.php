@@ -18,6 +18,11 @@ class ProductSize extends Model
         return $this->hasOne(Product::class, 'id', 'product_id');
     }
 
+    public function discount()
+    {
+        return $this->hasOne(Discount::class, 'product_size_id', 'id');
+    }
+
     public function createdBy()
     {
         return $this->hasOne(User::class, 'id', 'created_by');

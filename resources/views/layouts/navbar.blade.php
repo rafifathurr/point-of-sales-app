@@ -13,7 +13,7 @@
             <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item dropdown">
+            {{-- <li class="nav-item dropdown">
                 <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
                     data-toggle="dropdown">
                     <i class="icon-bell mx-0"></i>
@@ -68,14 +68,18 @@
                         </div>
                     </a>
                 </div>
-            </li>
+            </li> --}}
             <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                    <img src="{{ asset('images/faces/face28.jpg') }}" alt="profile" />
+                    <img @if (Illuminate\Support\Facades\Auth::user()->hasRole('super-admin') ||
+                            Illuminate\Support\Facades\Auth::user()->hasRole('admin')) src="{{ asset('images/admin.png') }}" @else src="{{ asset('images/user.png') }}" @endif
+                        alt="profile" />
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                     <div class="user-box p-3">
-                        <img src="{{ asset('images/faces/face28.jpg') }}" alt="profile" />
+                        <img @if (Illuminate\Support\Facades\Auth::user()->hasRole('super-admin') ||
+                                Illuminate\Support\Facades\Auth::user()->hasRole('admin')) src="{{ asset('images/admin.png') }}" @else src="{{ asset('images/user.png') }}" @endif
+                            alt="profile" />
                         <span class="ml-3"><b>{{ Illuminate\Support\Facades\Auth::user()->name }}</b></span>
                     </div>
                     <div class="dropdown-divider"></div>

@@ -113,13 +113,14 @@ class SupplierController extends Controller
                 /**
                  * Create Supplier Record
                  */
-                $supplier = Supplier::create([
-                    'name' => $request->name,
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                    'created_by' => Auth::user()->id,
-                    'updated_by' => Auth::user()->id,
-                ]);
+                $supplier = Supplier::lockforUpdate()
+                    ->create([
+                        'name' => $request->name,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'created_by' => Auth::user()->id,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                 /**
                  * Validation Create Supplier Record
@@ -308,7 +309,7 @@ class SupplierController extends Controller
                 session()->flash('failed', 'Failed Delete Supplier');
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            session()->flash('failed', $e->getMessage());
         }
     }
 }

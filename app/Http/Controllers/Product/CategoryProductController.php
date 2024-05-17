@@ -100,12 +100,13 @@ class CategoryProductController extends Controller
                 /**
                  * Create Category Product Record
                  */
-                $category_product = CategoryProduct::create([
-                    'name' => $request->name,
-                    'description' => $request->description,
-                    'created_by' => Auth::user()->id,
-                    'updated_by' => Auth::user()->id,
-                ]);
+                $category_product = CategoryProduct::lockforUpdate()
+                    ->create([
+                        'name' => $request->name,
+                        'description' => $request->description,
+                        'created_by' => Auth::user()->id,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                 /**
                  * Validation Create Category Product Record
@@ -292,7 +293,7 @@ class CategoryProductController extends Controller
                 session()->flash('failed', 'Failed Delete Category Product');
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            session()->flash('failed', $e->getMessage());
         }
     }
 }
