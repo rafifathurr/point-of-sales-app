@@ -535,7 +535,7 @@ class ProductController extends Controller
                              * Remove Has File Exist
                              */
                             if (Storage::exists($path . '/' . $file_name_record)) {
-                                $delete_last_file = Storage::delete($path . '/' . $file_name_record);
+                                Storage::delete($path . '/' . $file_name_record);
                             }
 
                             /**
@@ -596,6 +596,11 @@ class ProductController extends Controller
                                         if ($remove_product_size) {
 
                                             /**
+                                             * Check Status of Product Contain 0 Stock
+                                             */
+                                            $array_inactive_status = [];
+
+                                            /**
                                              * Each of Size Product and Discount
                                              */
                                             foreach ($request->product_size as $size) {
@@ -641,6 +646,8 @@ class ProductController extends Controller
                                                     if (isset($size['capital_price'])) {
                                                         $product_status_active = true;
                                                     }
+                                                } else {
+                                                    array_push($array_inactive_status, false);
                                                 }
 
                                                 /**
@@ -704,8 +711,32 @@ class ProductController extends Controller
                                                     return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
                                                 }
                                             } else {
-                                                DB::commit();
-                                                return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                                if (count($array_inactive_status) == count($request->product_size) && $product->status == 1) {
+                                                    /**
+                                                     * Update Product with Status
+                                                     */
+                                                    $product_status_update = Product::where('id', $id)
+                                                        ->update([
+                                                            'status' => 0
+                                                        ]);
+
+                                                    /**
+                                                     * Validation Update Product Status Record
+                                                     */
+                                                    if ($product_status_update) {
+                                                        DB::commit();
+                                                        return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                                    } else {
+                                                        /**
+                                                         * Failed Store Record
+                                                         */
+                                                        DB::rollBack();
+                                                        return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                                                    }
+                                                } else {
+                                                    DB::commit();
+                                                    return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                                }
                                             }
                                         } else {
                                             /**
@@ -762,6 +793,11 @@ class ProductController extends Controller
                                 if ($remove_product_size) {
 
                                     /**
+                                     * Check Status of Product Contain 0 Stock
+                                     */
+                                    $array_inactive_status = [];
+
+                                    /**
                                      * Each of Size Product and Discount
                                      */
                                     foreach ($request->product_size as $size) {
@@ -769,7 +805,7 @@ class ProductController extends Controller
                                         /**
                                          * Check Has Capital Price Request
                                          */
-                                        if (isset($size['capital_price'])) {
+                                        if (!is_null($size['capital_price'])) {
                                             /**
                                              * Create New Product Size Record
                                              */
@@ -807,6 +843,8 @@ class ProductController extends Controller
                                             if (isset($size['capital_price'])) {
                                                 $product_status_active = true;
                                             }
+                                        } else {
+                                            array_push($array_inactive_status, false);
                                         }
 
                                         /**
@@ -870,8 +908,32 @@ class ProductController extends Controller
                                             return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
                                         }
                                     } else {
-                                        DB::commit();
-                                        return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                        if (count($array_inactive_status) == count($request->product_size) && $product->status == 1) {
+                                            /**
+                                             * Update Product with Status
+                                             */
+                                            $product_status_update = Product::where('id', $id)
+                                                ->update([
+                                                    'status' => 0
+                                                ]);
+
+                                            /**
+                                             * Validation Update Product Status Record
+                                             */
+                                            if ($product_status_update) {
+                                                DB::commit();
+                                                return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                            } else {
+                                                /**
+                                                 * Failed Store Record
+                                                 */
+                                                DB::rollBack();
+                                                return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                                            }
+                                        } else {
+                                            DB::commit();
+                                            return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                        }
                                     }
                                 } else {
                                     /**

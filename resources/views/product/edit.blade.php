@@ -196,6 +196,11 @@
                                                         value='Delete'>Delete</button>
                                                     <input type='hidden' class='form-control'
                                                         name='product_item_check[]' value='{{ $product_size->size }}'>
+                                                    @if (!$show_capital_price)
+                                                        <input type='hidden'
+                                                            name='product_size[{{ $index }}][capital_price]'
+                                                            value='{{ $product_size->capital_price }}'>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
