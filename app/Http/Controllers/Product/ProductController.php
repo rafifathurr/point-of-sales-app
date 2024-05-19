@@ -193,9 +193,7 @@ class ProductController extends Controller
                     /**
                      * Validation Check Path
                      */
-                    if (!Storage::exists($path)) {
-                        Storage::makeDirectory($path, 0755);
-                    }
+                    Storage::makeDirectory($path, 0755);
 
                     /**
                      * File Name Configuration
@@ -545,9 +543,7 @@ class ProductController extends Controller
                             /**
                              * Validation Check Path
                              */
-                            if (!Storage::exists($path)) {
-                                Storage::makeDirectory($path, 0755);
-                            }
+                            Storage::makeDirectory($path, 0755);
 
                             /**
                              * Get Filename Picture Record
