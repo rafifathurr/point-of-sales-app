@@ -13,27 +13,50 @@
                     <span class="menu-title">Dashboard</span>
                 </a>
             </li>
+            <li class="nav-item @if (Route::currentRouteName() == 'coa.index' || Route::currentRouteName() == 'coa.report.index') active @endif">
+                <a class="nav-link" data-toggle="collapse" href="#coa" aria-expanded="false" aria-controls="coa">
+                    <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                    <span class="menu-title">Chart of Account</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse @if (Route::currentRouteName() == 'coa.index' || Route::currentRouteName() == 'coa.report.index') show @endif" id="coa">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link @if (Route::currentRouteName() == 'coa.report.index') active @endif" href="#">
+                                Report
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif" href="#">
+                                List
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                     <span class="menu-title">Sales Order</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item @if (Route::currentRouteName() == 'stock-in.index' || Route::currentRouteName() == 'stock-out.index') active @endif">
                 <a class="nav-link" data-toggle="collapse" href="#stock" aria-expanded="false" aria-controls="stock">
                     <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                     <span class="menu-title">Stock</span>
                     <i class="menu-arrow"></i>
                 </a>
-                <div class="collapse" id="stock">
+                <div class="collapse @if (Route::currentRouteName() == 'stock-in.index' || Route::currentRouteName() == 'stock-out.index') show @endif" id="stock">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href="../../pages/ui-features/buttons.html">
+                            <a class="nav-link @if (Route::currentRouteName() == 'stock-in.index') active @endif"
+                                href="{{ route('stock-in.index') }}">
                                 Stock In
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../pages/ui-features/buttons.html">
+                            <a class="nav-link @if (Route::currentRouteName() == 'stock-out.index') active @endif"
+                                href="{{ route('stock-out.index') }}">
                                 Stock Out
                             </a>
                         </li>
@@ -84,28 +107,46 @@
             </li>
         @else
             @if (Illuminate\Support\Facades\Auth::user()->hasRole('admin'))
+                <li class="nav-item @if (Route::currentRouteName() == 'coa.index') active @endif">
+                    <a class="nav-link" data-toggle="collapse" href="#coa" aria-expanded="false" aria-controls="coa">
+                        <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                        <span class="menu-title">Chart of Account</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse @if (Route::currentRouteName() == 'coa.index') show @endif" id="coa">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif" href="#">
+                                    List
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                         <span class="menu-title">Sales Order</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item @if (Route::currentRouteName() == 'stock-in.index' || Route::currentRouteName() == 'stock-out.index') active @endif">
                     <a class="nav-link" data-toggle="collapse" href="#stock" aria-expanded="false"
                         aria-controls="stock">
                         <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                         <span class="menu-title">Stock</span>
                         <i class="menu-arrow"></i>
                     </a>
-                    <div class="collapse" id="stock">
+                    <div class="collapse @if (Route::currentRouteName() == 'stock-in.index' || Route::currentRouteName() == 'stock-out.index') show @endif" id="stock">
                         <ul class="nav flex-column sub-menu">
                             <li class="nav-item">
-                                <a class="nav-link" href="../../pages/ui-features/buttons.html">
+                                <a class="nav-link @if (Route::currentRouteName() == 'stock-in.index') active @endif"
+                                    href="{{ route('stock-in.index') }}">
                                     Stock In
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../pages/ui-features/buttons.html">
+                                <a class="nav-link @if (Route::currentRouteName() == 'stock-out.index') active @endif"
+                                    href="{{ route('stock-out.index') }}">
                                     Stock Out
                                 </a>
                             </li>
@@ -150,6 +191,24 @@
                 </li>
             @else
                 @if (Illuminate\Support\Facades\Auth::user()->hasRole('cashier'))
+                    <li class="nav-item @if (Route::currentRouteName() == 'coa.index') active @endif">
+                        <a class="nav-link" data-toggle="collapse" href="#coa" aria-expanded="false"
+                            aria-controls="coa">
+                            <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                            <span class="menu-title">Chart of Account</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse @if (Route::currentRouteName() == 'coa.index') show @endif" id="coa">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif"
+                                        href="#">
+                                        List
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
                             <i class="mdi mdi-format-list-bulleted menu-icon"></i>

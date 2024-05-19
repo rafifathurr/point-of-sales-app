@@ -25,7 +25,7 @@ class Product extends Model
 
     public function productSize()
     {
-        return $this->hasMany(ProductSize::class, 'product_id', 'id');
+        return $this->hasMany(ProductSize::class, 'product_id', 'id')->whereNull('deleted_at');
     }
 
     public function createdBy()

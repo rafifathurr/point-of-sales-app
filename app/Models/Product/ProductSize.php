@@ -20,7 +20,7 @@ class ProductSize extends Model
 
     public function discount()
     {
-        return $this->hasOne(Discount::class, 'product_size_id', 'id');
+        return $this->hasOne(Discount::class, 'product_size_id', 'id')->whereNull('deleted_at');
     }
 
     public function createdBy()

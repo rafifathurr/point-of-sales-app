@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Product\CategoryProductController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Stock\StockInController;
+use App\Http\Controllers\Stock\StockOutController;
 use App\Http\Controllers\Supplier\SupplierController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,22 @@ Route::group(['middleware' => ['role:super-admin']], function () {
 });
 
 /**
+ * Admin Route Access
+ */
+Route::group(['middleware' => ['role:admin']], function () {
+
+    /**
+     * Route Stock In Module
+     */
+    Route::resource('stock-in', StockInController::class, ['except' => ['index', 'show']])->parameters(['stock-in' => 'id']);
+
+    /**
+     * Route Stock Out Module
+     */
+    Route::resource('stock-out', StockOutController::class, ['except' => ['index', 'show']])->parameters(['stock-out' => 'id']);
+});
+
+/**
  * Super Admin and Admin Route Access
  */
 Route::group(['middleware' => ['role:super-admin|admin']], function () {
@@ -79,7 +96,15 @@ Route::group(['middleware' => ['role:super-admin|admin']], function () {
     Route::group(['controller' => StockInController::class, 'prefix' => 'stock-in', 'as' => 'stock-in.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
-    Route::resource('stock-in', StockInController::class)->parameters(['stock-in' => 'id']);
+    Route::resource('stock-in', StockInController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['stock-in' => 'id']);
+
+    /**
+     * Route Stock Out Module
+     */
+    Route::group(['controller' => StockOutController::class, 'prefix' => 'stock-out', 'as' => 'stock-out.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('stock-out', StockOutController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['stock-out' => 'id']);
 
     /**
      * Route Supplier Module
@@ -111,6 +136,7 @@ Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
      */
     Route::group(['controller' => ProductController::class, 'prefix' => 'product', 'as' => 'product.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
+        Route::get('get-product-size', 'getProductSize')->name('getProductSize');
     });
     Route::resource('product', ProductController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['product' => 'id']);
 
@@ -121,12 +147,6 @@ Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
     Route::resource('customer', CustomerController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['customer' => 'id']);
-});
-
-/**
- * Admin Route Access
- */
-Route::group(['middleware' => ['role:admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
 });
 
 Route::group(['middleware' => ['role:cashier'], 'prefix' => 'cashier', 'as' => 'cashier.'], function () {

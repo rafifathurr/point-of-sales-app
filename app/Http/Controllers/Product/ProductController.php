@@ -389,6 +389,31 @@ class ProductController extends Controller
     }
 
     /**
+     * Show detail the specified resource.
+     */
+    public function getProductSize(Request $request)
+    {
+        try {
+
+            /**
+             * Get Product Size Record from id
+             */
+            $product = ProductSize::find($request->product);
+
+            /**
+             * Validation Product Size id
+             */
+            if (!is_null($product)) {
+                return response()->json($product, 200);
+            } else {
+                return response()->json(null, 404);
+            }
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
@@ -576,22 +601,30 @@ class ProductController extends Controller
                                     $product_size_id_record = ProductSize::where('product_id', $id)->pluck('id')->toArray();
 
                                     /**
-                                     * Remove Last Record of Product Discount
+                                     * Update Last Record of Product Discount
                                      */
-                                    $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)->delete();
+                                    $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)
+                                        ->update([
+                                            'deleted_by' => Auth::user()->id,
+                                            'deleted_at' => date('Y-m-d H:i:s'),
+                                        ]);
 
                                     /**
-                                     * Validation Remove Last Record of Product Discount
+                                     * Validation Update Last Record of Product Discount
                                      */
                                     if ($remove_product_discount) {
 
                                         /**
-                                         * Remove Last Record of Product Size 
+                                         * Update Last Record of Product Size 
                                          */
-                                        $remove_product_size = ProductSize::where('product_id', $id)->delete();
+                                        $remove_product_size = ProductSize::where('product_id', $id)
+                                            ->update([
+                                                'deleted_by' => Auth::user()->id,
+                                                'deleted_at' => date('Y-m-d H:i:s'),
+                                            ]);
 
                                         /**
-                                         * Validation Remove Last Record of Product Size
+                                         * Validation Update Last Record of Product Size
                                          */
                                         if ($remove_product_size) {
 
@@ -773,22 +806,30 @@ class ProductController extends Controller
                             $product_size_id_record = ProductSize::where('product_id', $id)->pluck('id')->toArray();
 
                             /**
-                             * Remove Last Record of Product Discount
+                             * Update Last Record of Product Discount
                              */
-                            $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)->delete();
+                            $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)
+                                ->update([
+                                    'deleted_by' => Auth::user()->id,
+                                    'deleted_at' => date('Y-m-d H:i:s'),
+                                ]);
 
                             /**
-                             * Validation Remove Last Record of Product Discount
+                             * Validation Update Last Record of Product Discount
                              */
                             if ($remove_product_discount) {
 
                                 /**
-                                 * Remove Last Record of Product Size 
+                                 * Update Last Record of Product Size 
                                  */
-                                $remove_product_size = ProductSize::where('product_id', $id)->delete();
+                                $remove_product_size = ProductSize::where('product_id', $id)
+                                    ->update([
+                                        'deleted_by' => Auth::user()->id,
+                                        'deleted_at' => date('Y-m-d H:i:s'),
+                                    ]);
 
                                 /**
-                                 * Validation Remove Last Record of Product Size
+                                 * Validation Update Last Record of Product Size
                                  */
                                 if ($remove_product_size) {
 
@@ -993,54 +1034,8 @@ class ProductController extends Controller
              * Validation Update Product Record
              */
             if ($product_destroy) {
-
-                /**
-                 * Get id of Product Size Record
-                 */
-                $product_size_id_record = ProductSize::where('product_id', $id)->pluck('id')->toArray();
-
-                /**
-                 * Update Product Size Record
-                 */
-                $product_size_destroy = ProductSize::where('product_id', $id)
-                    ->update([
-                        'deleted_by' => Auth::user()->id,
-                        'deleted_at' => date('Y-m-d H:i:s'),
-                    ]);
-
-                /**
-                 * Validation Update Product Size Record
-                 */
-                if ($product_size_destroy) {
-
-                    /**
-                     * Update Product Discount Record
-                     */
-                    $product_discount_destroy = Discount::whereIn('product_size_id', $product_size_id_record)
-                        ->update([
-                            'deleted_by' => Auth::user()->id,
-                            'deleted_at' => date('Y-m-d H:i:s'),
-                        ]);
-
-                    if ($product_discount_destroy) {
-                        DB::commit();
-                        session()->flash('success', 'Product Successfully Deleted');
-                    } else {
-
-                        /**
-                         * Failed Store Record
-                         */
-                        DB::rollBack();
-                        session()->flash('failed', 'Failed Delete Product Discount');
-                    }
-                } else {
-
-                    /**
-                     * Failed Store Record
-                     */
-                    DB::rollBack();
-                    session()->flash('failed', 'Failed Delete Product Size');
-                }
+                DB::commit();
+                session()->flash('success', 'Product Successfully Deleted');
             } else {
 
                 /**
