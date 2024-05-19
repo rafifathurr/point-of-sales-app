@@ -193,7 +193,9 @@ class ProductController extends Controller
                     /**
                      * Validation Check Path
                      */
-                    Storage::makeDirectory($path, 0755);
+                    if (!Storage::exists($path)) {
+                        Storage::makeDirectory($path);
+                    }
 
                     /**
                      * File Name Configuration
@@ -543,7 +545,9 @@ class ProductController extends Controller
                             /**
                              * Validation Check Path
                              */
-                            Storage::makeDirectory($path, 0755);
+                            if (!Storage::exists($path)) {
+                                Storage::makeDirectory($path);
+                            }
 
                             /**
                              * Get Filename Picture Record
@@ -579,7 +583,7 @@ class ProductController extends Controller
                                 /**
                                  * Update Product with File Picture
                                  */
-                                $product_picture_update = Product::where('id', $id)
+                                $product_picture_update = $product
                                     ->update([
                                         'picture' => $path_store . '/' . $file_name,
                                     ]);
@@ -719,7 +723,7 @@ class ProductController extends Controller
                                                 /**
                                                  * Update Product with Status
                                                  */
-                                                $product_status_update = Product::where('id', $id)
+                                                $product_status_update = $product
                                                     ->update([
                                                         'status' => 1
                                                     ]);
@@ -742,7 +746,7 @@ class ProductController extends Controller
                                                     /**
                                                      * Update Product with Status
                                                      */
-                                                    $product_status_update = Product::where('id', $id)
+                                                    $product_status_update = $product
                                                         ->update([
                                                             'status' => 0
                                                         ]);
@@ -924,7 +928,7 @@ class ProductController extends Controller
                                         /**
                                          * Update Product with Status
                                          */
-                                        $product_status_update = Product::where('id', $id)
+                                        $product_status_update = $product
                                             ->update([
                                                 'status' => 1
                                             ]);
@@ -947,7 +951,7 @@ class ProductController extends Controller
                                             /**
                                              * Update Product with Status
                                              */
-                                            $product_status_update = Product::where('id', $id)
+                                            $product_status_update = $product
                                                 ->update([
                                                     'status' => 0
                                                 ]);
