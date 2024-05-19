@@ -194,7 +194,7 @@ class ProductController extends Controller
                      * Validation Check Path
                      */
                     if (!Storage::exists($path)) {
-                        Storage::makeDirectory($path);
+                        Storage::makeDirectory($path, 0755);
                     }
 
                     /**
@@ -546,7 +546,7 @@ class ProductController extends Controller
                              * Validation Check Path
                              */
                             if (!Storage::exists($path)) {
-                                Storage::makeDirectory($path);
+                                Storage::makeDirectory($path, 0755);
                             }
 
                             /**
