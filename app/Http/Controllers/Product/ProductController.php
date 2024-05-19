@@ -221,7 +221,6 @@ class ProductController extends Controller
                         $product_update = Product::where('id', $product->id)
                             ->update([
                                 'picture' => $path_store . '/' . $file_name,
-                                'updated_by' => Auth::user()->id,
                             ]);
 
                         /**
@@ -587,7 +586,6 @@ class ProductController extends Controller
                                 $product_picture_update = Product::where('id', $id)
                                     ->update([
                                         'picture' => $path_store . '/' . $file_name,
-                                        'updated_by' => Auth::user()->id,
                                     ]);
 
                                 /**
