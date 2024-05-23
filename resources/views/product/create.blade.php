@@ -73,11 +73,9 @@
                                             <th>
                                                 Stock
                                             </th>
-                                            @if ($show_capital_price)
-                                                <th>
-                                                    Capital Price
-                                                </th>
-                                            @endif
+                                            <th>
+                                                Capital Price
+                                            </th>
                                             <th>
                                                 Sell Price
                                             </th>
@@ -108,15 +106,13 @@
                                                     <span class="input-group-text bg-default p-2">Pcs</span>
                                                 </div>
                                             </td>
-                                            @if ($show_capital_price)
-                                                <td>
-                                                    <div class="d-flex">
-                                                        <span class="input-group-text bg-default p-2">Rp.</span>
-                                                        <input type="number" class="form-control" id="capital_price"
-                                                            min="0">
-                                                    </div>
-                                                </td>
-                                            @endif
+                                            <td>
+                                                <div class="d-flex">
+                                                    <span class="input-group-text bg-default p-2">Rp.</span>
+                                                    <input type="number" class="form-control" id="capital_price"
+                                                        min="0">
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div class="d-flex">
                                                     <span class="input-group-text bg-default p-2">Rp.</span>
@@ -133,7 +129,7 @@
                                             </td>
                                             <td align="center">
                                                 <button type="button" class="btn btn-sm btn-primary"
-                                                    onclick="addSizeProduct({{ $show_capital_price }})">Add</button>
+                                                    onclick="addSizeProduct()">Add</button>
                                             </td>
                                         </tr>
                                         @if (!is_null(old('product_size')))
@@ -162,17 +158,15 @@
                                                             <span class='input-group-text bg-default p-2'>Pcs</span>
                                                         </div>
                                                     </td>
-                                                    @if ($show_capital_price)
-                                                        <td>
-                                                            <div class='d-flex'>
-                                                                <span class='input-group-text bg-default p-2'>Rp.</span>
-                                                                <input type='number' class='form-control'
-                                                                    name='product_size[{{ $index }}][capital_price]'
-                                                                    min='0'
-                                                                    value='{{ $product_size['capital_price'] }}' required>
-                                                            </div>
-                                                        </td>
-                                                    @endif
+                                                    <td>
+                                                        <div class='d-flex'>
+                                                            <span class='input-group-text bg-default p-2'>Rp.</span>
+                                                            <input type='number' class='form-control'
+                                                                name='product_size[{{ $index }}][capital_price]'
+                                                                min='0'
+                                                                value='{{ $product_size['capital_price'] }}' required>
+                                                        </div>
+                                                    </td>
                                                     <td>
                                                         <div class='d-flex'>
                                                             <span class='input-group-text bg-default p-2'>Rp.</span>

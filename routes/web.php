@@ -3,8 +3,10 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Product\CategoryProductController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\SalesOrder\SalesOrderController;
 use App\Http\Controllers\Stock\StockInController;
 use App\Http\Controllers\Stock\StockOutController;
 use App\Http\Controllers\Supplier\SupplierController;
@@ -26,6 +28,9 @@ Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
+/**
+ * Home Route
+ */
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', function () {
         return view('home');
@@ -43,17 +48,25 @@ Route::group(['middleware' => ['role:super-admin']], function () {
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     /**
+     * Route Payment Method Module
+     */
+    Route::group(['controller' => PaymentMethodController::class, 'prefix' => 'payment-method', 'as' => 'payment-method.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('payment-method', PaymentMethodController::class)->parameters(['payment-method' => 'id']);
+
+    /**
+     * Route Supplier Module
+     */
+    Route::resource('supplier', SupplierController::class, ['except' => ['index', 'show']])->parameters(['supplier' => 'id']);
+
+    /**
      * Route User Module
      */
     Route::group(['controller' => UserController::class, 'prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
     Route::resource('user', UserController::class)->parameters(['user' => 'id']);
-
-    /**
-     * Route Supplier Module
-     */
-    Route::resource('supplier', SupplierController::class, ['except' => ['index', 'show']])->parameters(['supplier' => 'id']);
 });
 
 /**
@@ -106,7 +119,7 @@ Route::group(['middleware' => ['role:super-admin|admin']], function () {
     });
     Route::resource('stock-out', StockOutController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['stock-out' => 'id']);
 
-    /**
+    /*
      * Route Supplier Module
      */
     Route::group(['controller' => SupplierController::class, 'prefix' => 'supplier', 'as' => 'supplier.'], function () {
@@ -123,6 +136,11 @@ Route::group(['middleware' => ['role:admin|cashier']], function () {
     /**
      * Route Customer Module
      */
+    Route::resource('sales-order', SalesOrderController::class, ['except' => ['index', 'show']])->parameters(['sales-order' => 'id']);
+
+    /**
+     * Route Customer Module
+     */
     Route::resource('customer', CustomerController::class, ['except' => ['index', 'show']])->parameters(['customer' => 'id']);
 });
 
@@ -130,6 +148,14 @@ Route::group(['middleware' => ['role:admin|cashier']], function () {
  * Super Admin, Admin and Cashier Route Access
  */
 Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
+
+    /**
+     * Route Sales Order Module
+     */
+    Route::group(['controller' => SalesOrderController::class, 'prefix' => 'sales-order', 'as' => 'sales-order.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('sales-order', SalesOrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['sales-order' => 'id']);
 
     /**
      * Route Product Module
@@ -147,7 +173,4 @@ Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
     Route::resource('customer', CustomerController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['customer' => 'id']);
-});
-
-Route::group(['middleware' => ['role:cashier'], 'prefix' => 'cashier', 'as' => 'cashier.'], function () {
 });

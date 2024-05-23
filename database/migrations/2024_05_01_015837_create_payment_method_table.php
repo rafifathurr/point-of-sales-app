@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('id')->autoIncrement();
             $table->char('slug', 3)->unique();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->integer('created_by');
             $table->timestamp('created_at');
             $table->integer('updated_by');

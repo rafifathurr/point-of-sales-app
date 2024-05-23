@@ -68,7 +68,7 @@
         });
     }
 
-    function addSizeProduct(super_admin) {
+    function addSizeProduct() {
         let size = $('#size').val();
         let weight = $('#weight').val();
         let stock = $('#stock_item').val();
@@ -79,194 +79,103 @@
         let size_id = size.toLowerCase();
         let index = $("#product_size tbody tr").length - 1;
 
-        if (super_admin) {
-            if (size != '' && weight != '' && stock != '' && capital_price != '' && sell_price != '') {
+        if (size != '' && weight != '' && stock != '' && capital_price != '' && sell_price != '') {
 
-                let form_product = $("#form_size_product");
-                let tr = $("<tr></tr>");
-                let td_size = $("<td>" +
-                    "<input type='text' class='form-control' name='product_size[" + index + "][size]' value='" +
-                    size +
-                    "' required>" +
-                    "</td>");
-                let td_weight = $("<td>" +
+            let form_product = $("#form_size_product");
+            let tr = $("<tr></tr>");
+            let td_size = $("<td>" +
+                "<input type='text' class='form-control' name='product_size[" + index + "][size]' value='" +
+                size +
+                "' required>" +
+                "</td>");
+            let td_weight = $("<td>" +
+                "<div class='d-flex'>" +
+                "<input type='number' class='form-control' name='product_size[" + index +
+                "][weight]' min='0' value='" +
+                weight +
+                "' required>" +
+                "<span class='input-group-text bg-default p-2'>Gram</span>" +
+                "</div>" +
+                "</td>");
+            let td_stock = $("<td>" +
+                "<div class='d-flex'>" +
+                "<input type='number' class='form-control' name='product_size[" + index +
+                "][stock]' min='0' value='" +
+                stock +
+                "' required>" +
+                "<span class='input-group-text bg-default p-2'>Pcs</span>" +
+                "</div>" +
+                "</td>");
+            let td_capital_price = $("<td>" +
+                "<div class='d-flex'>" +
+                "<span class='input-group-text bg-default p-2'>Rp.</span>" +
+                "<input type='number' class='form-control' name='product_size[" + index +
+                "][capital_price]' min='0' value='" +
+                capital_price +
+                "' required>" +
+                "</div>" +
+                "</td>");
+
+            let td_discount = '';
+
+            let td_sell_price = $("<td>" +
+                "<div class='d-flex'>" +
+                "<span class='input-group-text bg-default p-2'>Rp.</span>" +
+                "<input type='number' class='form-control' name='product_size[" + index +
+                "][sell_price]' min='0' value='" +
+                sell_price +
+                "' required>" +
+                "</div>" +
+                "</td>");
+
+            if (discount != '') {
+                td_discount = $("<td>" +
                     "<div class='d-flex'>" +
                     "<input type='number' class='form-control' name='product_size[" + index +
-                    "][weight]' min='0' value='" +
-                    weight +
+                    "][percentage]' min='0' max='100' value='" +
+                    discount +
                     "' required>" +
-                    "<span class='input-group-text bg-default p-2'>Gram</span>" +
+                    "<span class='input-group-text bg-default p-2'>%</span>" +
                     "</div>" +
                     "</td>");
-                let td_stock = $("<td>" +
-                    "<div class='d-flex'>" +
-                    "<input type='number' class='form-control' name='product_size[" + index +
-                    "][stock]' min='0' value='" +
-                    stock +
-                    "' required>" +
-                    "<span class='input-group-text bg-default p-2'>Pcs</span>" +
-                    "</div>" +
-                    "</td>");
-                let td_capital_price = $("<td>" +
-                    "<div class='d-flex'>" +
-                    "<span class='input-group-text bg-default p-2'>Rp.</span>" +
-                    "<input type='number' class='form-control' name='product_size[" + index +
-                    "][capital_price]' min='0' value='" +
-                    capital_price +
-                    "' required>" +
-                    "</div>" +
-                    "</td>");
-
-                let td_discount = '';
-
-                let td_sell_price = $("<td>" +
-                    "<div class='d-flex'>" +
-                    "<span class='input-group-text bg-default p-2'>Rp.</span>" +
-                    "<input type='number' class='form-control' name='product_size[" + index +
-                    "][sell_price]' min='0' value='" +
-                    sell_price +
-                    "' required>" +
-                    "</div>" +
-                    "</td>");
-
-                if (discount != '') {
-                    td_discount = $("<td>" +
-                        "<div class='d-flex'>" +
-                        "<input type='number' class='form-control' name='product_size[" + index +
-                        "][percentage]' min='0' max='100' value='" +
-                        discount +
-                        "' required>" +
-                        "<span class='input-group-text bg-default p-2'>%</span>" +
-                        "</div>" +
-                        "</td>");
-                } else {
-                    discount = 0;
-                    td_discount = $("<td>" +
-                        "<div class='d-flex'>" +
-                        "<input type='number' class='form-control' name='product_size[" + index +
-                        "][percentage]' min='0' max='100' value='" +
-                        discount +
-                        "' required>" +
-                        "<span class='input-group-text bg-default p-2'>%</span>" +
-                        "</div>" +
-                        "</td>");
-                }
-
-                let td_del = $(
-                    "<td align='center'>" +
-                    "<button type='button' class='delete-row btn btn-sm btn-danger' value='Delete'>Delete</button>" +
-                    "<input type='hidden' class='form-control' name='product_item_check[]' value='" +
-                    size +
-                    "'>" +
-                    "</td>"
-                );
-
-                // Append Tr Element
-                (tr.append(td_size).append(td_weight).append(td_stock).append(td_capital_price).append(td_sell_price)
-                    .append(td_discount).append(td_del)).insertAfter(form_product)
-
-                // Append To Table
-                $("#product_size tbody").append(tr);
-
-                // Reset Field Value
-                $('#size').val('');
-                $('#weight').val('');
-                $('#stock_item').val('');
-                $('#capital_price').val('');
-                $('#sell_price').val('');
-                $('#discount').val('');
             } else {
-                sweetAlertWarning('Please Complete The Record!');
+                discount = 0;
+                td_discount = $("<td>" +
+                    "<div class='d-flex'>" +
+                    "<input type='number' class='form-control' name='product_size[" + index +
+                    "][percentage]' min='0' max='100' value='" +
+                    discount +
+                    "' required>" +
+                    "<span class='input-group-text bg-default p-2'>%</span>" +
+                    "</div>" +
+                    "</td>");
             }
+
+            let td_del = $(
+                "<td align='center'>" +
+                "<button type='button' class='delete-row btn btn-sm btn-danger' value='Delete'>Delete</button>" +
+                "<input type='hidden' class='form-control' name='product_item_check[]' value='" +
+                size +
+                "'>" +
+                "</td>"
+            );
+
+            // Append Tr Element
+            (tr.append(td_size).append(td_weight).append(td_stock).append(td_capital_price).append(td_sell_price)
+                .append(td_discount).append(td_del)).insertAfter(form_product)
+
+            // Append To Table
+            $("#product_size tbody").append(tr);
+
+            // Reset Field Value
+            $('#size').val('');
+            $('#weight').val('');
+            $('#stock_item').val('');
+            $('#capital_price').val('');
+            $('#sell_price').val('');
+            $('#discount').val('');
         } else {
-            if (size != '' && weight != '' && stock != '' && sell_price != '') {
-
-                let form_product = $("#form_size_product");
-                let tr = $("<tr></tr>");
-                let td_size = $("<td>" +
-                    "<input type='text' class='form-control' name='product_size[" + index + "][size]' value='" +
-                    size +
-                    "' required>" +
-                    "</td>");
-                let td_weight = $("<td>" +
-                    "<div class='d-flex'>" +
-                    "<input type='number' class='form-control' name='product_size[" + index +
-                    "][weight]' min='0' value='" +
-                    weight +
-                    "' required>" +
-                    "<span class='input-group-text bg-default p-2'>Gram</span>" +
-                    "</div>" +
-                    "</td>");
-                let td_stock = $("<td>" +
-                    "<div class='d-flex'>" +
-                    "<input type='number' class='form-control' name='product_size[" + index +
-                    "][stock]' min='0' value='" +
-                    stock +
-                    "' required>" +
-                    "<span class='input-group-text bg-default p-2'>Pcs</span>" +
-                    "</div>" +
-                    "</td>");
-
-                let td_discount = '';
-
-                let td_sell_price = $("<td>" +
-                    "<div class='d-flex'>" +
-                    "<span class='input-group-text bg-default p-2'>Rp.</span>" +
-                    "<input type='number' class='form-control' name='product_size[" + index +
-                    "][sell_price]' min='0' value='" +
-                    sell_price +
-                    "' required>" +
-                    "</div>" +
-                    "</td>");
-
-                if (discount != '') {
-                    td_discount = $("<td>" +
-                        "<div class='d-flex'>" +
-                        "<input type='number' class='form-control' name='product_size[" + index +
-                        "][percentage]' min='0' max='100' value='" +
-                        discount +
-                        "' required>" +
-                        "<span class='input-group-text bg-default p-2'>%</span>" +
-                        "</div>" +
-                        "</td>");
-                } else {
-                    discount = 0;
-                    td_discount = $("<td>" +
-                        "<div class='d-flex'>" +
-                        "<input type='number' class='form-control' name='product_size[" + index +
-                        "][percentage]' min='0' max='100' value='" +
-                        discount +
-                        "' required>" +
-                        "<span class='input-group-text bg-default p-2'>%</span>" +
-                        "</div>" +
-                        "</td>");
-                }
-
-                let td_del = $(
-                    "<td align='center'>" +
-                    "<button type='button' class='delete-row btn btn-sm btn-danger' value='Delete'>Delete</button>" +
-                    "<input type='hidden' class='form-control' name='product_item_check[]' value='" +
-                    size +
-                    "'>" +
-                    "</td>"
-                );
-
-                // Append Tr Element
-                (tr.append(td_size).append(td_weight).append(td_stock).append(td_sell_price)
-                    .append(td_discount).append(td_del)).insertAfter(form_product)
-
-                // Append To Table
-                $("#product_size tbody").append(tr);
-
-                // Reset Field Value
-                $('#size').val('');
-                $('#weight').val('');
-                $('#stock_item').val('');
-                $('#sell_price').val('');
-                $('#discount').val('');
-            } else {
-                sweetAlertWarning('Please Complete The Record!');
-            }
+            sweetAlertWarning('Please Complete The Record!');
         }
     }
 

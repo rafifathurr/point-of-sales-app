@@ -17,6 +17,7 @@ return new class extends Migration
             $table->char('invoice_number', 10)->unique();
             $table->integer('customer_id')->nullable();
             $table->integer('payment_method_id');
+            $table->tinyInteger('type')->comment('0 as Offline and 1 as Online');
             $table->bigInteger('total_capital_price');
             $table->bigInteger('total_sell_price');
             $table->bigInteger('discount_price')->default(0);

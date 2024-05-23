@@ -69,6 +69,12 @@
                     <span class="menu-title">Customer</span>
                 </a>
             </li>
+            <li class="nav-item @if (Route::currentRouteName() == 'payment-method.index') active @endif">
+                <a class="nav-link" href="{{ route('payment-method.index') }}">
+                    <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                    <span class="menu-title">Payment Method</span>
+                </a>
+            </li>
             <li class="nav-item @if (Route::currentRouteName() == 'category-product.index' || Route::currentRouteName() == 'product.index') active @endif">
                 <a class="nav-link" data-toggle="collapse" href="#product" aria-expanded="false"
                     aria-controls="product">
