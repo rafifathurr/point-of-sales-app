@@ -222,6 +222,7 @@ class PaymentMethodController extends Controller
             $slug_name_check = PaymentMethod::whereNull('deleted_by')
                 ->whereNull('deleted_at')
                 ->where('slug', $slug_name)
+                ->where('id', '!=', $id)
                 ->first();
 
             /**
@@ -273,7 +274,7 @@ class PaymentMethodController extends Controller
                     return redirect()->back()->with(['failed' => 'Invalid Request!']);
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Phone Number Already Exist'])->withInput();
+                return redirect()->back()->with(['failed' => 'Name Already Exist'])->withInput();
             }
         } catch (Exception $e) {
             return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();

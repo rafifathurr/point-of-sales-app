@@ -503,6 +503,7 @@ class ProductController extends Controller
                             'supplier_id' => $request->supplier,
                             'description' => $request->description,
                             'updated_by' => Auth::user()->id,
+                            'updated_at' => date('Y-m-d H:i:s')
                         ]);
 
                     /**
