@@ -250,8 +250,28 @@ class StockInController extends Controller
                             return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
                         }
                     } else {
-                        DB::commit();
-                        return redirect()->route('stock-in.index')->with(['success' => 'Successfully Add Stock In']);
+                        
+                        /**
+                         * Update of Product 
+                         */
+                        $product_update = Product::where('id', $product_size_stock_record->product_id)
+                            ->update([
+                                'updated_by' => Auth::user()->id,
+                            ]);
+
+                        /**
+                         * Validation Update of Product
+                         */
+                        if ($product_update) {
+                            DB::commit();
+                            return redirect()->route('stock-in.index')->with(['success' => 'Successfully Add Stock In']);
+                        } else {
+                            /**
+                             * Failed Store Record
+                             */
+                            DB::rollBack();
+                            return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                        }
                     }
                 } else {
                     /**

@@ -502,8 +502,7 @@ class ProductController extends Controller
                             'category_product_id' => $request->category_product,
                             'supplier_id' => $request->supplier,
                             'description' => $request->description,
-                            'updated_by' => Auth::user()->id,
-                            'updated_at' => date('Y-m-d H:i:s')
+                            'updated_by' => Auth::user()->id
                         ]);
 
                     /**
