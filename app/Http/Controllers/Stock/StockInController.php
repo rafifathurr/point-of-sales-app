@@ -94,9 +94,7 @@ class StockInController extends Controller
          * Get All Stock In
          */
         $stock_in = StockInOut::with([
-            'productSize.product',
-            'createdBy',
-            'updatedBy',
+            'productSize.product'
         ])
             ->where('type', 0)
             ->whereNull('deleted_by')
@@ -250,7 +248,7 @@ class StockInController extends Controller
                             return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
                         }
                     } else {
-                        
+
                         /**
                          * Update of Product 
                          */

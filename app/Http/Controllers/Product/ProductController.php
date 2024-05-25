@@ -66,11 +66,7 @@ class ProductController extends Controller
         /**
          * Get All Product
          */
-        $products = Product::with([
-            'supplier',
-            'categoryProduct',
-        ])
-            ->whereNull('deleted_by')
+        $products = Product::whereNull('deleted_by')
             ->whereNull('deleted_at')
             ->get();
 

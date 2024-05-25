@@ -49041,4 +49041,10 @@ div.tagsinput span.tag a {
     }
 }
 
+.bg-image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 35vh;
+}
+
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */

@@ -95,9 +95,7 @@ class StockOutController extends Controller
          * Get All Stock Out
          */
         $stock_out = StockInOut::with([
-            'productSize.product',
-            'createdBy',
-            'updatedBy',
+            'productSize.product'
         ])
             ->where('type', 1)
             ->whereNull('deleted_by')

@@ -34,8 +34,8 @@
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
+            <li class="nav-item @if (Route::currentRouteName() == 'sales-order.index') active @endif">
+                <a class="nav-link" href="{{ route('sales-order.index') }}">
                     <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                     <span class="menu-title">Sales Order</span>
                 </a>
@@ -129,8 +129,8 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
+                <li class="nav-item @if (Route::currentRouteName() == 'sales-order.index') active @endif">
+                    <a class="nav-link" href="{{ route('sales-order.index') }}">
                         <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                         <span class="menu-title">Sales Order</span>
                     </a>
@@ -215,8 +215,8 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
+                    <li class="nav-item @if (Route::currentRouteName() == 'sales-order.index') active @endif">
+                        <a class="nav-link" href="{{ route('sales-order.index') }}">
                             <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                             <span class="menu-title">Sales Order</span>
                         </a>
