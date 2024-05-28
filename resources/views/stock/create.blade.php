@@ -15,7 +15,7 @@
                                         <select class="form-control" id="product_size" name="product_size"
                                             @if (!$stock_in_status) onchange="getProduct(this.value)" @endif
                                             required>
-                                            <option selected hidden>Choose Product</option>
+                                            <option disabled selected>Choose Product</option>
                                             @foreach ($product as $product_size)
                                                 @if (!is_null(old('product_size')) && old('product_size') == $product_size->id)
                                                     <option value="{{ $product_size->id }}" selected>

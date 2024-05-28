@@ -54,7 +54,7 @@ class SalesOrderController extends Controller
             ->whereNull('deleted_by')
             ->whereNull('deleted_at')
             ->paginate(9);
-            
+
         /**
          * Get All Payment Method
          */
@@ -67,7 +67,12 @@ class SalesOrderController extends Controller
          */
         $store_route = route('sales-order.store');
 
-        return view('sales_order.create', compact('product_size', 'payment_method', 'store_route'));
+        /**
+         * Statement sales order create
+         */
+        $hide_button_hamburger_nav = true;
+
+        return view('sales_order.create', compact('product_size', 'payment_method', 'store_route', 'hide_button_hamburger_nav'));
     }
 
     /**
@@ -132,7 +137,7 @@ class SalesOrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**

@@ -66,7 +66,10 @@
     }
 
     function getProduct(product) {
-        $.get("{{ route('product.getProductSize') }}", {
+        let token = $('meta[name="csrf-token"]').attr('content');
+        
+        $.post("{{ route('product.getProductSize') }}", {
+            _token: token,
             product: product,
         }).done(function(data) {
             $("#qty").removeAttr('readonly');

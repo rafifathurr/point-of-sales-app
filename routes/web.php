@@ -162,7 +162,7 @@ Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
      */
     Route::group(['controller' => ProductController::class, 'prefix' => 'product', 'as' => 'product.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
-        Route::get('get-product-size', 'getProductSize')->name('getProductSize');
+        Route::post('get-product-size', 'getProductSize')->name('getProductSize');
     });
     Route::resource('product', ProductController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['product' => 'id']);
 

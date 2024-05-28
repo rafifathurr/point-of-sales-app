@@ -377,7 +377,7 @@ class ProductController extends Controller
             /**
              * Get Product Size Record from id
              */
-            $product = ProductSize::find($request->product);
+            $product = ProductSize::with(['product', 'discount'])->find($request->product);
 
             /**
              * Validation Product Size id

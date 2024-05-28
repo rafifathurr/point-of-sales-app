@@ -10,6 +10,7 @@
 
 <!-- End plugin js for this page -->
 <!-- inject:js -->
+<script src="{{ asset('js/template.js') }}"></script>
 <script src="{{ asset('js/off-canvas.js') }}"></script>
 <script src="{{ asset('js/hoverable-collapse.js') }}"></script>
 <!-- endinject -->
