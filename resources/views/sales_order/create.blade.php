@@ -25,7 +25,8 @@
                                                 <div class="input-group w-100 mx-auto d-flex">
                                                     <input type="text" id="search_keyword" class="form-control p-3"
                                                         placeholder="Search Product" aria-describedby="search-icon-1">
-                                                    <button type="button" class="input-group-text bg-primary text-white"
+                                                    <button type="button"
+                                                        class="input-group-text bg-primary text-white"
                                                         onclick="catalogue()">
                                                         <i class="fa fa-search"></i>
                                                     </button>
@@ -219,6 +220,9 @@
     <!-- container-scroller -->
     @include('layouts.script')
     @include('javascript.sales_order.script')
+    <script>
+        catalogue();
+    </script>
 </body>
 
 </html>

@@ -1,5 +1,4 @@
 <script type="text/javascript">
-    catalogue();
 
     $("form").submit(function(e) {
         e.preventDefault();
@@ -54,8 +53,6 @@
                 sweetAlertError(error);
             });
         }
-
-
 
     }
 
