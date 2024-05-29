@@ -30,8 +30,13 @@
     function catalogue(page) {
 
         $('#catalogue').html('');
+        let query = $('#search_keyword').val();
+
         if (page != undefined) {
-            $.get('{{ url('sales-order/catalogue-product') }}?page=' + page, {}).done(function(data) {
+            $.get("{{ route('sales-order.catalogueProduct') }}", {
+                page: page,
+                query: query
+            }).done(function(data) {
 
                 $('#catalogue').html(data);
 
@@ -39,7 +44,9 @@
                 sweetAlertError(error);
             });
         } else {
-            $.get("{{ route('sales-order.catalogueProduct') }}", {}).done(function(data) {
+            $.get("{{ route('sales-order.catalogueProduct') }}", {
+                query: query
+            }).done(function(data) {
 
                 $('#catalogue').html(data);
 

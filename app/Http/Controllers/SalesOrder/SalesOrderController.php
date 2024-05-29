@@ -11,10 +11,8 @@ use App\Models\SalesOrder\SalesOrderItem;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 
 class SalesOrderController extends Controller
@@ -77,18 +75,36 @@ class SalesOrderController extends Controller
         return view('sales_order.create', compact('payment_method', 'customer', 'store_route', 'hide_button_hamburger_nav'));
     }
 
-    public function catalogueProduct()
+    public function catalogueProduct(Request $request)
     {
-        /**
-         * Get All Product
-         */
-        $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
-            ->whereHas('product', function ($query) {
-                return $query->where('status', 1);
-            })
-            ->whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->paginate(9);
+
+        $input = $request->all();
+
+        if (!is_null($input['query'])) {
+
+            /**
+             * Get All Product
+             */
+            $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
+                ->whereHas('product', function ($query) use ($input) {
+                    return $query->where('status', 1)->where('name', 'like', '%' . $input['query'] . '%');
+                })
+                ->whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->paginate(9);
+        } else {
+            /**
+             * Get All Product
+             */
+            $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
+                ->whereHas('product', function ($query) {
+                    return $query->where('status', 1);
+                })
+                ->whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->paginate(9);
+        }
+
 
         return view('sales_order.includes.catalogue', ['product_size' => $product_size]);
     }
@@ -155,7 +171,10 @@ class SalesOrderController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        try {
+        } catch (Exception $e) {
+            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+        }
     }
 
     /**
