@@ -26,7 +26,7 @@
                             <div class="form-group">
                                 <label for="roles">Role <span class="text-danger">*</span></label>
                                 <select class="form-control" id="roles" name="roles" required>
-                                    <option disabled selected>Choose Role</option>
+                                    <option disabled hidden selected>Choose Role</option>
                                     @foreach ($roles as $role)
                                         @if (!is_null(old('roles')) && old('roles') == $role->name)
                                             <option value="{{ $role->name }}" selected>{{ $role->name }}</option>

@@ -54,7 +54,7 @@
                                                 <label for="type">Purchase Type <span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" id="type" name="type" required>
-                                                    <option selected hidden>Choose Purchase Type</option>
+                                                    <option disabled hidden selected>Choose Purchase Type</option>
                                                     <option value="0"
                                                         @if (!is_null(old('type')) && old('type') == 0) selected @endif>
                                                         Offline</option>
@@ -68,7 +68,7 @@
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" id="payment_method" name="payment_method"
                                                     required>
-                                                    <option selected hidden>Choose Payment Method</option>
+                                                    <option disabled hidden selected>Choose Payment Method</option>
                                                     @foreach ($payment_method as $pm)
                                                         @if (!is_null(old('payment_method')) && old('payment_method') == $pm->id)
                                                             <option value="{{ $pm->id }}" selected>
@@ -84,7 +84,7 @@
                                             <div class="form-group">
                                                 <label for="customer">Customer Member</label>
                                                 <select class="form-control" id="customer" name="customer">
-                                                    <option selected hidden>Choose Customer Member</option>
+                                                    <option disabled hidden selected>Choose Customer Member</option>
                                                     @foreach ($customer as $cst)
                                                         @if (!is_null(old('customer')) && old('customer') == $cst->id)
                                                             <option value="{{ $cst->id }}" selected>

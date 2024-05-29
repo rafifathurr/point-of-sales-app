@@ -20,7 +20,7 @@
                                         <label for="category_product">Category Product <span
                                                 class="text-danger">*</span></label>
                                         <select class="form-control" id="category_product" name="category_product" required>
-                                            <option disabled selected>Choose Category Product</option>
+                                            <option disabled hidden selected>Choose Category Product</option>
                                             @foreach ($category_product as $category)
                                                 @if (!is_null(old('category_product')) && old('category_product') == $category->id)
                                                     <option value="{{ $category->id }}" selected>{{ $category->name }}
@@ -36,7 +36,7 @@
                                     <div class="form-group">
                                         <label for="supplier">Supplier <span class="text-danger">*</span></label>
                                         <select class="form-control" id="supplier" name="supplier" required>
-                                            <option disabled selected>Choose Supplier</option>
+                                            <option disabled hidden selected>Choose Supplier</option>
                                             @foreach ($supplier as $sup)
                                                 @if (!is_null(old('supplier')) && old('supplier') == $sup->id)
                                                     <option value="{{ $sup->id }}" selected>{{ $sup->name }}
