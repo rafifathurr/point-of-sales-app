@@ -154,6 +154,7 @@ Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
      */
     Route::group(['controller' => SalesOrderController::class, 'prefix' => 'sales-order', 'as' => 'sales-order.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
+        Route::get('catalogue-product', 'catalogueProduct')->name('catalogueProduct');
     });
     Route::resource('sales-order', SalesOrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['sales-order' => 'id']);
 

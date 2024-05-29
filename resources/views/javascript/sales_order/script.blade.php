@@ -1,4 +1,6 @@
 <script type="text/javascript">
+    catalogue();
+
     $("form").submit(function(e) {
         e.preventDefault();
         if ($("input[name='sales_order_item_check[]']").val() === undefined) {
@@ -24,6 +26,31 @@
             })
         }
     });
+
+    function catalogue(page) {
+
+        $('#catalogue').html('');
+        if (page != undefined) {
+            $.get('{{ url('sales-order/catalogue-product') }}?page=' + page, {}).done(function(data) {
+
+                $('#catalogue').html(data);
+
+            }).fail(function(xhr, status, error) {
+                sweetAlertError(error);
+            });
+        } else {
+            $.get("{{ route('sales-order.catalogueProduct') }}", {}).done(function(data) {
+
+                $('#catalogue').html(data);
+
+            }).fail(function(xhr, status, error) {
+                sweetAlertError(error);
+            });
+        }
+
+
+
+    }
 
     function dataTable() {
         const url = $('#url_dt').val();
@@ -112,8 +139,8 @@
                     "<input type='number' class='form-control text-center' name='sales_order_item[" + data
                     .id + "][qty]' " +
                     "id='qty_" + data.id + "'" +
-                    "max = '" + data.stock + "' value='1'" +
-                    "oninput = 'validationQty(this)'" +
+                    "max = '" + data.stock + "' min='1' value='1'" +
+                    "oninput = 'validationQty(this, " + data.id + ")'" +
                     "required> " +
                     "<input type='hidden' id='capital_price_" + data.id + "' name = 'sales_order_item[" +
                     data.id + "][capital_price]'" +
@@ -181,6 +208,8 @@
 
             }
 
+            getAccumulationPrice();
+
         }).fail(function(xhr, status, error) {
             sweetAlertError(error);
         });
@@ -194,10 +223,11 @@
     // Find and remove selected table rows
     $("table#product_size").on("click", ".delete-row", function(event) {
         $(this).closest("tr").remove();
+        getAccumulationPrice();
     });
 
-    function validationQty(element) {
-        if (element.value < element.min && element.value != '') {
+    function validationQty(element, key) {
+        if ((element.value < element.min && element.value != '') || element.value == '') {
             $('#' + element.id).val(element.min);
         }
 
@@ -212,6 +242,64 @@
                 }
             }
         }
+
+        let total_qty = $('#' + element.id).val();
+        let product_size_capital_price = $("#capital_price_" + key).val();
+        let product_size_sell_price = $("#sell_price_" + key).val();
+        let product_size_discount_price = $("#discount_" + key).val();
+
+        let total_sell_price = 0;
+        let total_discount_price = 0;
+
+        if (parseInt(product_size_discount_price) > 0) {
+            total_discount_price = parseInt(product_size_discount_price) * total_qty;
+            total_sell_price = (parseInt(product_size_sell_price) * total_qty) - total_discount_price;
+        } else {
+            total_sell_price = parseInt(product_size_sell_price) * total_qty;
+        }
+
+        let total_profit_price = total_sell_price - (parseInt(product_size_capital_price) * total_qty);
+
+        $('#price_show_' + key).html(currencyFormat(total_sell_price));
+        $('#qty_' + key).val(total_qty);
+        $('#total_sell_price_' + key).val(total_sell_price);
+        $('#total_profit_price_' + key).val(total_profit_price);
+
+        getAccumulationPrice();
+
+    }
+
+    function getAccumulationPrice() {
+        let total_capital_price_all_product = 0;
+        let total_sell_price_all_product = 0;
+        let discount_price = 0;
+        let grand_sell_price_all_product = 0;
+        let grand_profit_price_all_product = 0;
+
+        $("input[name='sales_order_item_check[]']")
+            .map(function() {
+                total_capital_price_all_product += parseInt($('#capital_price_' + $(this).val())
+                    .val()) * $("#qty_" + $(this).val()).val();
+
+                total_sell_price_all_product += parseInt($('#sell_price_' + $(this).val())
+                    .val()) * $("#qty_" + $(this).val()).val();
+
+                discount_price += parseInt($('#discount_' + $(this).val())
+                    .val()) * $("#qty_" + $(this).val()).val();
+
+                grand_sell_price_all_product += parseInt($(
+                    '#total_sell_price_' + $(this).val()).val());
+
+                grand_profit_price_all_product +=
+                    parseInt($('#total_profit_price_' + $(this).val()).val());
+            });
+
+        $('#total_price_all_product_show').html('Rp. ' + currencyFormat(grand_sell_price_all_product));
+        $('#total_capital_price').val(total_capital_price_all_product);
+        $('#total_sell_price').val(total_sell_price_all_product);
+        $('#discount_price').val(discount_price);
+        $('#grand_sell_price').val(grand_sell_price_all_product);
+        $('#grand_profit_price').val(grand_profit_price_all_product);
     }
 
     function destroyRecord(id) {

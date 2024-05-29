@@ -4,14 +4,17 @@ namespace App\Http\Controllers\SalesOrder;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product\ProductSize;
+use App\Models\SalesOrder\Customer;
 use App\Models\SalesOrder\PaymentMethod;
 use App\Models\SalesOrder\SalesOrder;
 use App\Models\SalesOrder\SalesOrderItem;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 
 class SalesOrderController extends Controller
@@ -42,23 +45,20 @@ class SalesOrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        /**
-         * Get All Product
-         */
-        $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
-            ->whereHas('product', function ($query) {
-                return $query->where('status', 1);
-            })
-            ->whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->paginate(9);
 
         /**
          * Get All Payment Method
          */
         $payment_method = PaymentMethod::whereNull('deleted_by')
+            ->whereNull('deleted_at')
+            ->get();
+
+        /**
+         * Get All Customer Method
+         */
+        $customer = Customer::whereNull('deleted_by')
             ->whereNull('deleted_at')
             ->get();
 
@@ -72,7 +72,25 @@ class SalesOrderController extends Controller
          */
         $hide_button_hamburger_nav = true;
 
-        return view('sales_order.create', compact('product_size', 'payment_method', 'store_route', 'hide_button_hamburger_nav'));
+        session()->flashInput($request->input());
+
+        return view('sales_order.create', compact('payment_method', 'customer', 'store_route', 'hide_button_hamburger_nav'));
+    }
+
+    public function catalogueProduct()
+    {
+        /**
+         * Get All Product
+         */
+        $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
+            ->whereHas('product', function ($query) {
+                return $query->where('status', 1);
+            })
+            ->whereNull('deleted_by')
+            ->whereNull('deleted_at')
+            ->paginate(9);
+
+        return view('sales_order.includes.catalogue', ['product_size' => $product_size]);
     }
 
     /**
