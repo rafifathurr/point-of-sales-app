@@ -116,41 +116,41 @@
                                                         @foreach (old('sales_order_item') as $product_size_id => $sales_order_item)
                                                             <tr id='produxt_size_{{ $product_size_id }}'>
                                                                 <td>
-                                                                    {{ $sales_order_item->product_name }}
+                                                                    {{ $sales_order_item['product_name'] }}
                                                                     <input type="hidden" id="product_size_20"
                                                                         name="sales_order_item[{{ $product_size_id }}][product_name]"
-                                                                        value="{{ $sales_order_item->product_name }}">
+                                                                        value="{{ $sales_order_item['product_name'] }}">
                                                                 </td>
                                                                 <td>
                                                                     <input type="number"
                                                                         class="form-control text-center"
                                                                         id="qty_{{ $product_size_id }}"
-                                                                        value="{{ $sales_order_item->qty }}"
-                                                                        name="sales_order_item[product_size_id][qty]">
+                                                                        value="{{ $sales_order_item['qty'] }}"
+                                                                        name="sales_order_item[{{ $product_size_id }}][qty]">
                                                                     <input type="hidden"
                                                                         id="capital_price_{{ $product_size_id }}"
-                                                                        name="sales_order_item[product_size_id][capital_price]"
-                                                                        value="{{ $sales_order_item->capital_price }}">
+                                                                        name="sales_order_item[{{ $product_size_id }}][capital_price]"
+                                                                        value="{{ $sales_order_item['capital_price'] }}">
                                                                     <input type="hidden"
                                                                         id="sell_price_{{ $product_size_id }}"
-                                                                        name="sales_order_item[product_size_id][sell_price]"
-                                                                        value="{{ $sales_order_item->sell_price }}">
+                                                                        name="sales_order_item[{{ $product_size_id }}][sell_price]"
+                                                                        value="{{ $sales_order_item['sell_price'] }}">
                                                                     <input type="hidden"
                                                                         id="discount_{{ $product_size_id }}"
-                                                                        name="sales_order_item[product_size_id][discount_price]"
-                                                                        value="{{ $sales_order_item->discount_price }}">
+                                                                        name="sales_order_item[{{ $product_size_id }}][discount_price]"
+                                                                        value="{{ $sales_order_item['discount_price'] }}">
                                                                 </td>
                                                                 <td align="right">
                                                                     Rp. <span
-                                                                        id="price_show_{{ $product_size_id }}">{{ number_format($sales_order_item->total_sell_price, 0, ',', '.') }}</span>
+                                                                        id="price_show_{{ $product_size_id }}">{{ number_format($sales_order_item['total_sell_price'], 0, ',', '.') }}</span>
                                                                     <input type="hidden"
                                                                         id="total_sell_price_{{ $product_size_id }}"
-                                                                        name="sales_order_item[product_size_id][total_sell_price]"
-                                                                        value="{{ $sales_order_item->total_sell_price }}">
+                                                                        name="sales_order_item[{{ $product_size_id }}][total_sell_price]"
+                                                                        value="{{ $sales_order_item['total_sell_price'] }}">
                                                                     <input type="hidden"
                                                                         id="total_profit_price_{{ $product_size_id }}"
-                                                                        name="sales_order_item[product_size_id][total_profit_price]"
-                                                                        value="{{ $sales_order_item->total_profit_price }}">
+                                                                        name="sales_order_item[{{ $product_size_id }}][total_profit_price]"
+                                                                        value="{{ $sales_order_item['total_profit_price'] }}">
                                                                 </td>
                                                                 <td align="center">
                                                                     <button type="button"
@@ -172,15 +172,15 @@
                                                         <td>
                                                             &nbsp;
                                                             <input type="hidden" name="total_capital_price"
-                                                                id="total_capital_price">
+                                                                id="total_capital_price" value="{{ old('total_capital_price') }}">
                                                             <input type="hidden" name="total_sell_price"
-                                                                id="total_sell_price">
+                                                                id="total_sell_price" value="{{ old('total_sell_price') }}">
                                                             <input type="hidden" name="discount_price"
-                                                                id="discount_price">
+                                                                id="discount_price" value="{{ old('discount_price') }}">
                                                             <input type="hidden" name="grand_sell_price"
-                                                                id="grand_sell_price">
+                                                                id="grand_sell_price" value="{{ old('grand_sell_price') }}">
                                                             <input type="hidden" name="grand_profit_price"
-                                                                id="grand_profit_price">
+                                                                id="grand_profit_price" value="{{ old('grand_profit_price') }}">
                                                         </td>
                                                         <td align="right">
                                                             <span

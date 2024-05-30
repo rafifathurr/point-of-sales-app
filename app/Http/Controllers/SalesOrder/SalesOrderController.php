@@ -70,8 +70,6 @@ class SalesOrderController extends Controller
          */
         $hide_button_hamburger_nav = true;
 
-        session()->flashInput($request->input());
-
         return view('sales_order.create', compact('payment_method', 'customer', 'store_route', 'hide_button_hamburger_nav'));
     }
 
@@ -175,8 +173,23 @@ class SalesOrderController extends Controller
     public function store(Request $request)
     {
         try {
+
+            /**
+             * Validation Request Body Variables
+             */
+            $request->validate([
+                "type" => "required",
+                "payment_method" => "required",
+                "sales_order_item" => "required",
+                "total_capital_price" => "required",
+                "total_sell_price" => "required",
+                "discount_price" => "required",
+                "grand_sell_price" => "required",
+                "grand_profit_price" => "required"
+            ]);
+
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()->route('sales-order.create')->with(['failed' => $e->getMessage()])->withInput();
         }
     }
 
