@@ -25,11 +25,6 @@
                                                 <div class="input-group w-100 mx-auto d-flex">
                                                     <input type="text" id="search_keyword" oninput="catalogue()" class="form-control p-3"
                                                         placeholder="Search Product" aria-describedby="search-icon-1">
-                                                    {{-- <button type="button"
-                                                        class="input-group-text bg-primary text-white"
-                                                        >
-                                                        <i class="fa fa-search"></i>
-                                                    </button> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -49,7 +44,6 @@
                                     <div class="card-body">
                                         <div class="p-3">
                                             <h4 class="card-title">Sales Order</h4>
-
                                             <hr>
                                             <div class="form-group">
                                                 <label for="type">Purchase Type <span

@@ -105,8 +105,11 @@ class SalesOrderController extends Controller
                 ->paginate(9);
         }
 
-
-        return view('sales_order.includes.catalogue', ['product_size' => $product_size]);
+        if (count($product_size) > 0) {
+            return view('sales_order.includes.catalogue', ['product_size' => $product_size]);
+        } else {
+            return view('sales_order.includes.notfound');
+        }
     }
 
     /**
