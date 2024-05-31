@@ -23,18 +23,14 @@
                                             </div>
                                             <div class="p-0">
                                                 <div class="input-group w-100 mx-auto d-flex">
-                                                    <input type="text" id="search_keyword" oninput="catalogue()" class="form-control p-3"
-                                                        placeholder="Search Product" aria-describedby="search-icon-1">
+                                                    <input type="text" id="search_keyword" oninput="catalogue()"
+                                                        class="form-control p-3" placeholder="Search Product"
+                                                        aria-describedby="search-icon-1">
                                                 </div>
                                             </div>
                                         </div>
                                         <hr>
                                         <div id="catalogue">
-                                        </div>
-                                        <div class="float-right mt-3">
-                                            <a href="{{ route('sales-order.index') }}" class="btn btn-sm btn-danger">
-                                                Back
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -125,8 +121,12 @@
                                                                     <input type="number"
                                                                         class="form-control text-center"
                                                                         id="qty_{{ $product_size_id }}"
+                                                                        max = '{{ $sales_order_item['stock'] }}' min='1'
                                                                         value="{{ $sales_order_item['qty'] }}"
                                                                         name="sales_order_item[{{ $product_size_id }}][qty]">
+                                                                    <input type='hidden'
+                                                                        name = 'sales_order_item[{{ $product_size_id }}][stock]'
+                                                                        value = '{{ $sales_order_item['stock'] }}'>
                                                                     <input type="hidden"
                                                                         id="capital_price_{{ $product_size_id }}"
                                                                         name="sales_order_item[{{ $product_size_id }}][capital_price]"
@@ -172,15 +172,20 @@
                                                         <td>
                                                             &nbsp;
                                                             <input type="hidden" name="total_capital_price"
-                                                                id="total_capital_price" value="{{ old('total_capital_price') }}">
+                                                                id="total_capital_price"
+                                                                value="{{ old('total_capital_price') }}">
                                                             <input type="hidden" name="total_sell_price"
-                                                                id="total_sell_price" value="{{ old('total_sell_price') }}">
+                                                                id="total_sell_price"
+                                                                value="{{ old('total_sell_price') }}">
                                                             <input type="hidden" name="discount_price"
-                                                                id="discount_price" value="{{ old('discount_price') }}">
+                                                                id="discount_price"
+                                                                value="{{ old('discount_price') }}">
                                                             <input type="hidden" name="grand_sell_price"
-                                                                id="grand_sell_price" value="{{ old('grand_sell_price') }}">
+                                                                id="grand_sell_price"
+                                                                value="{{ old('grand_sell_price') }}">
                                                             <input type="hidden" name="grand_profit_price"
-                                                                id="grand_profit_price" value="{{ old('grand_profit_price') }}">
+                                                                id="grand_profit_price"
+                                                                value="{{ old('grand_profit_price') }}">
                                                         </td>
                                                         <td align="right">
                                                             <span
@@ -195,7 +200,10 @@
                                         </div>
                                         <hr>
                                         <div class="float-right mt-3">
-                                            <button type="submit" class="btn btn-sm btn-primary mr-2">Submit</button>
+                                            <a href="{{ route('sales-order.index') }}" class="btn btn-sm btn-danger">
+                                                Back
+                                            </a>
+                                            <button type="submit" class="btn btn-sm btn-primary ml-2">Submit</button>
                                         </div>
                                     </div>
                                 </div>

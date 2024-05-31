@@ -146,6 +146,9 @@
                     "max = '" + data.stock + "' min='1' value='1'" +
                     "oninput = 'validationQty(this, " + data.id + ")'" +
                     "required> " +
+                    "<input type='hidden'" +
+                    "name = 'sales_order_item[" + data.id + "][stock]'" +
+                    "value = '" + data.stock + "' > " +
                     "<input type='hidden' id='capital_price_" + data.id + "' name = 'sales_order_item[" +
                     data.id + "][capital_price]'" +
                     "value = '" + data.capital_price + "' > " +

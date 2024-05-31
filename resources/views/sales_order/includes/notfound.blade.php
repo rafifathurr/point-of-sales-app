@@ -1,13 +1,11 @@
-<div class="row g-4 justify-content-start mt-5">
-    <div class="d-flex">
-        <div class="py-3">
-            <img width="80%" src="{{ asset('images/search-product.webp') }}" alt="">
-        </div>
-        <div class="pr-3 py-3 my-auto">
-            <h2>
+<div class="row g-4 mt-5">
+    <div class="d-flex mx-auto justify-content-center">
+        <img width="40%" src="{{ asset('images/search-product.webp') }}" alt="">
+        <div class="p-5">
+            <h3>
                 <b>Oops, product not found!</b>
-            </h2>
-            <h3 class="mt-3">Try searching for other keywords</h3>
+            </h3>
+            <h4 class="mt-3">Try searching for other keywords</h4>
             <button type="button" class="btn btn-primary mt-3" id="focus-search"><b>Change Keyword Product</b></button>
         </div>
     </div>
