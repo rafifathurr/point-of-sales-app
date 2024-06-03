@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ChartofAccount\ChartofAccountController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\PaymentMethod\PaymentMethodController;
@@ -150,10 +151,19 @@ Route::group(['middleware' => ['role:admin|cashier']], function () {
 Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
 
     /**
+     * Route Chart of Account Module
+     */
+    Route::group(['controller' => ChartofAccountController::class, 'prefix' => 'coa', 'as' => 'coa.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('coa', ChartofAccountController::class)->parameters(['coa' => 'id']);
+
+    /**
      * Route Sales Order Module
      */
     Route::group(['controller' => SalesOrderController::class, 'prefix' => 'sales-order', 'as' => 'sales-order.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
+        Route::get('export/{id}', 'export')->name('export');
         Route::get('catalogue-product', 'catalogueProduct')->name('catalogueProduct');
     });
     Route::resource('sales-order', SalesOrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['sales-order' => 'id']);

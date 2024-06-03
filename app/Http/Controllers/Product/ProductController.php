@@ -98,8 +98,14 @@ class ProductController extends Controller
             ->addColumn('action', function ($data) {
                 $btn_action = '<div align="center">';
                 $btn_action .= '<a href="' . route('product.show', ['id' => $data->id]) . '" class="btn btn-sm btn-primary" title="Detail">Detail</a>';
-                $btn_action .= '<a href="' . route('product.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</a>';
-                $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Delete">Delete</button>';
+
+                /**
+                 * Validation Role Has Access Edit and Delete
+                 */
+                if (User::find(Auth::user()->id)->hasRole(['super-admin', 'admin'])) {
+                    $btn_action .= '<a href="' . route('product.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</a>';
+                    $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Delete">Delete</button>';
+                }
                 $btn_action .= '</div>';
                 return $btn_action;
             })
@@ -349,8 +355,6 @@ class ProductController extends Controller
                 'supplier',
                 'categoryProduct',
                 'productSize.discount',
-                'createdBy',
-                'updatedBy',
             ])
                 ->find($id);
 
@@ -358,7 +362,13 @@ class ProductController extends Controller
              * Validation Product id
              */
             if (!is_null($product)) {
-                return view('product.detail', compact('product'));
+
+                /**
+                 * Show Capital Price Access Based Role
+                 */
+                $show_capital_price = User::find(Auth::user()->id)->hasRole(['super-admin', 'admin']);
+
+                return view('product.detail', compact('product', 'show_capital_price'));
             } else {
                 return redirect()->back()->with(['failed' => 'Invalid Request!']);
             }

@@ -71,9 +71,11 @@
                                         <th>
                                             Stock
                                         </th>
-                                        <th>
-                                            Capital Price
-                                        </th>
+                                        @if ($show_capital_price)
+                                            <th>
+                                                Capital Price
+                                            </th>
+                                        @endif
                                         <th>
                                             Sell Price
                                         </th>
@@ -94,9 +96,11 @@
                                             <td>
                                                 {{ $product_size->stock }} Pcs
                                             </td>
-                                            <td align="right">
-                                                Rp. {{ number_format($product_size->capital_price, 0, ',', '.') }}
-                                            </td>
+                                            @if ($show_capital_price)
+                                                <td align="right">
+                                                    Rp. {{ number_format($product_size->capital_price, 0, ',', '.') }}
+                                                </td>
+                                            @endif
                                             <td align="right">
                                                 @if ($product_size->discount->percentage > 0)
                                                     <s>Rp. {{ number_format($product_size->sell_price, 0, ',', '.') }}</s>

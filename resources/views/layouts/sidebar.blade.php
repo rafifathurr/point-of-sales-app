@@ -27,8 +27,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif" href="#">
-                                List
+                            <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif" href="{{ route('coa.index') }}">
+                                Chart of Account
                             </a>
                         </li>
                     </ul>
@@ -122,8 +122,8 @@
                     <div class="collapse @if (Route::currentRouteName() == 'coa.index') show @endif" id="coa">
                         <ul class="nav flex-column sub-menu">
                             <li class="nav-item">
-                                <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif" href="#">
-                                    List
+                                <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif" href="{{ route('coa.index') }}">
+                                    Chart of Account
                                 </a>
                             </li>
                         </ul>
@@ -208,8 +208,8 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
                                     <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif"
-                                        href="#">
-                                        List
+                                        href="{{ route('coa.index') }}">
+                                        Chart of Account
                                     </a>
                                 </li>
                             </ul>
