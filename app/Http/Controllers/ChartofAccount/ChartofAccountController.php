@@ -63,6 +63,10 @@ class ChartofAccountController extends Controller
                 return date('d M Y', strtotime($data->date));
             })
             ->addColumn('type', function ($data) {
+
+                /**
+                 * Return Type
+                 */
                 return $data->type == 0 ? 'Debt' : 'Credit';
             })
             ->addColumn('balance', function ($data) {
