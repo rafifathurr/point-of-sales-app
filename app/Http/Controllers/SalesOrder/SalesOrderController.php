@@ -177,8 +177,6 @@ class SalesOrderController extends Controller
     {
         try {
 
-            // dd($request->all());
-
             /**
              * Validation Request Body Variables
              */
