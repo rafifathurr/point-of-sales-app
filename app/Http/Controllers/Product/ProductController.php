@@ -44,16 +44,12 @@ class ProductController extends Controller
         /**
          * Get All Category Product
          */
-        $category_product = CategoryProduct::whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+        $category_product = CategoryProduct::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
         /**
          * Get All Supplier
          */
-        $supplier = Supplier::whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+        $supplier = Supplier::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
         return view('product.create', compact('category_product', 'supplier'));
     }
@@ -66,9 +62,7 @@ class ProductController extends Controller
         /**
          * Get All Product
          */
-        $products = Product::whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+        $products = Product::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
         /**
          * Datatable Configuration
@@ -76,14 +70,12 @@ class ProductController extends Controller
         $dataTable = DataTables::of($products)
             ->addIndexColumn()
             ->addColumn('category', function ($data) {
-
                 /**
                  * Return Relation Category Product
                  */
                 return $data->categoryProduct->name;
             })
             ->addColumn('status', function ($data) {
-
                 /**
                  * Validation Status
                  */
@@ -122,7 +114,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -145,7 +136,6 @@ class ProductController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($name_check)) {
-
                 /**
                  * Set Default Status Inactive
                  */
@@ -159,22 +149,20 @@ class ProductController extends Controller
                 /**
                  * Create Product Record
                  */
-                $product = Product::lockforUpdate()
-                    ->create([
-                        'name' => $request->name,
-                        'category_product_id' => $request->category_product,
-                        'supplier_id' => $request->supplier,
-                        'description' => $request->description,
-                        'status' => 0,
-                        'created_by' => Auth::user()->id,
-                        'updated_by' => Auth::user()->id,
-                    ]);
+                $product = Product::lockforUpdate()->create([
+                    'name' => $request->name,
+                    'category_product_id' => $request->category_product,
+                    'supplier_id' => $request->supplier,
+                    'description' => $request->description,
+                    'status' => 0,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
 
                 /**
                  * Validation Create Product Record
                  */
                 if ($product) {
-
                     /**
                      * Path Configuration
                      */
@@ -205,42 +193,37 @@ class ProductController extends Controller
                      * Validation File Success Uploaded
                      */
                     if (Storage::exists($path . '/' . $file_name)) {
-
                         /**
                          * Update Product with File Picture
                          */
-                        $product_update = Product::where('id', $product->id)
-                            ->update([
-                                'picture' => $path_store . '/' . $file_name,
-                            ]);
+                        $product_update = Product::where('id', $product->id)->update([
+                            'picture' => $path_store . '/' . $file_name,
+                        ]);
 
                         /**
                          * Validation Update Product Record
                          */
                         if ($product_update) {
-
                             /**
                              * Each of Size Product and Discount
                              */
                             foreach ($request->product_size as $size) {
-
                                 /**
                                  * Create Product Size Record
                                  */
-                                $product_size = ProductSize::lockforUpdate()
-                                    ->create([
-                                        'product_id' => $product->id,
-                                        'size' => $size['size'],
-                                        'weight' => $size['weight'],
-                                        'stock' => $size['stock'],
-                                        'capital_price' => isset($size['capital_price']) ? $size['capital_price'] : null,
-                                        'sell_price' => $size['sell_price'],
-                                        'created_by' => Auth::user()->id,
-                                        'updated_by' => Auth::user()->id,
-                                    ]);
+                                $product_size = ProductSize::lockforUpdate()->create([
+                                    'product_id' => $product->id,
+                                    'size' => $size['size'],
+                                    'weight' => $size['weight'],
+                                    'stock' => $size['stock'],
+                                    'capital_price' => isset($size['capital_price']) ? $size['capital_price'] : null,
+                                    'sell_price' => $size['sell_price'],
+                                    'created_by' => Auth::user()->id,
+                                    'updated_by' => Auth::user()->id,
+                                ]);
 
                                 /**
-                                 * Validation Stock Product 
+                                 * Validation Stock Product
                                  */
                                 if (intval($size['stock']) > 0) {
                                     if (isset($size['capital_price'])) {
@@ -252,17 +235,15 @@ class ProductController extends Controller
                                  * Validation Create Product Size Record
                                  */
                                 if ($product_size) {
-
                                     /**
                                      * Create Product Discount Record
                                      */
-                                    $product_discount = Discount::lockforUpdate()
-                                        ->create([
-                                            'product_size_id' => $product_size->id,
-                                            'percentage' => $size['percentage'],
-                                            'created_by' => Auth::user()->id,
-                                            'updated_by' => Auth::user()->id,
-                                        ]);
+                                    $product_discount = Discount::lockforUpdate()->create([
+                                        'product_size_id' => $product_size->id,
+                                        'percentage' => $size['percentage'],
+                                        'created_by' => Auth::user()->id,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
 
                                     /**
                                      * Validation Create Product Discount Record
@@ -272,14 +253,20 @@ class ProductController extends Controller
                                          * Failed Store Record
                                          */
                                         DB::rollBack();
-                                        return redirect()->back()->with(['failed' => 'Failed Store Product Discount'])->withInput();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Failed Store Product Discount'])
+                                            ->withInput();
                                     }
                                 } else {
                                     /**
                                      * Failed Store Record
                                      */
                                     DB::rollBack();
-                                    return redirect()->back()->with(['failed' => 'Failed Store Product Size'])->withInput();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Store Product Size'])
+                                        ->withInput();
                                 }
                             }
 
@@ -290,54 +277,75 @@ class ProductController extends Controller
                                 /**
                                  * Update Product with Status
                                  */
-                                $product_status_update = Product::where('id', $product->id)
-                                    ->update([
-                                        'status' => 1,
-                                    ]);
+                                $product_status_update = Product::where('id', $product->id)->update([
+                                    'status' => 1,
+                                ]);
 
                                 /**
                                  * Validation Update Product Status Record
                                  */
                                 if ($product_status_update) {
                                     DB::commit();
-                                    return redirect()->route('product.index')->with(['success' => 'Successfully Add Product']);
+                                    return redirect()
+                                        ->route('product.index')
+                                        ->with(['success' => 'Successfully Add Product']);
                                 } else {
                                     /**
                                      * Failed Store Record
                                      */
                                     DB::rollBack();
-                                    return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Update Status Product'])
+                                        ->withInput();
                                 }
                             } else {
                                 DB::commit();
-                                return redirect()->route('product.index')->with(['success' => 'Successfully Add Product']);
+                                return redirect()
+                                    ->route('product.index')
+                                    ->with(['success' => 'Successfully Add Product']);
                             }
                         } else {
                             /**
                              * Failed Store Record
                              */
                             DB::rollBack();
-                            return redirect()->back()->with(['failed' => 'Failed Update Picture Product'])->withInput();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Failed Update Picture Product'])
+                                ->withInput();
                         }
                     } else {
                         /**
                          * Failed Store Record
                          */
                         DB::rollBack();
-                        return redirect()->back()->with(['failed' => 'Failed Upload Product'])->withInput();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Failed Upload Product'])
+                            ->withInput();
                     }
                 } else {
                     /**
                      * Failed Store Record
                      */
                     DB::rollBack();
-                    return redirect()->back()->with(['failed' => 'Failed Add Product'])->withInput();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Failed Add Product'])
+                        ->withInput();
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Name Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Name Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -347,22 +355,15 @@ class ProductController extends Controller
     public function show(string $id)
     {
         try {
-
             /**
              * Get Product Record from id
              */
-            $product = Product::with([
-                'supplier',
-                'categoryProduct',
-                'productSize.discount',
-            ])
-                ->find($id);
+            $product = Product::with(['supplier', 'categoryProduct', 'productSize.discount'])->find($id);
 
             /**
              * Validation Product id
              */
             if (!is_null($product)) {
-
                 /**
                  * Show Capital Price Access Based Role
                  */
@@ -370,10 +371,14 @@ class ProductController extends Controller
 
                 return view('product.detail', compact('product', 'show_capital_price'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -383,7 +388,6 @@ class ProductController extends Controller
     public function getProductSize(Request $request)
     {
         try {
-
             /**
              * Get Product Size Record from id
              */
@@ -408,44 +412,35 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         try {
-
             /**
              * Get Product Record from id
              */
-            $product = Product::with([
-                'supplier',
-                'categoryProduct',
-                'productSize.discount',
-                'createdBy',
-                'updatedBy',
-            ])
-                ->find($id);
+            $product = Product::with(['supplier', 'categoryProduct', 'productSize.discount', 'createdBy', 'updatedBy'])->find($id);
 
             /**
              * Validation Product id
              */
             if (!is_null($product)) {
-
                 /**
                  * Get All Category Product
                  */
-                $category_product = CategoryProduct::whereNull('deleted_by')
-                    ->whereNull('deleted_at')
-                    ->get();
+                $category_product = CategoryProduct::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
                 /**
                  * Get All Supplier
                  */
-                $supplier = Supplier::whereNull('deleted_by')
-                    ->whereNull('deleted_at')
-                    ->get();
+                $supplier = Supplier::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
                 return view('product.edit', compact('product', 'category_product', 'supplier'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -455,7 +450,6 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -478,7 +472,6 @@ class ProductController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($name_check)) {
-
                 /**
                  * Get Product Record from id
                  */
@@ -488,7 +481,6 @@ class ProductController extends Controller
                  * Validation Product id
                  */
                 if (!is_null($product)) {
-
                     /**
                      * Set Default Status Inactive
                      */
@@ -502,25 +494,22 @@ class ProductController extends Controller
                     /**
                      * Update Product Record
                      */
-                    $product_update = Product::where('id', $id)
-                        ->update([
-                            'name' => $request->name,
-                            'category_product_id' => $request->category_product,
-                            'supplier_id' => $request->supplier,
-                            'description' => $request->description,
-                            'updated_by' => Auth::user()->id
-                        ]);
+                    $product_update = Product::where('id', $id)->update([
+                        'name' => $request->name,
+                        'category_product_id' => $request->category_product,
+                        'supplier_id' => $request->supplier,
+                        'description' => $request->description,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                     /**
                      * Validation Update Product Record
                      */
                     if ($product_update) {
-
                         /**
                          * Validation update has request file
                          */
                         if (!empty($request->allFiles())) {
-
                             /**
                              * Path Configuration
                              */
@@ -564,20 +553,17 @@ class ProductController extends Controller
                              * Validation File Success Uploaded
                              */
                             if (Storage::exists($path . '/' . $file_name)) {
-
                                 /**
                                  * Update Product with File Picture
                                  */
-                                $product_picture_update = $product
-                                    ->update([
-                                        'picture' => $path_store . '/' . $file_name,
-                                    ]);
+                                $product_picture_update = $product->update([
+                                    'picture' => $path_store . '/' . $file_name,
+                                ]);
 
                                 /**
                                  * Validation Update Product Picture Record
                                  */
                                 if ($product_picture_update) {
-
                                     /**
                                      * Get id of Product Size Record
                                      */
@@ -586,31 +572,27 @@ class ProductController extends Controller
                                     /**
                                      * Update Last Record of Product Discount
                                      */
-                                    $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)
-                                        ->update([
-                                            'deleted_by' => Auth::user()->id,
-                                            'deleted_at' => date('Y-m-d H:i:s'),
-                                        ]);
+                                    $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)->update([
+                                        'deleted_by' => Auth::user()->id,
+                                        'deleted_at' => date('Y-m-d H:i:s'),
+                                    ]);
 
                                     /**
                                      * Validation Update Last Record of Product Discount
                                      */
                                     if ($remove_product_discount) {
-
                                         /**
-                                         * Update Last Record of Product Size 
+                                         * Update Last Record of Product Size
                                          */
-                                        $remove_product_size = ProductSize::where('product_id', $id)
-                                            ->update([
-                                                'deleted_by' => Auth::user()->id,
-                                                'deleted_at' => date('Y-m-d H:i:s'),
-                                            ]);
+                                        $remove_product_size = ProductSize::where('product_id', $id)->update([
+                                            'deleted_by' => Auth::user()->id,
+                                            'deleted_at' => date('Y-m-d H:i:s'),
+                                        ]);
 
                                         /**
                                          * Validation Update Last Record of Product Size
                                          */
                                         if ($remove_product_size) {
-
                                             /**
                                              * Check Status of Product Contain 0 Stock
                                              */
@@ -620,7 +602,6 @@ class ProductController extends Controller
                                              * Each of Size Product and Discount
                                              */
                                             foreach ($request->product_size as $size) {
-
                                                 /**
                                                  * Check Has Capital Price Request
                                                  */
@@ -628,35 +609,33 @@ class ProductController extends Controller
                                                     /**
                                                      * Create New Product Size Record
                                                      */
-                                                    $product_size = ProductSize::lockforUpdate()
-                                                        ->create([
-                                                            'product_id' => $id,
-                                                            'size' => $size['size'],
-                                                            'weight' => $size['weight'],
-                                                            'stock' => $size['stock'],
-                                                            'capital_price' => $size['capital_price'],
-                                                            'sell_price' => $size['sell_price'],
-                                                            'created_by' => Auth::user()->id,
-                                                            'updated_by' => Auth::user()->id,
-                                                        ]);
+                                                    $product_size = ProductSize::lockforUpdate()->create([
+                                                        'product_id' => $id,
+                                                        'size' => $size['size'],
+                                                        'weight' => $size['weight'],
+                                                        'stock' => $size['stock'],
+                                                        'capital_price' => $size['capital_price'],
+                                                        'sell_price' => $size['sell_price'],
+                                                        'created_by' => Auth::user()->id,
+                                                        'updated_by' => Auth::user()->id,
+                                                    ]);
                                                 } else {
                                                     /**
                                                      * Create New Product Size Record
                                                      */
-                                                    $product_size = ProductSize::lockforUpdate()
-                                                        ->create([
-                                                            'product_id' => $id,
-                                                            'size' => $size['size'],
-                                                            'weight' => $size['weight'],
-                                                            'stock' => $size['stock'],
-                                                            'sell_price' => $size['sell_price'],
-                                                            'created_by' => Auth::user()->id,
-                                                            'updated_by' => Auth::user()->id,
-                                                        ]);
+                                                    $product_size = ProductSize::lockforUpdate()->create([
+                                                        'product_id' => $id,
+                                                        'size' => $size['size'],
+                                                        'weight' => $size['weight'],
+                                                        'stock' => $size['stock'],
+                                                        'sell_price' => $size['sell_price'],
+                                                        'created_by' => Auth::user()->id,
+                                                        'updated_by' => Auth::user()->id,
+                                                    ]);
                                                 }
 
                                                 /**
-                                                 * Validation Stock Product 
+                                                 * Validation Stock Product
                                                  */
                                                 if (intval($size['stock']) > 0) {
                                                     if (isset($size['capital_price'])) {
@@ -670,17 +649,15 @@ class ProductController extends Controller
                                                  * Validation Create New Product Size Record
                                                  */
                                                 if ($product_size) {
-
                                                     /**
                                                      * Create Product Discount Record
                                                      */
-                                                    $product_discount = Discount::lockforUpdate()
-                                                        ->create([
-                                                            'product_size_id' => $product_size->id,
-                                                            'percentage' => $size['percentage'],
-                                                            'created_by' => Auth::user()->id,
-                                                            'updated_by' => Auth::user()->id,
-                                                        ]);
+                                                    $product_discount = Discount::lockforUpdate()->create([
+                                                        'product_size_id' => $product_size->id,
+                                                        'percentage' => $size['percentage'],
+                                                        'created_by' => Auth::user()->id,
+                                                        'updated_by' => Auth::user()->id,
+                                                    ]);
 
                                                     /**
                                                      * Validation Create Product Discount Record
@@ -690,14 +667,20 @@ class ProductController extends Controller
                                                          * Failed Store Record
                                                          */
                                                         DB::rollBack();
-                                                        return redirect()->back()->with(['failed' => 'Failed Store Product Discount'])->withInput();
+                                                        return redirect()
+                                                            ->back()
+                                                            ->with(['failed' => 'Failed Store Product Discount'])
+                                                            ->withInput();
                                                     }
                                                 } else {
                                                     /**
                                                      * Failed Store Record
                                                      */
                                                     DB::rollBack();
-                                                    return redirect()->back()->with(['failed' => 'Failed Store Product Size'])->withInput();
+                                                    return redirect()
+                                                        ->back()
+                                                        ->with(['failed' => 'Failed Store Product Size'])
+                                                        ->withInput();
                                                 }
                                             }
 
@@ -708,50 +691,60 @@ class ProductController extends Controller
                                                 /**
                                                  * Update Product with Status
                                                  */
-                                                $product_status_update = $product
-                                                    ->update([
-                                                        'status' => 1
-                                                    ]);
+                                                $product_status_update = $product->update([
+                                                    'status' => 1,
+                                                ]);
 
                                                 /**
                                                  * Validation Update Product Status Record
                                                  */
                                                 if ($product_status_update) {
                                                     DB::commit();
-                                                    return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                                    return redirect()
+                                                        ->route('product.index')
+                                                        ->with(['success' => 'Successfully Update Product']);
                                                 } else {
                                                     /**
                                                      * Failed Store Record
                                                      */
                                                     DB::rollBack();
-                                                    return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                                                    return redirect()
+                                                        ->back()
+                                                        ->with(['failed' => 'Failed Update Status Product'])
+                                                        ->withInput();
                                                 }
                                             } else {
                                                 if (count($array_inactive_status) == count($request->product_size) && $product->status == 1) {
                                                     /**
                                                      * Update Product with Status
                                                      */
-                                                    $product_status_update = $product
-                                                        ->update([
-                                                            'status' => 0
-                                                        ]);
+                                                    $product_status_update = $product->update([
+                                                        'status' => 0,
+                                                    ]);
 
                                                     /**
                                                      * Validation Update Product Status Record
                                                      */
                                                     if ($product_status_update) {
                                                         DB::commit();
-                                                        return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                                        return redirect()
+                                                            ->route('product.index')
+                                                            ->with(['success' => 'Successfully Update Product']);
                                                     } else {
                                                         /**
                                                          * Failed Store Record
                                                          */
                                                         DB::rollBack();
-                                                        return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                                                        return redirect()
+                                                            ->back()
+                                                            ->with(['failed' => 'Failed Update Status Product'])
+                                                            ->withInput();
                                                     }
                                                 } else {
                                                     DB::commit();
-                                                    return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                                    return redirect()
+                                                        ->route('product.index')
+                                                        ->with(['success' => 'Successfully Update Product']);
                                                 }
                                             }
                                         } else {
@@ -759,28 +752,40 @@ class ProductController extends Controller
                                              * Failed Store Record
                                              */
                                             DB::rollBack();
-                                            return redirect()->back()->with(['failed' => 'Failed Update Store Product'])->withInput();
+                                            return redirect()
+                                                ->back()
+                                                ->with(['failed' => 'Failed Update Store Product'])
+                                                ->withInput();
                                         }
                                     } else {
                                         /**
                                          * Failed Store Record
                                          */
                                         DB::rollBack();
-                                        return redirect()->back()->with(['failed' => 'Failed Update Store Product'])->withInput();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Failed Update Store Product'])
+                                            ->withInput();
                                     }
                                 } else {
                                     /**
                                      * Failed Store Record
                                      */
                                     DB::rollBack();
-                                    return redirect()->back()->with(['failed' => 'Failed Update Picture Product'])->withInput();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Update Picture Product'])
+                                        ->withInput();
                                 }
                             } else {
                                 /**
                                  * Failed Store Record
                                  */
                                 DB::rollBack();
-                                return redirect()->back()->with(['failed' => 'Failed Upload Product'])->withInput();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Failed Upload Product'])
+                                    ->withInput();
                             }
                         } else {
                             /**
@@ -791,31 +796,27 @@ class ProductController extends Controller
                             /**
                              * Update Last Record of Product Discount
                              */
-                            $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)
-                                ->update([
-                                    'deleted_by' => Auth::user()->id,
-                                    'deleted_at' => date('Y-m-d H:i:s'),
-                                ]);
+                            $remove_product_discount = Discount::whereIn('product_size_id', $product_size_id_record)->update([
+                                'deleted_by' => Auth::user()->id,
+                                'deleted_at' => date('Y-m-d H:i:s'),
+                            ]);
 
                             /**
                              * Validation Update Last Record of Product Discount
                              */
                             if ($remove_product_discount) {
-
                                 /**
-                                 * Update Last Record of Product Size 
+                                 * Update Last Record of Product Size
                                  */
-                                $remove_product_size = ProductSize::where('product_id', $id)
-                                    ->update([
-                                        'deleted_by' => Auth::user()->id,
-                                        'deleted_at' => date('Y-m-d H:i:s'),
-                                    ]);
+                                $remove_product_size = ProductSize::where('product_id', $id)->update([
+                                    'deleted_by' => Auth::user()->id,
+                                    'deleted_at' => date('Y-m-d H:i:s'),
+                                ]);
 
                                 /**
                                  * Validation Update Last Record of Product Size
                                  */
                                 if ($remove_product_size) {
-
                                     /**
                                      * Check Status of Product Contain 0 Stock
                                      */
@@ -825,7 +826,6 @@ class ProductController extends Controller
                                      * Each of Size Product and Discount
                                      */
                                     foreach ($request->product_size as $size) {
-
                                         /**
                                          * Check Has Capital Price Request
                                          */
@@ -833,35 +833,33 @@ class ProductController extends Controller
                                             /**
                                              * Create New Product Size Record
                                              */
-                                            $product_size = ProductSize::lockforUpdate()
-                                                ->create([
-                                                    'product_id' => $id,
-                                                    'size' => $size['size'],
-                                                    'weight' => $size['weight'],
-                                                    'stock' => $size['stock'],
-                                                    'capital_price' => $size['capital_price'],
-                                                    'sell_price' => $size['sell_price'],
-                                                    'created_by' => Auth::user()->id,
-                                                    'updated_by' => Auth::user()->id,
-                                                ]);
+                                            $product_size = ProductSize::lockforUpdate()->create([
+                                                'product_id' => $id,
+                                                'size' => $size['size'],
+                                                'weight' => $size['weight'],
+                                                'stock' => $size['stock'],
+                                                'capital_price' => $size['capital_price'],
+                                                'sell_price' => $size['sell_price'],
+                                                'created_by' => Auth::user()->id,
+                                                'updated_by' => Auth::user()->id,
+                                            ]);
                                         } else {
                                             /**
                                              * Create New Product Size Record
                                              */
-                                            $product_size = ProductSize::lockforUpdate()
-                                                ->create([
-                                                    'product_id' => $id,
-                                                    'size' => $size['size'],
-                                                    'weight' => $size['weight'],
-                                                    'stock' => $size['stock'],
-                                                    'sell_price' => $size['sell_price'],
-                                                    'created_by' => Auth::user()->id,
-                                                    'updated_by' => Auth::user()->id,
-                                                ]);
+                                            $product_size = ProductSize::lockforUpdate()->create([
+                                                'product_id' => $id,
+                                                'size' => $size['size'],
+                                                'weight' => $size['weight'],
+                                                'stock' => $size['stock'],
+                                                'sell_price' => $size['sell_price'],
+                                                'created_by' => Auth::user()->id,
+                                                'updated_by' => Auth::user()->id,
+                                            ]);
                                         }
 
                                         /**
-                                         * Validation Stock Product 
+                                         * Validation Stock Product
                                          */
                                         if (intval($size['stock']) > 0) {
                                             if (isset($size['capital_price'])) {
@@ -875,17 +873,15 @@ class ProductController extends Controller
                                          * Validation Create New Product Size Record
                                          */
                                         if ($product_size) {
-
                                             /**
                                              * Create Product Discount Record
                                              */
-                                            $product_discount = Discount::lockforUpdate()
-                                                ->create([
-                                                    'product_size_id' => $product_size->id,
-                                                    'percentage' => $size['percentage'],
-                                                    'created_by' => Auth::user()->id,
-                                                    'updated_by' => Auth::user()->id,
-                                                ]);
+                                            $product_discount = Discount::lockforUpdate()->create([
+                                                'product_size_id' => $product_size->id,
+                                                'percentage' => $size['percentage'],
+                                                'created_by' => Auth::user()->id,
+                                                'updated_by' => Auth::user()->id,
+                                            ]);
 
                                             /**
                                              * Validation Create Product Discount Record
@@ -895,14 +891,20 @@ class ProductController extends Controller
                                                  * Failed Store Record
                                                  */
                                                 DB::rollBack();
-                                                return redirect()->back()->with(['failed' => 'Failed Store Product Discount'])->withInput();
+                                                return redirect()
+                                                    ->back()
+                                                    ->with(['failed' => 'Failed Store Product Discount'])
+                                                    ->withInput();
                                             }
                                         } else {
                                             /**
                                              * Failed Store Record
                                              */
                                             DB::rollBack();
-                                            return redirect()->back()->with(['failed' => 'Failed Store Product Size'])->withInput();
+                                            return redirect()
+                                                ->back()
+                                                ->with(['failed' => 'Failed Store Product Size'])
+                                                ->withInput();
                                         }
                                     }
 
@@ -913,50 +915,60 @@ class ProductController extends Controller
                                         /**
                                          * Update Product with Status
                                          */
-                                        $product_status_update = $product
-                                            ->update([
-                                                'status' => 1
-                                            ]);
+                                        $product_status_update = $product->update([
+                                            'status' => 1,
+                                        ]);
 
                                         /**
                                          * Validation Update Product Status Record
                                          */
                                         if ($product_status_update) {
                                             DB::commit();
-                                            return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                            return redirect()
+                                                ->route('product.index')
+                                                ->with(['success' => 'Successfully Update Product']);
                                         } else {
                                             /**
                                              * Failed Store Record
                                              */
                                             DB::rollBack();
-                                            return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                                            return redirect()
+                                                ->back()
+                                                ->with(['failed' => 'Failed Update Status Product'])
+                                                ->withInput();
                                         }
                                     } else {
                                         if (count($array_inactive_status) == count($request->product_size) && $product->status == 1) {
                                             /**
                                              * Update Product with Status
                                              */
-                                            $product_status_update = $product
-                                                ->update([
-                                                    'status' => 0
-                                                ]);
+                                            $product_status_update = $product->update([
+                                                'status' => 0,
+                                            ]);
 
                                             /**
                                              * Validation Update Product Status Record
                                              */
                                             if ($product_status_update) {
                                                 DB::commit();
-                                                return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                                return redirect()
+                                                    ->route('product.index')
+                                                    ->with(['success' => 'Successfully Update Product']);
                                             } else {
                                                 /**
                                                  * Failed Store Record
                                                  */
                                                 DB::rollBack();
-                                                return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                                                return redirect()
+                                                    ->back()
+                                                    ->with(['failed' => 'Failed Update Status Product'])
+                                                    ->withInput();
                                             }
                                         } else {
                                             DB::commit();
-                                            return redirect()->route('product.index')->with(['success' => 'Successfully Update Product']);
+                                            return redirect()
+                                                ->route('product.index')
+                                                ->with(['success' => 'Successfully Update Product']);
                                         }
                                     }
                                 } else {
@@ -964,14 +976,20 @@ class ProductController extends Controller
                                      * Failed Store Record
                                      */
                                     DB::rollBack();
-                                    return redirect()->back()->with(['failed' => 'Failed Update Store Product'])->withInput();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Update Store Product'])
+                                        ->withInput();
                                 }
                             } else {
                                 /**
                                  * Failed Store Record
                                  */
                                 DB::rollBack();
-                                return redirect()->back()->with(['failed' => 'Failed Update Store Product'])->withInput();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Failed Update Store Product'])
+                                    ->withInput();
                             }
                         }
                     } else {
@@ -979,16 +997,27 @@ class ProductController extends Controller
                          * Failed Store Record
                          */
                         DB::rollBack();
-                        return redirect()->back()->with(['failed' => 'Failed Add Product'])->withInput();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Failed Add Product'])
+                            ->withInput();
                     }
                 } else {
-                    return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Invalid Request!']);
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Name Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Name Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -998,7 +1027,6 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         try {
-
             /**
              * Begin Transaction
              */
@@ -1007,11 +1035,10 @@ class ProductController extends Controller
             /**
              * Update Product Record
              */
-            $product_destroy = Product::where('id', $id)
-                ->update([
-                    'deleted_by' => Auth::user()->id,
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                ]);
+            $product_destroy = Product::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
 
             /**
              * Validation Update Product Record
@@ -1020,7 +1047,6 @@ class ProductController extends Controller
                 DB::commit();
                 session()->flash('success', 'Product Successfully Deleted');
             } else {
-
                 /**
                  * Failed Store Record
                  */

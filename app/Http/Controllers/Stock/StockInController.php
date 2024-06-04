@@ -462,7 +462,7 @@ class StockInController extends Controller
             ]);
 
             /**
-             * Validation Update Product Record
+             * Validation Update Stock In Record
              */
             if ($stock_in_destroy) {
                 DB::commit();

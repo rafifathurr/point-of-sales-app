@@ -3,130 +3,47 @@
     <div class="content-wrapper">
         <div class="row">
             <div class="col-md-12 grid-margin transparent">
-                <div class="card">
+                <div class="card px-3">
                     <div class="card-body">
-                        <p class="card-title">Today Statistics</p>
+                        <h3 class="py-3"><b>Analysis and Statistic</b></h3>
                         <div class="row">
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-tale">
                                     <div class="card-body">
-                                        <p class="mb-4 text-bold">Total Income</p>
-                                        <p class="fs-30 mb-2">4006</p>
-                                        <p>10.00% (30 days)</p>
+                                        <h4 class="mb-4 text-bold">Total Income</h4>
+                                        <span class="text-right">
+                                            <p class="fs-30 mb-2" id="total_income">Rp. {{ number_format($dashboard['total_income'], 0, ',', '.') }} ,-</p>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-dark-blue">
                                     <div class="card-body">
-                                        <p class="mb-4">Total Bookings</p>
-                                        <p class="fs-30 mb-2">61344</p>
-                                        <p>22.00% (30 days)</p>
+                                        <h4 class="mb-4 text-bold">Total Profit</h4>
+                                        <span class="text-right">
+                                            <p class="fs-30 mb-2" id="total_profit">Rp. {{ number_format($dashboard['total_profit'], 0, ',', '.') }} ,-</p>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-light-blue">
                                     <div class="card-body">
-                                        <p class="mb-4">Number of Meetings</p>
-                                        <p class="fs-30 mb-2">34040</p>
-                                        <p>2.00% (30 days)</p>
+                                        <h4 class="mb-4 text-bold">Total Sales Order</h4>
+                                        <span class="text-right">
+                                            <p class="fs-30 mb-2" id="total_sales_order">{{ $dashboard['total_profit'] }}</p>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-light-danger">
                                     <div class="card-body">
-                                        <p class="mb-4">Number of Clients</p>
-                                        <p class="fs-30 mb-2">47033</p>
-                                        <p>0.22% (30 days)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row p-3">
-                            <div class="col-md-6">
-                                <div class="d-flex flex-wrap mb-5">
-                                    <div class="mr-5 mt-3">
-                                        <p class="text-muted">Order value</p>
-                                        <h3 class="text-primary fs-30 font-weight-medium">
-                                            12.3k
-                                        </h3>
-                                    </div>
-                                    <div class="mr-5 mt-3">
-                                        <p class="text-muted">Orders</p>
-                                        <h3 class="text-primary fs-30 font-weight-medium">
-                                            14k
-                                        </h3>
-                                    </div>
-                                    <div class="mr-5 mt-3">
-                                        <p class="text-muted">Users</p>
-                                        <h3 class="text-primary fs-30 font-weight-medium">
-                                            71.56%
-                                        </h3>
-                                    </div>
-                                    <div class="mt-3">
-                                        <p class="text-muted">Downloads</p>
-                                        <h3 class="text-primary fs-30 font-weight-medium">
-                                            34040
-                                        </h3>
-                                    </div>
-                                </div>
-                                <canvas id="order-chart"></canvas>
-                            </div>
-                            <div class="col-md-6">
-                                <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
-                                <canvas id="sales-chart"></canvas>
-                            </div>
-                        </div>
-                        <div class="row float-right mt-3">
-                            <div class="col-md-12">
-                                <a href=""><b>View More</b></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 grid-margin transparent">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">Sales Order Statistics</p>
-                        <div class="row">
-                            <div class="col-md-3 stretch-card transparent">
-                                <div class="card card-tale">
-                                    <div class="card-body">
-                                        <p class="mb-4 text-bold">Total Income</p>
-                                        <p class="fs-30 mb-2">4006</p>
-                                        <p>10.00% (30 days)</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 stretch-card transparent">
-                                <div class="card card-dark-blue">
-                                    <div class="card-body">
-                                        <p class="mb-4">Total Bookings</p>
-                                        <p class="fs-30 mb-2">61344</p>
-                                        <p>22.00% (30 days)</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 stretch-card transparent">
-                                <div class="card card-light-blue">
-                                    <div class="card-body">
-                                        <p class="mb-4">Number of Meetings</p>
-                                        <p class="fs-30 mb-2">34040</p>
-                                        <p>2.00% (30 days)</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 stretch-card transparent">
-                                <div class="card card-light-danger">
-                                    <div class="card-body">
-                                        <p class="mb-4">Number of Clients</p>
-                                        <p class="fs-30 mb-2">47033</p>
-                                        <p>0.22% (30 days)</p>
+                                        <h4 class="mb-4 text-bold">Total Products Sold</h4>
+                                        <span class="text-right">
+                                            <p class="fs-30 mb-2" id="total_product_sold">{{ $dashboard['total_product_sold'] }}</p>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
