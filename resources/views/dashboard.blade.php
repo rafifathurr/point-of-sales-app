@@ -10,9 +10,9 @@
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-tale">
                                     <div class="card-body">
-                                        <h4 class="mb-4 text-bold">Total Income</h4>
+                                        <h5 class="mb-4 text-bold">Total Income</h5>
                                         <span class="text-right">
-                                            <p class="fs-30 mb-2" id="total_income">Rp. {{ number_format($dashboard['total_income'], 0, ',', '.') }} ,-</p>
+                                            <h6 class="mb-2" id="total_income">Rp. {{ number_format($dashboard['total_income'], 0, ',', '.') }} ,-</h6>
                                         </span>
                                     </div>
                                 </div>
@@ -20,9 +20,9 @@
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-dark-blue">
                                     <div class="card-body">
-                                        <h4 class="mb-4 text-bold">Total Profit</h4>
+                                        <h5 class="mb-4 text-bold">Total Profit</h5>
                                         <span class="text-right">
-                                            <p class="fs-30 mb-2" id="total_profit">Rp. {{ number_format($dashboard['total_profit'], 0, ',', '.') }} ,-</p>
+                                            <h6 class="mb-2" id="total_profit">Rp. {{ number_format($dashboard['total_profit'], 0, ',', '.') }} ,-</h6>
                                         </span>
                                     </div>
                                 </div>
@@ -30,9 +30,9 @@
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-light-blue">
                                     <div class="card-body">
-                                        <h4 class="mb-4 text-bold">Total Sales Order</h4>
+                                        <h5 class="mb-4 text-bold">Total Sales Order</h5>
                                         <span class="text-right">
-                                            <p class="fs-30 mb-2" id="total_sales_order">{{ $dashboard['total_profit'] }}</p>
+                                            <h6 class="mb-2" id="total_sales_order">{{ $dashboard['total_sales_order'] }}</h6>
                                         </span>
                                     </div>
                                 </div>
@@ -40,9 +40,9 @@
                             <div class="col-md-3 stretch-card transparent">
                                 <div class="card card-light-danger">
                                     <div class="card-body">
-                                        <h4 class="mb-4 text-bold">Total Products Sold</h4>
+                                        <h5 class="mb-4 text-bold">Total Products Sold</h5>
                                         <span class="text-right">
-                                            <p class="fs-30 mb-2" id="total_product_sold">{{ $dashboard['total_product_sold'] }}</p>
+                                            <h6 class="mb-2" id="total_product_sold">{{ $dashboard['total_product_sold'] }}</h6>
                                         </span>
                                     </div>
                                 </div>
