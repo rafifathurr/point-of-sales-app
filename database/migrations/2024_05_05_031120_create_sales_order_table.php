@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sales_order', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->integer('id')->autoIncrement();
-            $table->char('invoice_number', 10)->unique();
+            $table->char('invoice_number', 20)->unique();
             $table->integer('customer_id')->nullable();
             $table->integer('payment_method_id');
             $table->tinyInteger('type')->comment('0 as Offline and 1 as Online');
