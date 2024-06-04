@@ -28,7 +28,7 @@ class AuthController extends Controller
 
             $request->validate([
                 $field => 'required',
-                'password' => 'required'
+                'password' => 'required',
             ]);
 
             $user = User::where($field, $email_or_username)->first();
@@ -40,10 +40,16 @@ class AuthController extends Controller
                     $intended_url = session()->pull('url.intended', route('home'));
                     return redirect()->to($intended_url);
                 } else {
-                    return redirect()->back()->withErrors(['username' => 'These credentials do not match our records.'])->withInput();
+                    return redirect()
+                        ->back()
+                        ->withErrors(['username' => 'These credentials do not match our records.'])
+                        ->withInput();
                 }
             } else {
-                return redirect()->back()->withErrors(['username' => 'These credentials do not match our records.'])->withInput();
+                return redirect()
+                    ->back()
+                    ->withErrors(['username' => 'These credentials do not match our records.'])
+                    ->withInput();
             }
         } catch (\Throwable $th) {
             throw $th;

@@ -41,9 +41,7 @@ class CategoryProductController extends Controller
         /**
          * Get All Category Product
          */
-        $category_product = CategoryProduct::whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+        $category_product = CategoryProduct::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
         /**
          * Datatable Configuration
@@ -71,7 +69,6 @@ class CategoryProductController extends Controller
     public function store(Request $request)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -91,7 +88,6 @@ class CategoryProductController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($name_check)) {
-
                 /**
                  * Begin Transaction
                  */
@@ -100,32 +96,42 @@ class CategoryProductController extends Controller
                 /**
                  * Create Category Product Record
                  */
-                $category_product = CategoryProduct::lockforUpdate()
-                    ->create([
-                        'name' => $request->name,
-                        'description' => $request->description,
-                        'created_by' => Auth::user()->id,
-                        'updated_by' => Auth::user()->id,
-                    ]);
+                $category_product = CategoryProduct::lockforUpdate()->create([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
 
                 /**
                  * Validation Create Category Product Record
                  */
                 if ($category_product) {
                     DB::commit();
-                    return redirect()->route('category-product.index')->with(['success' => 'Successfully Add Category Product']);
+                    return redirect()
+                        ->route('category-product.index')
+                        ->with(['success' => 'Successfully Add Category Product']);
                 } else {
                     /**
                      * Failed Store Record
                      */
                     DB::rollBack();
-                    return redirect()->back()->with(['failed' => 'Failed Add Category Product'])->withInput();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Failed Add Category Product'])
+                        ->withInput();
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Name Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Name Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -135,7 +141,6 @@ class CategoryProductController extends Controller
     public function show(string $id)
     {
         try {
-
             /**
              * Get Category Product Record from id
              */
@@ -147,10 +152,14 @@ class CategoryProductController extends Controller
             if (!is_null($category_product)) {
                 return view('category_product.detail', compact('category_product'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -160,7 +169,6 @@ class CategoryProductController extends Controller
     public function edit(string $id)
     {
         try {
-
             /**
              * Get Category Product Record from id
              */
@@ -172,10 +180,14 @@ class CategoryProductController extends Controller
             if (!is_null($category_product)) {
                 return view('category_product.edit', compact('category_product'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -185,7 +197,6 @@ class CategoryProductController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -206,7 +217,6 @@ class CategoryProductController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($name_check)) {
-
                 /**
                  * Get Category Product from id
                  */
@@ -216,7 +226,6 @@ class CategoryProductController extends Controller
                  * Validation Category Product id
                  */
                 if (!is_null($category_product)) {
-
                     /**
                      * Begin Transaction
                      */
@@ -225,35 +234,46 @@ class CategoryProductController extends Controller
                     /**
                      * Update Category Product Record
                      */
-                    $category_product_update = CategoryProduct::where('id', $id)
-                        ->update([
-                            'name' => $request->name,
-                            'description' => $request->description,
-                            'updated_by' => Auth::user()->id,
-                        ]);
+                    $category_product_update = CategoryProduct::where('id', $id)->update([
+                        'name' => $request->name,
+                        'description' => $request->description,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                     /**
                      * Validation Update Category Product Record
                      */
                     if ($category_product_update) {
                         DB::commit();
-                        return redirect()->route('category-product.index')->with(['success' => 'Successfully Update Category Product']);
+                        return redirect()
+                            ->route('category-product.index')
+                            ->with(['success' => 'Successfully Update Category Product']);
                     } else {
-
                         /**
                          * Failed Store Record
                          */
                         DB::rollBack();
-                        return redirect()->back()->with(['failed' => 'Failed Update Category Product'])->withInput();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Failed Update Category Product'])
+                            ->withInput();
                     }
                 } else {
-                    return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Invalid Request!']);
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Name Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Name Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -263,7 +283,6 @@ class CategoryProductController extends Controller
     public function destroy(string $id)
     {
         try {
-
             /**
              * Begin Transaction
              */
@@ -272,11 +291,10 @@ class CategoryProductController extends Controller
             /**
              * Update Category Product Record
              */
-            $category_product_destroy = CategoryProduct::where('id', $id)
-                ->update([
-                    'deleted_by' => Auth::user()->id,
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                ]);
+            $category_product_destroy = CategoryProduct::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
 
             /**
              * Validation Update Category Product Record
@@ -285,7 +303,6 @@ class CategoryProductController extends Controller
                 DB::commit();
                 session()->flash('success', 'Category Product Successfully Deleted');
             } else {
-
                 /**
                  * Failed Store Record
                  */

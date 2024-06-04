@@ -94,9 +94,7 @@ class StockOutController extends Controller
         /**
          * Get All Stock Out
          */
-        $stock_out = StockInOut::with([
-            'productSize.product'
-        ])
+        $stock_out = StockInOut::with(['productSize.product'])
             ->where('type', 1)
             ->whereNull('deleted_by')
             ->whereNull('deleted_at')
@@ -108,14 +106,12 @@ class StockOutController extends Controller
         $dataTable = DataTables::of($stock_out)
             ->addIndexColumn()
             ->addColumn('product', function ($data) {
-
                 /**
                  * Return Relation Product Size and Product
                  */
                 return $data->productSize->product->name . ' - ' . $data->productSize->size;
             })
             ->addColumn('date', function ($data) {
-
                 /**
                  * Return Format Date
                  */
@@ -151,7 +147,6 @@ class StockOutController extends Controller
     public function store(Request $request)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -169,22 +164,20 @@ class StockOutController extends Controller
             /**
              * Create Stock Out Record
              */
-            $stock_out = StockInOut::lockforUpdate()
-                ->create([
-                    'product_size_id' => $request->product_size,
-                    'qty' => $request->qty,
-                    'type' => 1,
-                    'date' => $request->date,
-                    'description' => $request->description,
-                    'created_by' => Auth::user()->id,
-                    'updated_by' => Auth::user()->id,
-                ]);
+            $stock_out = StockInOut::lockforUpdate()->create([
+                'product_size_id' => $request->product_size,
+                'qty' => $request->qty,
+                'type' => 1,
+                'date' => $request->date,
+                'description' => $request->description,
+                'created_by' => Auth::user()->id,
+                'updated_by' => Auth::user()->id,
+            ]);
 
             /**
              * Validation Create Stock Out Record
              */
             if ($stock_out) {
-
                 /**
                  * Check Last Stock
                  */
@@ -209,68 +202,72 @@ class StockOutController extends Controller
                 $stock_out_result = intval($product_size_stock_record->stock) - intval($request->qty);
 
                 /**
-                 * Update Stock of Product 
+                 * Update Stock of Product
                  */
-                $product_size_update = ProductSize::where('id', $stock_out->product_size_id)
-                    ->update([
-                        'stock' => $stock_out_result,
-                        'updated_by' => Auth::user()->id,
-                    ]);
+                $product_size_update = ProductSize::where('id', $stock_out->product_size_id)->update([
+                    'stock' => $stock_out_result,
+                    'updated_by' => Auth::user()->id,
+                ]);
 
                 /**
                  * Validation Update Stock of Product
                  */
                 if ($product_size_update) {
-
                     /**
                      * Validation Status and Stock of Product
                      */
                     if ($product_size_stock_record->product->status == 1 && empty($has_stock_product_record) && $stock_out_result == 0) {
-
                         /**
-                         * Update Status of Product 
+                         * Update Status of Product
                          */
-                        $product_status_update = Product::where('id', $product_size_stock_record->product_id)
-                            ->update([
-                                'status' => 0,
-                                'updated_by' => Auth::user()->id,
-                            ]);
+                        $product_status_update = Product::where('id', $product_size_stock_record->product_id)->update([
+                            'status' => 0,
+                            'updated_by' => Auth::user()->id,
+                        ]);
 
                         /**
                          * Validation Update Status of Product
                          */
                         if ($product_status_update) {
                             DB::commit();
-                            return redirect()->route('stock-out.index')->with(['success' => 'Successfully Add Stock Out']);
+                            return redirect()
+                                ->route('stock-out.index')
+                                ->with(['success' => 'Successfully Add Stock Out']);
                         } else {
                             /**
                              * Failed Store Record
                              */
                             DB::rollBack();
-                            return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Failed Update Status Product'])
+                                ->withInput();
                         }
                     } else {
-                        
                         /**
-                         * Update of Product 
+                         * Update of Product
                          */
-                        $product_update = Product::where('id', $product_size_stock_record->product_id)
-                            ->update([
-                                'updated_by' => Auth::user()->id,
-                            ]);
+                        $product_update = Product::where('id', $product_size_stock_record->product_id)->update([
+                            'updated_by' => Auth::user()->id,
+                        ]);
 
                         /**
                          * Validation Update of Product
                          */
                         if ($product_update) {
                             DB::commit();
-                            return redirect()->route('stock-out.index')->with(['success' => 'Successfully Add Stock Out']);
+                            return redirect()
+                                ->route('stock-out.index')
+                                ->with(['success' => 'Successfully Add Stock Out']);
                         } else {
                             /**
                              * Failed Store Record
                              */
                             DB::rollBack();
-                            return redirect()->back()->with(['failed' => 'Failed Update Status Product'])->withInput();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Failed Update Status Product'])
+                                ->withInput();
                         }
                     }
                 } else {
@@ -278,17 +275,26 @@ class StockOutController extends Controller
                      * Failed Store Record
                      */
                     DB::rollBack();
-                    return redirect()->back()->with(['failed' => 'Failed Update Stock Product'])->withInput();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Failed Update Stock Product'])
+                        ->withInput();
                 }
             } else {
                 /**
                  * Failed Store Record
                  */
                 DB::rollBack();
-                return redirect()->back()->with(['failed' => 'Failed Add Stock Out'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Failed Add Stock Out'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -298,22 +304,15 @@ class StockOutController extends Controller
     public function show(string $id)
     {
         try {
-
             /**
              * Get Stock Out Record from id
              */
-            $stock = StockInOut::with([
-                'productSize.product',
-                'createdBy',
-                'updatedBy',
-            ])
-                ->find($id);
+            $stock = StockInOut::with(['productSize.product', 'createdBy', 'updatedBy'])->find($id);
 
             /**
              * Validation Product id
              */
             if (!is_null($stock)) {
-
                 /**
                  * Index Route
                  */
@@ -326,10 +325,14 @@ class StockOutController extends Controller
 
                 return view('stock.detail', compact('stock', 'index_route', 'title'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -339,22 +342,15 @@ class StockOutController extends Controller
     public function edit(string $id)
     {
         try {
-
             /**
              * Get Stock Out Record from id
              */
-            $stock = StockInOut::with([
-                'productSize.product',
-                'createdBy',
-                'updatedBy',
-            ])
-                ->find($id);
+            $stock = StockInOut::with(['productSize.product', 'createdBy', 'updatedBy'])->find($id);
 
             /**
              * Validation Stock Out id
              */
             if (!is_null($stock)) {
-
                 /**
                  * Get All Product
                  */
@@ -380,10 +376,14 @@ class StockOutController extends Controller
 
                 return view('stock.edit', compact('stock', 'product', 'update_route', 'index_route', 'title'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -393,7 +393,6 @@ class StockOutController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -411,30 +410,37 @@ class StockOutController extends Controller
             /**
              * Update Stock Out Record
              */
-            $stock_out_update = StockInOut::where('id', $id)
-                ->update([
-                    'product_size_id' => $request->product_size,
-                    'qty' => $request->qty,
-                    'date' => $request->date,
-                    'description' => $request->description,
-                    'updated_by' => Auth::user()->id,
-                ]);
+            $stock_out_update = StockInOut::where('id', $id)->update([
+                'product_size_id' => $request->product_size,
+                'qty' => $request->qty,
+                'date' => $request->date,
+                'description' => $request->description,
+                'updated_by' => Auth::user()->id,
+            ]);
 
             /**
              * Validation Update Stock Out Record
              */
             if ($stock_out_update) {
                 DB::commit();
-                return redirect()->route('stock-out.index')->with(['success' => 'Successfully Update Stock Out']);
+                return redirect()
+                    ->route('stock-out.index')
+                    ->with(['success' => 'Successfully Update Stock Out']);
             } else {
                 /**
                  * Failed Store Record
                  */
                 DB::rollBack();
-                return redirect()->back()->with(['failed' => 'Failed Add Stock Out'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Failed Add Stock Out'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -444,7 +450,6 @@ class StockOutController extends Controller
     public function destroy(string $id)
     {
         try {
-
             /**
              * Begin Transaction
              */
@@ -453,11 +458,10 @@ class StockOutController extends Controller
             /**
              * Update Stock Out Record
              */
-            $stock_out_destroy = StockInOut::where('id', $id)
-                ->update([
-                    'deleted_by' => Auth::user()->id,
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                ]);
+            $stock_out_destroy = StockInOut::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
 
             /**
              * Validation Update Product Record
@@ -466,7 +470,6 @@ class StockOutController extends Controller
                 DB::commit();
                 session()->flash('success', 'Stock Out Successfully Deleted');
             } else {
-
                 /**
                  * Failed Store Record
                  */

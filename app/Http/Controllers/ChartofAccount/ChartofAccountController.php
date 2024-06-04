@@ -43,9 +43,7 @@ class ChartofAccountController extends Controller
         /**
          * Get All Chart of Account
          */
-        $stock_in = ChartofAccount::with([
-            'createdBy'
-        ])
+        $stock_in = ChartofAccount::with(['createdBy'])
             ->whereNull('deleted_by')
             ->whereNull('deleted_at')
             ->get();
@@ -56,14 +54,12 @@ class ChartofAccountController extends Controller
         $dataTable = DataTables::of($stock_in)
             ->addIndexColumn()
             ->addColumn('date', function ($data) {
-
                 /**
                  * Return Format Date & Time
                  */
                 return date('d M Y', strtotime($data->date));
             })
             ->addColumn('type', function ($data) {
-
                 /**
                  * Return Type
                  */

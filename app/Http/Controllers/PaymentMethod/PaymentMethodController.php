@@ -47,9 +47,7 @@ class PaymentMethodController extends Controller
         /**
          * Get All Payment Method
          */
-        $payment_method = PaymentMethod::whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+        $payment_method = PaymentMethod::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
         /**
          * Datatable Configuration
@@ -83,7 +81,6 @@ class PaymentMethodController extends Controller
     public function store(Request $request)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -99,16 +96,12 @@ class PaymentMethodController extends Controller
             /**
              * Validation Unique Field Record
              */
-            $slug_name_check = PaymentMethod::whereNull('deleted_by')
-                ->whereNull('deleted_at')
-                ->where('slug', $slug_name)
-                ->first();
+            $slug_name_check = PaymentMethod::whereNull('deleted_by')->whereNull('deleted_at')->where('slug', $slug_name)->first();
 
             /**
              * Validation Unique Field Record
              */
             if (is_null($slug_name_check)) {
-
                 /**
                  * Begin Transaction
                  */
@@ -117,33 +110,43 @@ class PaymentMethodController extends Controller
                 /**
                  * Create Payment Method Record
                  */
-                $payment_method = PaymentMethod::lockforUpdate()
-                    ->create([
-                        'slug' => $slug_name,
-                        'name' => $request->name,
-                        'description' => $request->description,
-                        'created_by' => Auth::user()->id,
-                        'updated_by' => Auth::user()->id,
-                    ]);
+                $payment_method = PaymentMethod::lockforUpdate()->create([
+                    'slug' => $slug_name,
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
 
                 /**
                  * Validation Create Payment Method Record
                  */
                 if ($payment_method) {
                     DB::commit();
-                    return redirect()->route('payment-method.index')->with(['success' => 'Successfully Add Payment Method']);
+                    return redirect()
+                        ->route('payment-method.index')
+                        ->with(['success' => 'Successfully Add Payment Method']);
                 } else {
                     /**
                      * Failed Store Record
                      */
                     DB::rollBack();
-                    return redirect()->back()->with(['failed' => 'Failed Add Payment Method'])->withInput();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Failed Add Payment Method'])
+                        ->withInput();
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Name Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Name Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -153,7 +156,6 @@ class PaymentMethodController extends Controller
     public function show(string $id)
     {
         try {
-
             /**
              * Get Payment Method Record from id
              */
@@ -165,10 +167,14 @@ class PaymentMethodController extends Controller
             if (!is_null($payment_method)) {
                 return view('payment_method.detail', compact('payment_method'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -178,7 +184,6 @@ class PaymentMethodController extends Controller
     public function edit(string $id)
     {
         try {
-
             /**
              * Get Payment Method Record from id
              */
@@ -190,10 +195,14 @@ class PaymentMethodController extends Controller
             if (!is_null($payment_method)) {
                 return view('payment_method.edit', compact('payment_method'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -203,7 +212,6 @@ class PaymentMethodController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -219,17 +227,12 @@ class PaymentMethodController extends Controller
             /**
              * Validation Unique Field Record
              */
-            $slug_name_check = PaymentMethod::whereNull('deleted_by')
-                ->whereNull('deleted_at')
-                ->where('slug', $slug_name)
-                ->where('id', '!=', $id)
-                ->first();
+            $slug_name_check = PaymentMethod::whereNull('deleted_by')->whereNull('deleted_at')->where('slug', $slug_name)->where('id', '!=', $id)->first();
 
             /**
              * Validation Unique Field Record
              */
             if (is_null($slug_name_check)) {
-
                 /**
                  * Get Payment Method Record from id
                  */
@@ -239,7 +242,6 @@ class PaymentMethodController extends Controller
                  * Validation Payment Method id
                  */
                 if (!is_null($payment_method)) {
-
                     /**
                      * Begin Transaction
                      */
@@ -248,36 +250,47 @@ class PaymentMethodController extends Controller
                     /**
                      * Update Payment Method Record
                      */
-                    $payment_method_update = PaymentMethod::where('id', $id)
-                        ->update([
-                            'slug' => $slug_name,
-                            'name' => $request->name,
-                            'description' => $request->description,
-                            'updated_by' => Auth::user()->id,
-                        ]);
+                    $payment_method_update = PaymentMethod::where('id', $id)->update([
+                        'slug' => $slug_name,
+                        'name' => $request->name,
+                        'description' => $request->description,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                     /**
                      * Validation Update Payment Method Record
                      */
                     if ($payment_method_update) {
                         DB::commit();
-                        return redirect()->route('payment-method.index')->with(['success' => 'Successfully Update Payment Method']);
+                        return redirect()
+                            ->route('payment-method.index')
+                            ->with(['success' => 'Successfully Update Payment Method']);
                     } else {
-
                         /**
                          * Failed Store Record
                          */
                         DB::rollBack();
-                        return redirect()->back()->with(['failed' => 'Failed Update Payment Method'])->withInput();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Failed Update Payment Method'])
+                            ->withInput();
                     }
                 } else {
-                    return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Invalid Request!']);
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Name Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Name Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -287,7 +300,6 @@ class PaymentMethodController extends Controller
     public function destroy(string $id)
     {
         try {
-
             /**
              * Begin Transaction
              */
@@ -296,11 +308,10 @@ class PaymentMethodController extends Controller
             /**
              * Update Payment Method Record
              */
-            $payment_method_destroy = PaymentMethod::where('id', $id)
-                ->update([
-                    'deleted_by' => Auth::user()->id,
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                ]);
+            $payment_method_destroy = PaymentMethod::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
 
             /**
              * Validation Update Payment Method Record
@@ -309,7 +320,6 @@ class PaymentMethodController extends Controller
                 DB::commit();
                 session()->flash('success', 'Payment Method Successfully Deleted');
             } else {
-
                 /**
                  * Failed Store Record
                  */
@@ -324,7 +334,7 @@ class PaymentMethodController extends Controller
     /**
      * Config Slug
      */
-    private function slugGenerator(String $str)
+    private function slugGenerator(string $str)
     {
         /**
          * Slug Configuration

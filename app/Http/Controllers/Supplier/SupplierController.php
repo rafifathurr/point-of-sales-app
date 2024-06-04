@@ -47,9 +47,7 @@ class SupplierController extends Controller
         /**
          * Get All Supplier
          */
-        $suppliers = Supplier::whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+        $suppliers = Supplier::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
         /**
          * Datatable Configuration
@@ -83,7 +81,6 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -104,7 +101,6 @@ class SupplierController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($phone_check)) {
-
                 /**
                  * Begin Transaction
                  */
@@ -113,33 +109,43 @@ class SupplierController extends Controller
                 /**
                  * Create Supplier Record
                  */
-                $supplier = Supplier::lockforUpdate()
-                    ->create([
-                        'name' => $request->name,
-                        'phone' => $request->phone,
-                        'address' => $request->address,
-                        'created_by' => Auth::user()->id,
-                        'updated_by' => Auth::user()->id,
-                    ]);
+                $supplier = Supplier::lockforUpdate()->create([
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'address' => $request->address,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
 
                 /**
                  * Validation Create Supplier Record
                  */
                 if ($supplier) {
                     DB::commit();
-                    return redirect()->route('supplier.index')->with(['success' => 'Successfully Add Supplier']);
+                    return redirect()
+                        ->route('supplier.index')
+                        ->with(['success' => 'Successfully Add Supplier']);
                 } else {
                     /**
                      * Failed Store Record
                      */
                     DB::rollBack();
-                    return redirect()->back()->with(['failed' => 'Failed Add Supplier'])->withInput();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Failed Add Supplier'])
+                        ->withInput();
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Phone Number Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Phone Number Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -149,7 +155,6 @@ class SupplierController extends Controller
     public function show(string $id)
     {
         try {
-
             /**
              * Get Supplier Record from id
              */
@@ -161,10 +166,14 @@ class SupplierController extends Controller
             if (!is_null($supplier)) {
                 return view('supplier.detail', compact('supplier'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -174,7 +183,6 @@ class SupplierController extends Controller
     public function edit(string $id)
     {
         try {
-
             /**
              * Get Supplier Record from id
              */
@@ -186,10 +194,14 @@ class SupplierController extends Controller
             if (!is_null($supplier)) {
                 return view('supplier.edit', compact('supplier'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -199,7 +211,6 @@ class SupplierController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -221,7 +232,6 @@ class SupplierController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($phone_check)) {
-
                 /**
                  * Get Supplier Record from id
                  */
@@ -231,7 +241,6 @@ class SupplierController extends Controller
                  * Validation Supplier id
                  */
                 if (!is_null($supplier)) {
-
                     /**
                      * Begin Transaction
                      */
@@ -240,36 +249,47 @@ class SupplierController extends Controller
                     /**
                      * Update Supplier Record
                      */
-                    $supplier_update = Supplier::where('id', $id)
-                        ->update([
-                            'name' => $request->name,
-                            'phone' => $request->phone,
-                            'address' => $request->address,
-                            'updated_by' => Auth::user()->id,
-                        ]);
+                    $supplier_update = Supplier::where('id', $id)->update([
+                        'name' => $request->name,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                     /**
                      * Validation Update Supplier Record
                      */
                     if ($supplier_update) {
                         DB::commit();
-                        return redirect()->route('supplier.index')->with(['success' => 'Successfully Update Supplier']);
+                        return redirect()
+                            ->route('supplier.index')
+                            ->with(['success' => 'Successfully Update Supplier']);
                     } else {
-
                         /**
                          * Failed Store Record
                          */
                         DB::rollBack();
-                        return redirect()->back()->with(['failed' => 'Failed Update Supplier'])->withInput();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Failed Update Supplier'])
+                            ->withInput();
                     }
                 } else {
-                    return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Invalid Request!']);
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Phone Number Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Phone Number Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -279,7 +299,6 @@ class SupplierController extends Controller
     public function destroy(string $id)
     {
         try {
-
             /**
              * Begin Transaction
              */
@@ -288,11 +307,10 @@ class SupplierController extends Controller
             /**
              * Update Supplier Record
              */
-            $supplier_destroy = Supplier::where('id', $id)
-                ->update([
-                    'deleted_by' => Auth::user()->id,
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                ]);
+            $supplier_destroy = Supplier::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
 
             /**
              * Validation Update Supplier Record
@@ -301,7 +319,6 @@ class SupplierController extends Controller
                 DB::commit();
                 session()->flash('success', 'Supplier Successfully Deleted');
             } else {
-
                 /**
                  * Failed Store Record
                  */

@@ -47,9 +47,7 @@ class CustomerController extends Controller
         /**
          * Get All Customer
          */
-        $customers = Customer::whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+        $customers = Customer::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
         /**
          * Datatable Configuration
@@ -83,7 +81,6 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -104,7 +101,6 @@ class CustomerController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($phone_check)) {
-
                 /**
                  * Begin Transaction
                  */
@@ -113,33 +109,43 @@ class CustomerController extends Controller
                 /**
                  * Create Customer Record
                  */
-                $customer = Customer::lockforUpdate()
-                    ->create([
-                        'name' => $request->name,
-                        'phone' => $request->phone,
-                        'address' => $request->address,
-                        'created_by' => Auth::user()->id,
-                        'updated_by' => Auth::user()->id,
-                    ]);
+                $customer = Customer::lockforUpdate()->create([
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'address' => $request->address,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
 
                 /**
                  * Validation Create Customer Record
                  */
                 if ($customer) {
                     DB::commit();
-                    return redirect()->route('customer.index')->with(['success' => 'Successfully Add Customer']);
+                    return redirect()
+                        ->route('customer.index')
+                        ->with(['success' => 'Successfully Add Customer']);
                 } else {
                     /**
                      * Failed Store Record
                      */
                     DB::rollBack();
-                    return redirect()->back()->with(['failed' => 'Failed Add Customer'])->withInput();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Failed Add Customer'])
+                        ->withInput();
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Phone Number Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Phone Number Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -149,7 +155,6 @@ class CustomerController extends Controller
     public function show(string $id)
     {
         try {
-
             /**
              * Get Customer Record from id
              */
@@ -161,10 +166,14 @@ class CustomerController extends Controller
             if (!is_null($customer)) {
                 return view('customer.detail', compact('customer'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -174,7 +183,6 @@ class CustomerController extends Controller
     public function edit(string $id)
     {
         try {
-
             /**
              * Get Customer Record from id
              */
@@ -186,10 +194,14 @@ class CustomerController extends Controller
             if (!is_null($customer)) {
                 return view('customer.edit', compact('customer'));
             } else {
-                return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
         }
     }
 
@@ -199,7 +211,6 @@ class CustomerController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             /**
              * Validation Request Body Variables
              */
@@ -221,7 +232,6 @@ class CustomerController extends Controller
              * Validation Unique Field Record
              */
             if (is_null($phone_check)) {
-
                 /**
                  * Get Customer Record from id
                  */
@@ -231,7 +241,6 @@ class CustomerController extends Controller
                  * Validation Customer id
                  */
                 if (!is_null($customer)) {
-
                     /**
                      * Begin Transaction
                      */
@@ -240,36 +249,47 @@ class CustomerController extends Controller
                     /**
                      * Update Customer Record
                      */
-                    $customer_update = Customer::where('id', $id)
-                        ->update([
-                            'name' => $request->name,
-                            'phone' => $request->phone,
-                            'address' => $request->address,
-                            'updated_by' => Auth::user()->id,
-                        ]);
+                    $customer_update = Customer::where('id', $id)->update([
+                        'name' => $request->name,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'updated_by' => Auth::user()->id,
+                    ]);
 
                     /**
                      * Validation Update Customer Record
                      */
                     if ($customer_update) {
                         DB::commit();
-                        return redirect()->route('customer.index')->with(['success' => 'Successfully Update Customer']);
+                        return redirect()
+                            ->route('customer.index')
+                            ->with(['success' => 'Successfully Update Customer']);
                     } else {
-
                         /**
                          * Failed Store Record
                          */
                         DB::rollBack();
-                        return redirect()->back()->with(['failed' => 'Failed Update Customer'])->withInput();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Failed Update Customer'])
+                            ->withInput();
                     }
                 } else {
-                    return redirect()->back()->with(['failed' => 'Invalid Request!']);
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Invalid Request!']);
                 }
             } else {
-                return redirect()->back()->with(['failed' => 'Phone Number Already Exist'])->withInput();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Phone Number Already Exist'])
+                    ->withInput();
             }
         } catch (Exception $e) {
-            return redirect()->back()->with(['failed' => $e->getMessage()])->withInput();
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -279,7 +299,6 @@ class CustomerController extends Controller
     public function destroy(string $id)
     {
         try {
-
             /**
              * Begin Transaction
              */
@@ -288,11 +307,10 @@ class CustomerController extends Controller
             /**
              * Update Customer Record
              */
-            $customer_destroy = Customer::where('id', $id)
-                ->update([
-                    'deleted_by' => Auth::user()->id,
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                ]);
+            $customer_destroy = Customer::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
 
             /**
              * Validation Update Customer Record
@@ -301,7 +319,6 @@ class CustomerController extends Controller
                 DB::commit();
                 session()->flash('success', 'Customer Successfully Deleted');
             } else {
-
                 /**
                  * Failed Store Record
                  */
