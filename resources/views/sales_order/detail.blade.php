@@ -138,6 +138,9 @@
                             <a href="{{ route('sales-order.index') }}" class="btn btn-sm btn-danger">
                                 Back
                             </a>
+                            <a href="{{ route('sales-order.export', ['id'=>$sales_order->id]) }}" class="btn btn-sm btn-success" target="_blank">
+                                Print
+                            </a>
                         </div>
                     </div>
                 </div>

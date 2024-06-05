@@ -37,7 +37,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Picture</label>
                             <div class="col-sm-9 col-form-label">
-                                <img src="{{ asset($product->picture) }}" alt="" style="border:1px solid black;">
+                                <img width="65%" src="{{ asset($product->picture) }}" alt="" style="border:1px solid black;">
                             </div>
                         </div>
                         <div class="form-group row">
