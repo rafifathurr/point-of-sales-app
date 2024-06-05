@@ -98,12 +98,13 @@
                                             </td>
                                             @if ($show_capital_price)
                                                 <td align="right">
-                                                    Rp. {{ number_format($product_size->capital_price, 0, ',', '.') }}
+                                                    Rp. {{ number_format($product_size->capital_price, 0, ',', '.') }} ,-
                                                 </td>
                                             @endif
                                             <td align="right">
                                                 @if ($product_size->discount->percentage > 0)
-                                                    <s>Rp. {{ number_format($product_size->sell_price, 0, ',', '.') }}</s>
+                                                    <s>Rp. {{ number_format($product_size->sell_price, 0, ',', '.') }}
+                                                        ,-</s>
                                                     @php
                                                         $product_sell_price =
                                                             ($product_size->sell_price *
@@ -111,10 +112,11 @@
                                                             100;
                                                     @endphp
                                                     <span class="ml-2"> Rp.
-                                                        {{ number_format($product_sell_price, 0, ',', '.') }}</span>
+                                                        {{ number_format($product_sell_price, 0, ',', '.') }} ,-</span>
                                                 @else
                                                     <span> Rp.
-                                                        {{ number_format($product_size->sell_price, 0, ',', '.') }}</span>
+                                                        {{ number_format($product_size->sell_price, 0, ',', '.') }}
+                                                        ,-</span>
                                                 @endif
                                             </td>
                                             <td align="center">
