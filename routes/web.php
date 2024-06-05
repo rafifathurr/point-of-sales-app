@@ -47,6 +47,7 @@ Route::group(['middleware' => ['role:super-admin']], function () {
      * Route Dashboard
      */
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::post('dashboard', [DashboardController::class, 'dashboard'])->name('post_dashboard');
 
     /**
      * Route Payment Method Module
