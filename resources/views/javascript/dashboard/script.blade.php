@@ -246,13 +246,15 @@
                 labels: data.days,
                 datasets: [{
                         data: data.stock_in_data,
-                        backgroundColor: '#4747A1',
+                        borderColor: '#57b657',
+                        fill: false,
                         borderWidth: 2,
                         label: "Stock In"
                     },
                     {
                         data: data.stock_out_data,
-                        backgroundColor: '#F09397',
+                        borderColor: '#ff4747',
+                        fill: false,
                         borderWidth: 2,
                         label: "Stock Out"
                     }
@@ -317,7 +319,7 @@
             }
             var revenueChartCanvas = $("#stock-chart").get(0).getContext("2d");
             var revenueChart = new Chart(revenueChartCanvas, {
-                type: 'bar',
+                type: 'line',
                 data: areaData,
                 options: areaOptions
             });
@@ -328,14 +330,14 @@
                 labels: data.days,
                 datasets: [{
                         data: data.stock_in_qty_data,
-                        borderColor: '#4747A1',
+                        borderColor: '#57b657',
                         fill: false,
                         borderWidth: 2,
                         label: "Stock In"
                     },
                     {
                         data: data.stock_out_qty_data,
-                        borderColor: '#F09397',
+                        borderColor: '#ff4747',
                         fill: false,
                         borderWidth: 2,
                         label: "Stock Out"
