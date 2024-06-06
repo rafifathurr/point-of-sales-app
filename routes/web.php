@@ -44,10 +44,22 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['middleware' => ['role:super-admin']], function () {
 
     /**
-     * Route Dashboard
+     * Route Dashboard Method Module
      */
-    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::post('dashboard', [DashboardController::class, 'dashboard'])->name('post_dashboard');
+    Route::group(['controller' => DashboardController::class, 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
+        Route::post('sales-order', [DashboardController::class, 'salesOrder'])->name('sales-order');
+        Route::post('product', [DashboardController::class, 'product'])->name('product');
+        Route::post('stock', [DashboardController::class, 'stock'])->name('stock');
+    });
+
+    /**
+     * Route Account Number Module
+     */
+    // Route::group(['controller' => ChartofAccountController::class, 'prefix' => 'account-number', 'as' => 'account-number.'], function () {
+    //     Route::get('datatable', 'dataTable')->name('dataTable');
+    // });
+    // Route::resource('account-number', ChartofAccountController::class)->parameters(['account-number' => 'id']);
 
     /**
      * Route Payment Method Module

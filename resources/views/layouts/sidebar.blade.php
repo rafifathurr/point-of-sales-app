@@ -7,8 +7,8 @@
             </a>
         </li>
         @if (Illuminate\Support\Facades\Auth::user()->hasRole('super-admin'))
-            <li class="nav-item @if (Route::currentRouteName() == 'dashboard') active @endif">
-                <a class="nav-link" href="{{ route('dashboard') }}">
+            <li class="nav-item @if (Route::currentRouteName() == 'dashboard.index') active @endif">
+                <a class="nav-link" href="{{ route('dashboard.index') }}">
                     <i class="mdi mdi-chart-bar menu-icon"></i>
                     <span class="menu-title">Dashboard</span>
                 </a>
