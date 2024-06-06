@@ -246,15 +246,13 @@
                 labels: data.days,
                 datasets: [{
                         data: data.stock_in_data,
-                        borderColor: '#57b657',
-                        fill: false,
+                        backgroundColor: '#57b657',
                         borderWidth: 2,
                         label: "Stock In"
                     },
                     {
                         data: data.stock_out_data,
-                        borderColor: '#ff4747',
-                        fill: false,
+                        backgroundColor: '#ff4747',
                         borderWidth: 2,
                         label: "Stock Out"
                     }
@@ -319,7 +317,7 @@
             }
             var revenueChartCanvas = $("#stock-chart").get(0).getContext("2d");
             var revenueChart = new Chart(revenueChartCanvas, {
-                type: 'line',
+                type: 'bar',
                 data: areaData,
                 options: areaOptions
             });
@@ -330,15 +328,13 @@
                 labels: data.days,
                 datasets: [{
                         data: data.stock_in_qty_data,
-                        borderColor: '#57b657',
-                        fill: false,
+                        backgroundColor: '#57b657',
                         borderWidth: 2,
                         label: "Stock In"
                     },
                     {
                         data: data.stock_out_qty_data,
-                        borderColor: '#ff4747',
-                        fill: false,
+                        backgroundColor: '#ff4747',
                         borderWidth: 2,
                         label: "Stock Out"
                     }
@@ -403,7 +399,7 @@
             }
             var revenueChartCanvas = $("#stock-qty-chart").get(0).getContext("2d");
             var revenueChart = new Chart(revenueChartCanvas, {
-                type: 'line',
+                type: 'bar',
                 data: areaData,
                 options: areaOptions
             });
