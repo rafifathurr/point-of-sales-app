@@ -130,7 +130,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card bg-success text-white">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Stock In</b></h5>
@@ -140,7 +140,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card bg-danger text-white">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Stock Out</b></h5>
@@ -150,7 +150,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card bg-success text-white">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Qty Stock In</b></h5>
@@ -160,7 +160,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card bg-danger text-white">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Qty Stock Out</b></h5>
@@ -224,7 +224,7 @@
                     <div class="card-body">
                         <h4 class="py-3"><b>Product Summary</b></h4>
                         <div class="row">
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card card-dark-blue">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Product</b></h5>
@@ -234,7 +234,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card bg-success text-white">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Active Product</b></h5>
@@ -244,7 +244,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card bg-danger text-white">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Inactive Product</b></h5>
@@ -254,7 +254,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 stretch-card transparent">
+                            <div class="col-md-3 mb-3 stretch-card transparent">
                                 <div class="card card-light-blue">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Category Product</b></h5>
@@ -265,15 +265,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="row p-3">
-                            <div class="col-md-6">
-                                <h4 class="mt-4 mb-4"><b>Statistic Purchase Type</b></h4>
-                                <canvas id="order-chart"></canvas>
-                            </div>
-                            <div class="col-md-6">
-                                <canvas id="sales-chart"></canvas>
-                            </div>
-                        </div> --}}
                     </div>
                 </div>
             </div>
