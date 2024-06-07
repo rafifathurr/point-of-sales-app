@@ -32,24 +32,96 @@
         $('#total_sales_order').html(data.total_sales_order);
         $('#total_product_sold').html(data.total_product_sold);
 
-        if ($("#purchase-type-chart").length) {
-            var areaData = {
+        var areaData = {
+            labels: data.days,
+            datasets: [{
+                    data: data.online_data,
+                    backgroundColor: '#4747A1',
+                    borderWidth: 2,
+                    label: "Online"
+                },
+                {
+                    data: data.offline_data,
+                    backgroundColor: '#F09397',
+                    borderWidth: 2,
+                    label: "Offline"
+                }
+            ]
+        };
+        var areaOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                filler: {
+                    propagate: false
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    ticks: {
+                        display: true,
+                        padding: 10,
+                        fontColor: "#6C7383"
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false,
+                        color: 'transparent',
+                        zeroLineColor: '#eeeeee'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        display: true,
+                        autoSkip: false,
+                        maxRotation: 0,
+                        max: data.total_sales_order,
+                        padding: 18,
+                        fontColor: "#6C7383"
+                    },
+                    gridLines: {
+                        display: true,
+                        color: "#f2f2f2",
+                        drawBorder: false
+                    }
+                }]
+            },
+            legend: {
+                display: true
+            },
+            tooltips: {
+                enabled: true
+            },
+            elements: {
+                line: {
+                    tension: .35
+                },
+                point: {
+                    radius: 0
+                }
+            }
+        }
+        var revenueChartCanvas = $("#purchase-type-chart").get(0).getContext("2d");
+        var revenueChart = new Chart(revenueChartCanvas, {
+            type: 'bar',
+            data: areaData,
+            options: areaOptions
+        });
+
+        var SalesChartCanvas = $("#sales-chart").get(0).getContext("2d");
+        var SalesChart = new Chart(SalesChartCanvas, {
+            type: 'bar',
+            data: {
                 labels: data.days,
                 datasets: [{
-                        data: data.online_data,
-                        backgroundColor: '#4747A1',
-                        borderWidth: 2,
-                        label: "Online"
-                    },
-                    {
-                        data: data.offline_data,
-                        backgroundColor: '#F09397',
-                        borderWidth: 2,
-                        label: "Offline"
-                    }
-                ]
-            };
-            var areaOptions = {
+                    data: data.sales_data,
+                    backgroundColor: '#7978e9',
+                    label: "Total Sales Order"
+                }, ]
+            },
+            options: {
                 responsive: true,
                 maintainAspectRatio: true,
                 plugins: {
@@ -78,8 +150,6 @@
                             display: true,
                             autoSkip: false,
                             maxRotation: 0,
-                            stepSize: 10,
-                            min: 0,
                             max: data.total_sales_order,
                             padding: 18,
                             fontColor: "#6C7383"
@@ -92,7 +162,7 @@
                     }]
                 },
                 legend: {
-                    display: true
+                    display: false
                 },
                 tooltips: {
                     enabled: true
@@ -105,86 +175,8 @@
                         radius: 0
                     }
                 }
-            }
-            var revenueChartCanvas = $("#purchase-type-chart").get(0).getContext("2d");
-            var revenueChart = new Chart(revenueChartCanvas, {
-                type: 'bar',
-                data: areaData,
-                options: areaOptions
-            });
-        }
-
-        if ($("#sales-chart").length) {
-            var SalesChartCanvas = $("#sales-chart").get(0).getContext("2d");
-            var SalesChart = new Chart(SalesChartCanvas, {
-                type: 'bar',
-                data: {
-                    labels: data.days,
-                    datasets: [{
-                        data: data.sales_data,
-                        backgroundColor: '#7978e9',
-                        label: "Total Sales Order"
-                    }, ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        filler: {
-                            propagate: false
-                        }
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            ticks: {
-                                display: true,
-                                padding: 10,
-                                fontColor: "#6C7383"
-                            },
-                            gridLines: {
-                                display: false,
-                                drawBorder: false,
-                                color: 'transparent',
-                                zeroLineColor: '#eeeeee'
-                            }
-                        }],
-                        yAxes: [{
-                            display: true,
-                            ticks: {
-                                display: true,
-                                autoSkip: false,
-                                maxRotation: 0,
-                                stepSize: 10,
-                                min: 0,
-                                max: data.total_sales_order,
-                                padding: 18,
-                                fontColor: "#6C7383"
-                            },
-                            gridLines: {
-                                display: true,
-                                color: "#f2f2f2",
-                                drawBorder: false
-                            }
-                        }]
-                    },
-                    legend: {
-                        display: false
-                    },
-                    tooltips: {
-                        enabled: true
-                    },
-                    elements: {
-                        line: {
-                            tension: .35
-                        },
-                        point: {
-                            radius: 0
-                        }
-                    }
-                },
-            });
-        }
+            },
+        });
     }
 
     function dashboardProduct() {
@@ -293,169 +285,160 @@
         $('#total_qty_stock_in').html(data.total_qty_stock_in);
         $('#total_qty_stock_out').html(data.total_qty_stock_out);
 
-        if ($("#stock-chart").length) {
-            var areaData = {
-                labels: data.days,
-                datasets: [{
-                        data: data.stock_in_data,
-                        backgroundColor: '#57b657',
-                        borderWidth: 2,
-                        label: "Stock In"
-                    },
-                    {
-                        data: data.stock_out_data,
-                        backgroundColor: '#ff4747',
-                        borderWidth: 2,
-                        label: "Stock Out"
-                    }
-                ]
-            };
-            var areaOptions = {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    filler: {
-                        propagate: false
-                    }
+        var areaData = {
+            labels: data.days,
+            datasets: [{
+                    data: data.stock_in_data,
+                    backgroundColor: '#57b657',
+                    borderWidth: 2,
+                    label: "Stock In"
                 },
-                scales: {
-                    xAxes: [{
+                {
+                    data: data.stock_out_data,
+                    backgroundColor: '#ff4747',
+                    borderWidth: 2,
+                    label: "Stock Out"
+                }
+            ]
+        };
+        var areaOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                filler: {
+                    propagate: false
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    ticks: {
                         display: true,
-                        ticks: {
-                            display: true,
-                            padding: 10,
-                            fontColor: "#6C7383"
-                        },
-                        gridLines: {
-                            display: false,
-                            drawBorder: false,
-                            color: 'transparent',
-                            zeroLineColor: '#eeeeee'
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        ticks: {
-                            display: true,
-                            autoSkip: false,
-                            maxRotation: 0,
-                            stepSize: 10,
-                            min: 0,
-                            max: data.total_sales_order,
-                            padding: 18,
-                            fontColor: "#6C7383"
-                        },
-                        gridLines: {
-                            display: true,
-                            color: "#f2f2f2",
-                            drawBorder: false
-                        }
-                    }]
-                },
-                legend: {
-                    display: true
-                },
-                tooltips: {
-                    enabled: true
-                },
-                elements: {
-                    line: {
-                        tension: .35
+                        padding: 10,
+                        fontColor: "#6C7383"
                     },
-                    point: {
-                        radius: 0
+                    gridLines: {
+                        display: false,
+                        drawBorder: false,
+                        color: 'transparent',
+                        zeroLineColor: '#eeeeee'
                     }
+                }],
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        display: true,
+                        autoSkip: false,
+                        maxRotation: 0,
+                        max: data.total_sales_order,
+                        padding: 18,
+                        fontColor: "#6C7383"
+                    },
+                    gridLines: {
+                        display: true,
+                        color: "#f2f2f2",
+                        drawBorder: false
+                    }
+                }]
+            },
+            legend: {
+                display: true
+            },
+            tooltips: {
+                enabled: true
+            },
+            elements: {
+                line: {
+                    tension: .35
+                },
+                point: {
+                    radius: 0
                 }
             }
-            var revenueChartCanvas = $("#stock-chart").get(0).getContext("2d");
-            var revenueChart = new Chart(revenueChartCanvas, {
-                type: 'bar',
-                data: areaData,
-                options: areaOptions
-            });
         }
+        var revenueChartCanvas = $("#stock-chart").get(0).getContext("2d");
+        var revenueChart = new Chart(revenueChartCanvas, {
+            type: 'bar',
+            data: areaData,
+            options: areaOptions
+        });
 
-        if ($("#stock-qty-chart").length) {
-            var areaData = {
-                labels: data.days,
-                datasets: [{
-                        data: data.stock_in_qty_data,
-                        backgroundColor: '#57b657',
-                        borderWidth: 2,
-                        label: "Stock In"
-                    },
-                    {
-                        data: data.stock_out_qty_data,
-                        backgroundColor: '#ff4747',
-                        borderWidth: 2,
-                        label: "Stock Out"
-                    }
-                ]
-            };
-            var areaOptions = {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    filler: {
-                        propagate: false
-                    }
+        var areaData = {
+            labels: data.days,
+            datasets: [{
+                    data: data.stock_in_qty_data,
+                    backgroundColor: '#57b657',
+                    borderWidth: 2,
+                    label: "Stock In"
                 },
-                scales: {
-                    xAxes: [{
+                {
+                    data: data.stock_out_qty_data,
+                    backgroundColor: '#ff4747',
+                    borderWidth: 2,
+                    label: "Stock Out"
+                }
+            ]
+        };
+        var areaOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                filler: {
+                    propagate: false
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    ticks: {
                         display: true,
-                        ticks: {
-                            display: true,
-                            padding: 10,
-                            fontColor: "#6C7383"
-                        },
-                        gridLines: {
-                            display: false,
-                            drawBorder: false,
-                            color: 'transparent',
-                            zeroLineColor: '#eeeeee'
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        ticks: {
-                            display: true,
-                            autoSkip: false,
-                            maxRotation: 0,
-                            stepSize: 100,
-                            min: 0,
-                            max: 500,
-                            padding: 18,
-                            fontColor: "#6C7383"
-                        },
-                        gridLines: {
-                            display: true,
-                            color: "#f2f2f2",
-                            drawBorder: false
-                        }
-                    }]
-                },
-                legend: {
-                    display: true
-                },
-                tooltips: {
-                    enabled: true
-                },
-                elements: {
-                    line: {
-                        tension: .35
+                        padding: 10,
+                        fontColor: "#6C7383"
                     },
-                    point: {
-                        radius: 0
+                    gridLines: {
+                        display: false,
+                        drawBorder: false,
+                        color: 'transparent',
+                        zeroLineColor: '#eeeeee'
                     }
+                }],
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        display: true,
+                        autoSkip: false,
+                        maxRotation: 0,
+                        padding: 18,
+                        fontColor: "#6C7383"
+                    },
+                    gridLines: {
+                        display: true,
+                        color: "#f2f2f2",
+                        drawBorder: false
+                    }
+                }]
+            },
+            legend: {
+                display: true
+            },
+            tooltips: {
+                enabled: true
+            },
+            elements: {
+                line: {
+                    tension: .35
+                },
+                point: {
+                    radius: 0
                 }
             }
-            var revenueChartCanvas = $("#stock-qty-chart").get(0).getContext("2d");
-            var revenueChart = new Chart(revenueChartCanvas, {
-                type: 'bar',
-                data: areaData,
-                options: areaOptions
-            });
         }
+        var revenueChartCanvas = $("#stock-qty-chart").get(0).getContext("2d");
+        var revenueChart = new Chart(revenueChartCanvas, {
+            type: 'bar',
+            data: areaData,
+            options: areaOptions
+        });
     }
 
     function exportStock() {
