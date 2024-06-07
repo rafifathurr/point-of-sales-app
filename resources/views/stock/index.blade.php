@@ -27,10 +27,10 @@
                                             #
                                         </th>
                                         <th>
-                                            Product
+                                            Date
                                         </th>
                                         <th>
-                                            Date
+                                            Product
                                         </th>
                                         <th>
                                             Qty

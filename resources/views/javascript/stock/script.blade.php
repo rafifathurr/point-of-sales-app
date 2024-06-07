@@ -40,11 +40,11 @@
                     searchable: false
                 },
                 {
-                    data: 'product',
+                    data: 'date',
                     defaultContent: '-',
                 },
                 {
-                    data: 'date',
+                    data: 'product',
                     defaultContent: '-',
                 },
                 {
@@ -60,14 +60,14 @@
                 },
             ],
             order: [
-                [2, 'desc']
+                [1, 'desc']
             ]
         });
     }
 
     function getProduct(product) {
         let token = $('meta[name="csrf-token"]').attr('content');
-        
+
         $.post("{{ route('product.getProductSize') }}", {
             _token: token,
             product: product,

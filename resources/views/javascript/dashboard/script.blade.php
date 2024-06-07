@@ -1,4 +1,6 @@
 <script type="text/javascript">
+    let failed = false;
+
     function dashboardSalesOrder() {
         let token = $('meta[name="csrf-token"]').attr('content');
         let year = $('#sales_order_year').val();
@@ -14,11 +16,12 @@
                 year: year,
             },
             success: function(data) {
+                failed = false;
                 salesOrderWidget(data);
             },
             error: function(xhr, error, code) {
-                console.log(xhr, error, code);
-                sweetAlertError(xhr.responseJSON.message);
+                failed = true;
+                // sweetAlertError(xhr.responseJSON.message);
             }
         });
     }
@@ -195,11 +198,12 @@
                 _token: token,
             },
             success: function(data) {
+                failed = false;
                 productWidget(data);
             },
             error: function(xhr, error, code) {
-                console.log(xhr, error, code);
-                sweetAlertError(xhr.responseJSON.message);
+                failed = true;
+                // sweetAlertError(xhr.responseJSON.message);
             }
         });
     }
@@ -226,12 +230,60 @@
                 year: year,
             },
             success: function(data) {
+                failed = false;
                 stockWidget(data);
             },
             error: function(xhr, error, code) {
-                console.log(xhr, error, code);
-                sweetAlertError(xhr.responseJSON.message);
+                failed = true;
+                // sweetAlertError(xhr.responseJSON.message);
             }
+        });
+
+        $('#dt-stock').DataTable({
+            autoWidth: false,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            orderable: false,
+            destroy: true,
+            ajax: {
+                url: '{{ url('dashboard/stock/datatable') }}',
+                type: 'POST',
+                cache: false,
+                data: {
+                    _token: token,
+                    month: month,
+                    year: year,
+                },
+                error: function(xhr, error, code) {
+                    sweetAlertError(xhr.statusText);
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    width: '5%',
+                    searchable: false
+                },
+                {
+                    data: 'date',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'product',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'qty',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'description',
+                    defaultContent: '-',
+                }
+            ],
+            order: [
+                [1, 'desc']
+            ]
         });
     }
 
@@ -404,5 +456,38 @@
                 options: areaOptions
             });
         }
+    }
+
+    function exportStock() {
+        let token = $('meta[name="csrf-token"]').attr('content');
+        let year = $('#stock_year').val();
+        let month = $('#stock_month').val();
+
+        $.ajax({
+            xhrFields: {
+                responseType: 'blob',
+            },
+            url: '{{ url('dashboard/stock/export') }}',
+            type: 'POST',
+            cache: false,
+            data: {
+                _token: token,
+                month: month,
+                year: year,
+            },
+            success: function(data) {
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(data);
+                link.download = 'Report_Stock_' + month + '_' + year + '.xlsx';
+                link.click();
+            },
+            error: function(xhr, error, code) {
+                sweetAlertError(xhr.responseJSON.message);
+            }
+        });
+    }
+
+    if (failed) {
+        sweetAlertError("Network Unstable");
     }
 </script>

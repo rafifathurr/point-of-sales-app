@@ -29,7 +29,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <button class="btn btn-primary" onclick="dashboardSalesOrder()">
+                                    <button class="btn btn-primary" onclick="dashboardSalesOrder()" title="Filter">
                                         Filter
                                     </button>
                                 </div>
@@ -115,7 +115,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <button class="btn btn-primary" onclick="dashboardStock()">
+                                    <button class="btn btn-primary" onclick="dashboardStock()" title="Filter">
                                         Filter
                                     </button>
                                 </div>
@@ -165,23 +165,51 @@
                         </div>
                         <div class="row p-3">
                             <div class="col-md-6">
-                                <h4 class="mt-4 mb-4"><b>Stock In & Out Statistic</b></h4>
+                                <h5 class="my-4"><b>Stock In & Out Statistic</b></h5>
                                 <canvas id="stock-chart"></canvas>
                             </div>
                             <div class="col-md-6">
-                                <h4 class="mt-4 mb-4"><b>Stock In & Out Qty Statistic</b></h4>
+                                <h5 class="my-4"><b>Stock In & Out Qty Statistic</b></h5>
                                 <canvas id="stock-qty-chart"></canvas>
                             </div>
                         </div>
-                        {{-- <div class="row p-3">
-                            <div class="col-md-6">
-                                <h4 class="mt-4 mb-4"><b>Statistic Purchase Type</b></h4>
-                                <canvas id="order-chart"></canvas>
+                        <div class="col-md-12 p-3 mt-3 border-top border-top-1">
+                            <div class="d-flex justify-content-between my-3">
+                                <div class="p-0 my-auto">
+                                    <h5><b>Stock In & Out Report</b></h5>
+                                </div>
+                                <div class="p-0">
+                                    <div class="input-group w-100 mx-auto d-flex">
+                                        <button class="btn btn-success" onclick="exportStock()" title="Export Report">
+                                            Export Report
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <canvas id="sales-chart"></canvas>
+                            <div class="table-responsive">
+                                <table class="table table-bordered datatable" id="dt-stock">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                Date
+                                            </th>
+                                            <th>
+                                                Product
+                                            </th>
+                                            <th>
+                                                Qty
+                                            </th>
+                                            <th>
+                                                Description
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
                 <div class="card px-3 mt-3">

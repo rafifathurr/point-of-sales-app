@@ -51,6 +51,8 @@ Route::group(['middleware' => ['role:super-admin']], function () {
         Route::post('sales-order', [DashboardController::class, 'salesOrder'])->name('sales-order');
         Route::post('product', [DashboardController::class, 'product'])->name('product');
         Route::post('stock', [DashboardController::class, 'stock'])->name('stock');
+        Route::post('stock/datatable', [DashboardController::class, 'stockDataTable'])->name('stock.dataTable');
+        Route::post('stock/export', [DashboardController::class, 'exportStock'])->name('stock.export');
     });
 
     /**

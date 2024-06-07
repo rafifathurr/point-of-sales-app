@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\Stock\StockExport;
 use App\Http\Controllers\Controller;
 use App\Models\Product\CategoryProduct;
 use App\Models\Product\Product;
@@ -11,6 +12,8 @@ use App\Models\SalesOrder\SalesOrderItem;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 
 class DashboardController extends Controller
 {
@@ -208,9 +211,9 @@ class DashboardController extends Controller
                         $stock_in_count_per_day = count(
                             StockInOut::whereNull('deleted_by')
                                 ->whereNull('deleted_at')
-                                ->whereDay('created_at', $day)
-                                ->whereMonth('created_at', $request->month)
-                                ->whereYear('created_at', $request->year)
+                                ->whereDay('date', $day)
+                                ->whereMonth('date', $request->month)
+                                ->whereYear('date', $request->year)
                                 ->where('type', 0)
                                 ->get(),
                         );
@@ -218,26 +221,26 @@ class DashboardController extends Controller
                         $stock_out_count_per_day = count(
                             StockInOut::whereNull('deleted_by')
                                 ->whereNull('deleted_at')
-                                ->whereDay('created_at', $day)
-                                ->whereMonth('created_at', $request->month)
-                                ->whereYear('created_at', $request->year)
+                                ->whereDay('date', $day)
+                                ->whereMonth('date', $request->month)
+                                ->whereYear('date', $request->year)
                                 ->where('type', 1)
                                 ->get(),
                         );
 
                         $stock_in_qty_per_day = StockInOut::whereNull('deleted_by')
                             ->whereNull('deleted_at')
-                            ->whereDay('created_at', $day)
-                            ->whereMonth('created_at', $request->month)
-                            ->whereYear('created_at', $request->year)
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
                             ->where('type', 0)
                             ->sum('qty');
 
                         $stock_out_qty_per_day = StockInOut::whereNull('deleted_by')
                             ->whereNull('deleted_at')
-                            ->whereDay('created_at', $day)
-                            ->whereMonth('created_at', $request->month)
-                            ->whereYear('created_at', $request->year)
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
                             ->where('type', 1)
                             ->sum('qty');
 
@@ -252,9 +255,9 @@ class DashboardController extends Controller
                         $stock_in_count_per_day = count(
                             StockInOut::whereNull('deleted_by')
                                 ->whereNull('deleted_at')
-                                ->whereDay('created_at', $day)
-                                ->whereMonth('created_at', $request->month)
-                                ->whereYear('created_at', $request->year)
+                                ->whereDay('date', $day)
+                                ->whereMonth('date', $request->month)
+                                ->whereYear('date', $request->year)
                                 ->where('type', 0)
                                 ->get(),
                         );
@@ -262,26 +265,26 @@ class DashboardController extends Controller
                         $stock_out_count_per_day = count(
                             StockInOut::whereNull('deleted_by')
                                 ->whereNull('deleted_at')
-                                ->whereDay('created_at', $day)
-                                ->whereMonth('created_at', $request->month)
-                                ->whereYear('created_at', $request->year)
+                                ->whereDay('date', $day)
+                                ->whereMonth('date', $request->month)
+                                ->whereYear('date', $request->year)
                                 ->where('type', 1)
                                 ->get(),
                         );
 
                         $stock_in_qty_per_day = StockInOut::whereNull('deleted_by')
                             ->whereNull('deleted_at')
-                            ->whereDay('created_at', $day)
-                            ->whereMonth('created_at', $request->month)
-                            ->whereYear('created_at', $request->year)
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
                             ->where('type', 0)
                             ->sum('qty');
 
                         $stock_out_qty_per_day = StockInOut::whereNull('deleted_by')
                             ->whereNull('deleted_at')
-                            ->whereDay('created_at', $day)
-                            ->whereMonth('created_at', $request->month)
-                            ->whereYear('created_at', $request->year)
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
                             ->where('type', 1)
                             ->sum('qty');
 
@@ -299,6 +302,90 @@ class DashboardController extends Controller
             }
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
+        }
+    }
+
+    /**
+     * Show datatable of resource.
+     */
+    public function stockDataTable(Request $request)
+    {
+        /**
+         * Validation request
+         */
+        if (!is_null($request->year) && !is_null($request->month)) {
+            /**
+             * Get All Stock
+             */
+            $stock = StockInOut::with(['productSize.product'])
+                ->whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->get();
+
+            /**
+             * Datatable Configuration
+             */
+            $dataTable = DataTables::of($stock)
+                ->addIndexColumn()
+                ->addColumn('product', function ($data) {
+                    /**
+                     * Return Relation Product Size and Product
+                     */
+                    return $data->productSize->product->name . ' - ' . $data->productSize->size;
+                })
+                ->addColumn('date', function ($data) {
+                    /**
+                     * Return Format Date
+                     */
+                    return date('d M Y', strtotime($data->date));
+                })
+                ->addColumn('qty', function ($data) {
+                    if ($data->type == 0) {
+                        return '<span class="text-success">+ ' . $data->qty . ' Pcs</span>';
+                    } else {
+                        return '<span class="text-danger">- ' . $data->qty . ' Pcs</span>';
+                    }
+                })
+                ->only(['product', 'date', 'qty', 'description'])
+                ->rawColumns(['qty'])
+                ->make(true);
+
+            return $dataTable;
+        } else {
+            return response()->json(['message' => 'Invalid Request'], 400);
+        }
+    }
+
+    /**
+     * Export Stock.
+     */
+    public function exportStock(Request $request)
+    {
+        /**
+         * Validation request
+         */
+        if (!is_null($request->year) && !is_null($request->month)) {
+           /**
+             * Get All Stock
+             */
+            $stock = StockInOut::with(['productSize.product'])
+                ->whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->orderBy('date', 'desc')
+                ->get()
+                ->toArray();
+
+            $data['data'] = $stock;
+            $data['month'] =  date('F', mktime(0, 0, 0, $request->month, 10));
+            $data['year'] =  $request->year;
+
+            return Excel::download(new StockExport($data), 'export.xlsx');
+        } else {
+            return response()->json(['message' => 'Invalid Request'], 400);
         }
     }
 
