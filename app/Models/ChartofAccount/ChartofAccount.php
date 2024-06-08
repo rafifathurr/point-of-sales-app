@@ -13,6 +13,10 @@ class ChartofAccount extends Model
     protected $table = 'chart_of_account';
     protected $guarded = [];
 
+    public function accountNumber()
+    {
+        return $this->hasOne(AccountNumber::class, 'id', 'account_number_id');
+    }
     public function createdBy()
     {
         return $this->hasOne(User::class, 'id', 'created_by');
