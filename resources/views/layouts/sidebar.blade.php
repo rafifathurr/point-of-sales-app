@@ -13,11 +13,27 @@
                     <span class="menu-title">Dashboard</span>
                 </a>
             </li>
-            <li class="nav-item @if (Route::currentRouteName() == 'coa.index') active @endif">
-                <a class="nav-link" href="{{ route('coa.index') }}">
+            <li class="nav-item @if (Route::currentRouteName() == 'coa.index' || Route::currentRouteName() == 'account-number.index') active @endif">
+                <a class="nav-link" data-toggle="collapse" href="#coa" aria-expanded="false" aria-controls="stock">
                     <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                     <span class="menu-title">Chart of Account</span>
+                    <i class="menu-arrow"></i>
                 </a>
+                <div class="collapse @if (Route::currentRouteName() == 'coa.index' || Route::currentRouteName() == 'account-number.index') show @endif" id="coa">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link @if (Route::currentRouteName() == 'coa.index') active @endif" href="{{ route('coa.index') }}">
+                                <span class="menu-title">Chart of Account</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @if (Route::currentRouteName() == 'account-number.index') active @endif"
+                                href="{{ route('account-number.index') }}">
+                                Account Number
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item @if (Route::currentRouteName() == 'sales-order.index') active @endif">
                 <a class="nav-link" href="{{ route('sales-order.index') }}">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountNumber\AccountNumberController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ChartofAccount\ChartofAccountController;
 use App\Http\Controllers\Customer\CustomerController;
@@ -58,10 +59,10 @@ Route::group(['middleware' => ['role:super-admin']], function () {
     /**
      * Route Account Number Module
      */
-    // Route::group(['controller' => ChartofAccountController::class, 'prefix' => 'account-number', 'as' => 'account-number.'], function () {
-    //     Route::get('datatable', 'dataTable')->name('dataTable');
-    // });
-    // Route::resource('account-number', ChartofAccountController::class)->parameters(['account-number' => 'id']);
+    Route::group(['controller' => AccountNumberController::class, 'prefix' => 'account-number', 'as' => 'account-number.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('account-number', AccountNumberController::class)->parameters(['account-number' => 'id']);
 
     /**
      * Route Payment Method Module
