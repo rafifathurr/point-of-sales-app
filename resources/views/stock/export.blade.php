@@ -19,6 +19,7 @@
             <tr>
                 <th>No</th>
                 <th>Date</th>
+                <th>Type</th>
                 <th>Product</th>
                 <th>Qty</th>
                 <th>Description</th>
@@ -32,6 +33,9 @@
                     </td>
                     <td>
                         {{ date('d M Y', strtotime($stock_data['date'])) }}
+                    </td>
+                    <td>
+                        {{ $stock_data->type == 0 ? 'Stock In' : 'Stock Out' }}
                     </td>
                     <td>
                         {{ $stock_data['product_size']['product']['name'] . ' - ' . $stock_data['product_size']['size'] }}
