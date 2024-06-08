@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\ChartofAccount;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChartofAccount\AccountNumber;
 use App\Models\ChartofAccount\ChartofAccount;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class ChartofAccountController extends Controller
@@ -24,15 +28,15 @@ class ChartofAccountController extends Controller
          */
         $store_route = route('coa.store');
 
-        return view('chart_of_account.index', compact('datatable_route', 'store_route'));
-    }
+        /**
+         * Account Number
+         */
+        $account_number_collection = AccountNumber::with(['createdBy'])
+            ->whereNull('deleted_by')
+            ->whereNull('deleted_at')
+            ->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('chart_of_account.index', compact('datatable_route', 'store_route', 'account_number_collection'));
     }
 
     /**
@@ -43,7 +47,7 @@ class ChartofAccountController extends Controller
         /**
          * Get All Chart of Account
          */
-        $stock_in = ChartofAccount::with(['createdBy'])
+        $chart_of_account = ChartofAccount::with(['accountNumber', 'createdBy'])
             ->whereNull('deleted_by')
             ->whereNull('deleted_at')
             ->get();
@@ -51,8 +55,14 @@ class ChartofAccountController extends Controller
         /**
          * Datatable Configuration
          */
-        $dataTable = DataTables::of($stock_in)
+        $dataTable = DataTables::of($chart_of_account)
             ->addIndexColumn()
+            ->addColumn('account_number', function ($data) {
+                /**
+                 * Return Relation Account Number
+                 */
+                return $data->accountNumber->account_number;
+            })
             ->addColumn('date', function ($data) {
                 /**
                  * Return Format Date & Time
@@ -70,13 +80,13 @@ class ChartofAccountController extends Controller
             })
             ->addColumn('action', function ($data) {
                 $btn_action = '<div align="center">';
-                $btn_action .= '<a href="' . route('coa.show', ['id' => $data->id]) . '" class="btn btn-sm btn-primary" title="Detail">Detail</a>';
-                $btn_action .= '<a href="' . route('coa.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</a>';
+                $btn_action .= '<button onclick="openModal(' . "'show'" . ',' . $data->id . ')" class="btn btn-sm btn-primary" title="Detail">Detail</button>';
+                $btn_action .= '<button onclick="openModal(' . "'edit'" . ',' . $data->id . ')" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</button>';
                 $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Delete">Delete</button>';
                 $btn_action .= '</div>';
                 return $btn_action;
             })
-            ->only(['date', 'type', 'balance', 'action'])
+            ->only(['account_number', 'date', 'type', 'name', 'balance', 'action'])
             ->rawColumns(['balance', 'action'])
             ->make(true);
 
@@ -88,7 +98,61 @@ class ChartofAccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            /**
+             * Validation Request Body Variables
+             */
+            $request->validate([
+                'date' => 'required',
+                'name' => 'required',
+                'account_number' => 'required',
+                'type' => 'required',
+                'balance' => 'required',
+            ]);
+
+            /**
+             * Begin Transaction
+             */
+            DB::beginTransaction();
+
+            /**
+             * Create Chart of Account Record
+             */
+            $chart_of_account = ChartofAccount::lockforUpdate()->create([
+                'account_number_id' => $request->account_number,
+                'name' => $request->name,
+                'date' => $request->date,
+                'type' => $request->type,
+                'balance' => $request->balance,
+                'description' => $request->description,
+                'created_by' => Auth::user()->id,
+                'updated_by' => Auth::user()->id,
+            ]);
+
+            /**
+             * Validation Create Chart of Account Record
+             */
+            if ($chart_of_account) {
+                DB::commit();
+                return redirect()
+                    ->route('coa.index')
+                    ->with(['success' => 'Successfully Add Chart of Account']);
+            } else {
+                /**
+                 * Failed Store Record
+                 */
+                DB::rollBack();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Failed Add Chart of Account'])
+                    ->withInput();
+            }
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**
@@ -96,15 +160,26 @@ class ChartofAccountController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
+        try {
+            /**
+             * Get Chart of Account Record from id
+             */
+            $chart_of_account = ChartofAccount::with(['accountNumber', 'createdBy', 'updatedBy'])->find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+            /**
+             * Validation Chart of Account Size id
+             */
+            if (!is_null($chart_of_account)) {
+                $chart_of_account = $chart_of_account->toArray();
+                $chart_of_account['updated_by'] = $chart_of_account['updated_by']['name'];
+                $chart_of_account['updated_at'] = date('d M Y H:i:s', strtotime($chart_of_account['updated_at']));
+                return response()->json($chart_of_account, 200);
+            } else {
+                return response()->json(null, 404);
+            }
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
     }
 
     /**
@@ -112,7 +187,59 @@ class ChartofAccountController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            /**
+             * Validation Request Body Variables
+             */
+            $request->validate([
+                'date' => 'required',
+                'name' => 'required',
+                'type' => 'required',
+                'balance' => 'required',
+            ]);
+
+            /**
+             * Begin Transaction
+             */
+            DB::beginTransaction();
+
+            /**
+             * Update Chart of Account Record
+             */
+            $chart_of_account_update = ChartofAccount::where('id', $id)->update([
+                'date' => $request->date,
+                'name' => $request->name,
+                'type' => $request->type,
+                'balance' => $request->balance,
+                'description' => $request->description,
+                'created_by' => Auth::user()->id,
+                'updated_by' => Auth::user()->id,
+            ]);
+
+            /**
+             * Validation Update Chart of Account Record
+             */
+            if ($chart_of_account_update) {
+                DB::commit();
+                return redirect()
+                    ->route('coa.index')
+                    ->with(['success' => 'Successfully Update Chart of Account']);
+            } else {
+                /**
+                 * Failed Store Record
+                 */
+                DB::rollBack();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Failed Add Chart of Account'])
+                    ->withInput();
+            }
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**
@@ -120,6 +247,35 @@ class ChartofAccountController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            /**
+             * Begin Transaction
+             */
+            DB::beginTransaction();
+
+            /**
+             * Update Chart of Account Record
+             */
+            $chart_of_account_destroy = ChartofAccount::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            /**
+             * Validation Update Chart of Account Record
+             */
+            if ($chart_of_account_destroy) {
+                DB::commit();
+                session()->flash('success', 'Chart of Account Successfully Deleted');
+            } else {
+                /**
+                 * Failed Store Record
+                 */
+                DB::rollBack();
+                session()->flash('failed', 'Failed Delete Chart of Account');
+            }
+        } catch (Exception $e) {
+            session()->flash('failed', $e->getMessage());
+        }
     }
 }

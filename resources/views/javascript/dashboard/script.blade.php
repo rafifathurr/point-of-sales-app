@@ -21,7 +21,6 @@
             },
             error: function(xhr, error, code) {
                 failed = true;
-                // sweetAlertError(xhr.responseJSON.message);
             }
         });
     }
@@ -195,7 +194,6 @@
             },
             error: function(xhr, error, code) {
                 failed = true;
-                // sweetAlertError(xhr.responseJSON.message);
             }
         });
     }
@@ -446,6 +444,8 @@
         let year = $('#stock_year').val();
         let month = $('#stock_month').val();
 
+        sweetAlertProcess();
+
         $.ajax({
             xhrFields: {
                 responseType: 'blob',
@@ -459,6 +459,7 @@
                 year: year,
             },
             success: function(data) {
+                Swal.close();
                 var link = document.createElement('a');
                 link.href = window.URL.createObjectURL(data);
                 link.download = 'Report_Stock_' + month + '_' + year + '.xlsx';

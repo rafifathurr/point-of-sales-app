@@ -85,8 +85,10 @@
     }
 
     function openModal(category, id) {
-        $('#' + category).modal('show');
+        sweetAlertProcess();
         $.get('{{ url('account-number') }}/' + id, {}).done(function(data) {
+            Swal.close();
+            $('#' + category).modal('show');
             $('#id_'+category).html(id);
             let url_update = $('#url_edit').val() + '/' + id;
             $('#form-edit').attr('action', url_update);

@@ -38,7 +38,7 @@ class AccountNumberController extends Controller
         /**
          * Get All Account Number
          */
-        $stock_in = AccountNumber::with(['createdBy'])
+        $account_number = AccountNumber::with(['createdBy'])
             ->whereNull('deleted_by')
             ->whereNull('deleted_at')
             ->get();
@@ -46,7 +46,7 @@ class AccountNumberController extends Controller
         /**
          * Datatable Configuration
          */
-        $dataTable = DataTables::of($stock_in)
+        $dataTable = DataTables::of($account_number)
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
                 $btn_action = '<div align="center">';

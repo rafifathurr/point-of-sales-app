@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    $("form").submit(function(e) {
+    $("#form-store").submit(function(e) {
         e.preventDefault();
         Swal.fire({
             title: 'Are You Sure Want To Save Record?',
@@ -16,7 +16,29 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 sweetAlertProcess();
-                $('form').unbind('submit').submit();
+                $('#form-store').unbind('submit').submit();
+            }
+        })
+    });
+
+    $("#form-edit").submit(function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are You Sure Want To Save Record?',
+            icon: 'question',
+            showCancelButton: true,
+            allowOutsideClick: false,
+            customClass: {
+                confirmButton: 'btn btn-primary mr-2 mb-3',
+                cancelButton: 'btn btn-danger mb-3',
+            },
+            buttonsStyling: false,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sweetAlertProcess();
+                $('#form-edit').unbind('submit').submit();
             }
         })
     });
@@ -44,6 +66,14 @@
                     defaultContent: '-',
                 },
                 {
+                    data: 'account_number',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'name',
+                    defaultContent: '-',
+                },
+                {
                     data: 'type',
                     defaultContent: '-',
                 },
@@ -62,6 +92,22 @@
             order: [
                 [1, 'desc']
             ]
+        });
+    }
+
+    function openModal(category, id) {
+        sweetAlertProcess();
+        $.get('{{ url('coa') }}/' + id, {}).done(function(data) {
+            Swal.close();
+            $('#' + category).modal('show');
+            $('#id_'+category).html(id);
+            let url_update = $('#url_edit').val() + '/' + id;
+            $('#form-edit').attr('action', url_update);
+            Object.entries(data).forEach(([key, value], index) => {
+                $('#'+key+'_'+category).val(value);
+            });
+        }).fail(function(xhr, status, error) {
+            sweetAlertError(error);
         });
     }
 
