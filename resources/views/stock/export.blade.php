@@ -35,7 +35,7 @@
                         {{ date('d M Y', strtotime($stock_data['date'])) }}
                     </td>
                     <td>
-                        {{ $stock_data->type == 0 ? 'Stock In' : 'Stock Out' }}
+                        {{ $stock_data['type'] == 0 ? 'Stock In' : 'Stock Out' }}
                     </td>
                     <td>
                         {{ $stock_data['product_size']['product']['name'] . ' - ' . $stock_data['product_size']['size'] }}
