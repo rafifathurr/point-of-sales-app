@@ -225,7 +225,6 @@
             },
             error: function(xhr, error, code) {
                 failed = true;
-                // sweetAlertError(xhr.responseJSON.message);
             }
         });
 
@@ -246,7 +245,7 @@
                     year: year,
                 },
                 error: function(xhr, error, code) {
-                    sweetAlertError(xhr.statusText);
+                    failed = true;
                 }
             },
             columns: [{
@@ -463,6 +462,95 @@
                 var link = document.createElement('a');
                 link.href = window.URL.createObjectURL(data);
                 link.download = 'Report_Stock_' + month + '_' + year + '.xlsx';
+                link.click();
+            },
+            error: function(xhr, error, code) {
+                sweetAlertError(xhr.responseJSON.message);
+            }
+        });
+    }
+
+    function dashboardCoa() {
+        let token = $('meta[name="csrf-token"]').attr('content');
+        let year = $('#coa_year').val();
+        let month = $('#coa_month').val();
+
+        $('#dt-coa').DataTable({
+            autoWidth: false,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            orderable: false,
+            destroy: true,
+            ajax: {
+                url: '{{ url('dashboard/coa/datatable') }}',
+                type: 'POST',
+                cache: false,
+                data: {
+                    _token: token,
+                    month: month,
+                    year: year,
+                },
+                error: function(xhr, error, code) {
+                    failed = true;
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    width: '5%',
+                    searchable: false
+                },
+                {
+                    data: 'date',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'account_number',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'name',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'type',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'balance',
+                    defaultContent: '-',
+                },
+            ],
+            order: [
+                [1, 'desc']
+            ]
+        });
+    }
+
+    function exportCoa() {
+        let token = $('meta[name="csrf-token"]').attr('content');
+        let year = $('#coa_year').val();
+        let month = $('#coa_month').val();
+
+        sweetAlertProcess();
+
+        $.ajax({
+            xhrFields: {
+                responseType: 'blob',
+            },
+            url: '{{ url('dashboard/coa/export') }}',
+            type: 'POST',
+            cache: false,
+            data: {
+                _token: token,
+                month: month,
+                year: year,
+            },
+            success: function(data) {
+                Swal.close();
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(data);
+                link.download = 'Report_Chart_of_Account_' + month + '_' + year + '.xlsx';
                 link.click();
             },
             error: function(xhr, error, code) {

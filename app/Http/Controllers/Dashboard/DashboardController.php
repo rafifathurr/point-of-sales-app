@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\ChartofAccount\ChartofAccountExport;
 use App\Exports\Stock\StockExport;
 use App\Http\Controllers\Controller;
+use App\Models\ChartofAccount\ChartofAccount;
 use App\Models\Product\CategoryProduct;
 use App\Models\Product\Product;
 use App\Models\Product\StockInOut;
@@ -31,6 +33,9 @@ class DashboardController extends Controller
         return view('dashboard.index', compact('dashboard'));
     }
 
+    /**
+     * Sales Order Statistic Report
+     */
     public function salesOrder(Request $request)
     {
         try {
@@ -39,7 +44,7 @@ class DashboardController extends Controller
              */
             if (!is_null($request->year) && !is_null($request->month)) {
                 /**
-                 * Variable Widget
+                 * Total income by request month and year
                  */
                 $total_income = SalesOrder::whereNull('deleted_by')
                     ->whereNull('deleted_at')
@@ -47,6 +52,9 @@ class DashboardController extends Controller
                     ->whereYear('created_at', $request->year)
                     ->sum('grand_sell_price');
 
+                /**
+                 * Total profit by request month and year
+                 */
                 $total_profit = SalesOrder::whereNull('deleted_by')
                     ->whereNull('deleted_at')
                     ->whereMonth('created_at', $request->month)
@@ -54,15 +62,18 @@ class DashboardController extends Controller
                     ->sum('grand_profit_price');
 
                 /**
-                 * Convert string
+                 * Convert string result
                  */
                 $data['total_income'] = 'Rp. ' . number_format($total_income, 0, ',', '.') . ',-';
 
                 /**
-                 * Convert string
+                 * Convert string result
                  */
                 $data['total_profit'] = 'Rp. ' . number_format($total_profit, 0, ',', '.') . ',-';
 
+                /**
+                 * Total sales order by request month and year
+                 */
                 $data['total_sales_order'] = count(
                     SalesOrder::whereNull('deleted_by')
                         ->whereNull('deleted_at')
@@ -71,6 +82,9 @@ class DashboardController extends Controller
                         ->get(),
                 );
 
+                /**
+                 * Total product sold by request month and year
+                 */
                 $data['total_product_sold'] = SalesOrderItem::whereHas('salesOrder', function ($query) use ($request) {
                     return $query
                         ->whereNull('deleted_by')
@@ -79,8 +93,18 @@ class DashboardController extends Controller
                         ->whereYear('created_at', $request->year);
                 })->sum('qty');
 
+                /**
+                 * Total number of day by month and year
+                 */
                 $number_of_day = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
+
+                /**
+                 * Validation month requested as current month
+                 */
                 if ($request->month == date('m')) {
+                    /**
+                     * Each day until number of current day
+                     */
                     for ($day = 1; $day <= date('d'); $day++) {
                         $count_per_day = count(
                             SalesOrder::whereNull('deleted_by')
@@ -361,13 +385,13 @@ class DashboardController extends Controller
     /**
      * Export Stock.
      */
-    public function exportStock(Request $request)
+    public function stockExport(Request $request)
     {
         /**
          * Validation request
          */
         if (!is_null($request->year) && !is_null($request->month)) {
-           /**
+            /**
              * Get All Stock
              */
             $stock = StockInOut::with(['productSize.product'])
@@ -380,10 +404,96 @@ class DashboardController extends Controller
                 ->toArray();
 
             $data['data'] = $stock;
-            $data['month'] =  date('F', mktime(0, 0, 0, $request->month, 10));
-            $data['year'] =  $request->year;
+            $data['month'] = date('F', mktime(0, 0, 0, $request->month, 10));
+            $data['year'] = $request->year;
 
             return Excel::download(new StockExport($data), 'export.xlsx');
+        } else {
+            return response()->json(['message' => 'Invalid Request'], 400);
+        }
+    }
+
+    /**
+     * Show datatable of resource.
+     */
+    public function coaDataTable(Request $request)
+    {
+        /**
+         * Validation request
+         */
+        if (!is_null($request->year) && !is_null($request->month)) {
+            /**
+             * Get All Chart of Account
+             */
+            $chart_of_account = ChartofAccount::with(['accountNumber', 'createdBy'])
+                ->whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->get();
+
+            /**
+             * Datatable Configuration
+             */
+            $dataTable = DataTables::of($chart_of_account)
+                ->addIndexColumn()
+                ->addColumn('account_number', function ($data) {
+                    /**
+                     * Return Relation Account Number
+                     */
+                    return $data->accountNumber->account_number;
+                })
+                ->addColumn('date', function ($data) {
+                    /**
+                     * Return Format Date & Time
+                     */
+                    return date('d M Y', strtotime($data->date));
+                })
+                ->addColumn('type', function ($data) {
+                    /**
+                     * Return Type
+                     */
+                    return $data->type == 0 ? 'Debt' : 'Credit';
+                })
+                ->addColumn('balance', function ($data) {
+                    return '<div align="right"> Rp. ' . number_format($data->balance, 0, ',', '.') . ',-' . '</div>';
+                })
+                ->only(['account_number', 'date', 'type', 'name', 'balance'])
+                ->rawColumns(['balance'])
+                ->make(true);
+
+            return $dataTable;
+        } else {
+            return response()->json(['message' => 'Invalid Request'], 400);
+        }
+    }
+
+    /**
+     * Export Stock.
+     */
+    public function coaExport(Request $request)
+    {
+        /**
+         * Validation request
+         */
+        if (!is_null($request->year) && !is_null($request->month)) {
+            /**
+             * Get All Chart of Account
+             */
+            $chart_of_account = ChartofAccount::with(['accountNumber', 'createdBy'])
+                ->whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->orderBy('date', 'desc')
+                ->get()
+                ->toArray();
+
+            $data['data'] = $chart_of_account;
+            $data['month'] = date('F', mktime(0, 0, 0, $request->month, 10));
+            $data['year'] = $request->year;
+
+            return Excel::download(new ChartofAccountExport($data), 'export.xlsx');
         } else {
             return response()->json(['message' => 'Invalid Request'], 400);
         }

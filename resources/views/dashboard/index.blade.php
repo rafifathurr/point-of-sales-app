@@ -93,6 +93,83 @@
                 </div>
                 <div class="card px-3 mt-3">
                     <div class="card-body">
+                        <div class="col-md-12 p-3 mt-3 border-top border-top-1">
+                            <div class="d-flex justify-content-between my-3">
+                                <div class="p-0">
+                                    <h4 class="py-3"><b>Chart of Account Report</b></h4>
+                                </div>
+                                <div class="p-0">
+                                    <div class="input-group w-100 mx-auto d-flex">
+                                        <div class="p-0">
+                                            <div class="row ml-auto">
+                                                <div class="col-md-3 pb-3 pl-0">
+                                                    <select class="form-control" id="coa_month">
+                                                        @foreach ($dashboard['months'] as $month_num => $month)
+                                                            <option value="{{ $month_num }}"
+                                                                @if ($month_num == date('m')) selected @endif>
+                                                                {{ $month }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 pb-3 pl-0">
+                                                    <select class="form-control" id="coa_year">
+                                                        @foreach ($dashboard['years'] as $year)
+                                                            <option value="{{ $year['year'] }}"
+                                                                @if ($year['year'] == date('Y')) selected @endif>
+                                                                {{ $year['year'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 mx-auto pb-3 px-0">
+                                                    <button class="btn btn-primary" onclick="dashboardCoa()"
+                                                        title="Filter">
+                                                        Filter
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-3 mx-auto pb-3 px-0">
+                                                    <button class="btn btn-success" onclick="exportCoa()"
+                                                        title="Filter">
+                                                        Export
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered datatable" id="dt-coa">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                Date
+                                            </th>
+                                            <th>
+                                                Account Number
+                                            </th>
+                                            <th>
+                                                Name
+                                            </th>
+                                            <th>
+                                                Type
+                                            </th>
+                                            <th>
+                                                Balance
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card px-3 mt-3">
+                    <div class="card-body">
                         <div class="d-flex justify-content-between my-3">
                             <div class="p-0">
                                 <h4 class="py-3"><b>Stock In & Out Summary</b></h4>
@@ -105,7 +182,8 @@
                                                 <select class="form-control" id="stock_month">
                                                     @foreach ($dashboard['months'] as $month_num => $month)
                                                         <option value="{{ $month_num }}"
-                                                            @if ($month_num == date('m')) selected @endif>{{ $month }}
+                                                            @if ($month_num == date('m')) selected @endif>
+                                                            {{ $month }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -114,13 +192,15 @@
                                                 <select class="form-control" id="stock_year">
                                                     @foreach ($dashboard['years'] as $year)
                                                         <option value="{{ $year['year'] }}"
-                                                            @if ($year['year'] == date('Y')) selected @endif>{{ $year['year'] }}
+                                                            @if ($year['year'] == date('Y')) selected @endif>
+                                                            {{ $year['year'] }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-md-4 my-auto pb-3 pl-0">
-                                                <button class="btn btn-primary" onclick="dashboardStock()" title="Filter">
+                                                <button class="btn btn-primary" onclick="dashboardStock()"
+                                                    title="Filter">
                                                     Filter
                                                 </button>
                                             </div>
@@ -189,7 +269,7 @@
                                 <div class="p-0">
                                     <div class="input-group w-100 mx-auto d-flex">
                                         <button class="btn btn-success" onclick="exportStock()" title="Export Report">
-                                            Export Report
+                                            Export
                                         </button>
                                     </div>
                                 </div>
@@ -274,6 +354,7 @@
         @include('javascript.dashboard.script')
         <script>
             dashboardSalesOrder();
+            dashboardCoa();
             dashboardProduct();
             dashboardStock();
         </script>
