@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ChartofAccount;
 use App\Http\Controllers\Controller;
 use App\Models\ChartofAccount\AccountNumber;
 use App\Models\ChartofAccount\ChartofAccount;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,8 +50,13 @@ class ChartofAccountController extends Controller
          */
         $chart_of_account = ChartofAccount::with(['accountNumber', 'createdBy'])
             ->whereNull('deleted_by')
-            ->whereNull('deleted_at')
-            ->get();
+            ->whereNull('deleted_at');
+
+        if (User::find(Auth::user()->id)->hasRole(['super-admin', 'admin'])) {
+            $chart_of_account = $chart_of_account->get();
+        } else {
+            $chart_of_account = $chart_of_account->where('created_by', Auth::user()->id)->get();
+        }
 
         /**
          * Datatable Configuration
