@@ -187,6 +187,93 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * Show datatable of resource.
+     */
+    public function salesOrderDataTable(Request $request)
+    {
+        /**
+         * Validation request
+         */
+        if (!is_null($request->year) && !is_null($request->month)) {
+            /**
+             * Get All Sales Order
+             */
+            $sales_order = SalesOrder::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('created_at', $request->month)
+                ->whereYear('created_at', $request->year)
+                ->get();
+
+            /**
+             * Datatable Configuration
+             */
+            $dataTable = DataTables::of($sales_order)
+                ->addIndexColumn()
+                ->addColumn('created_at', function ($data) {
+                    /**
+                     * Return Format Date & Time
+                     */
+                    return date('d M Y H:i:s', strtotime($data->created_at));
+                })
+                ->addColumn('total_sell_price', function ($data) {
+                    return '<div align="right"> Rp. ' . number_format($data->total_sell_price, 0, ',', '.') . ',-' . '</div>';
+                })
+                ->addColumn('total_capital_price', function ($data) {
+                    return '<div align="right"> Rp. ' . number_format($data->total_capital_price, 0, ',', '.') . ',-' . '</div>';
+                })
+                ->addColumn('discount_price', function ($data) {
+                    return '<div align="right"> Rp. ' . number_format($data->discount_price, 0, ',', '.') . ',-' . '</div>';
+                })
+                ->addColumn('grand_profit_price', function ($data) {
+                    return '<div align="right"> Rp. ' . number_format($data->grand_profit_price, 0, ',', '.') . ',-' . '</div>';
+                })
+                ->addColumn('grand_sell_price', function ($data) {
+                    return '<div align="right"> Rp. ' . number_format($data->grand_sell_price, 0, ',', '.') . ',-' . '</div>';
+                })
+                ->only(['invoice_number', 'created_at', 'total_sell_price', 'total_capital_price', 'discount_price', 'grand_profit_price', 'grand_sell_price'])
+                ->rawColumns(['total_sell_price', 'total_capital_price', 'discount_price', 'grand_profit_price', 'grand_sell_price'])
+                ->make(true);
+
+            return $dataTable;
+        } else {
+            return response()->json(['message' => 'Invalid Request'], 400);
+        }
+    }
+
+    /**
+     * Export Stock.
+     */
+    // public function salesOrderExport(Request $request)
+    // {
+    //     /**
+    //      * Validation request
+    //      */
+    //     if (!is_null($request->year) && !is_null($request->month)) {
+    //         /**
+    //          * Get All Sales Order
+    //          */
+    //         $sales_order = SalesOrder::with(['customer', 'paymentMethod', 'salesOrderItem.productSize.product'])
+    //             ->whereNull('deleted_by')
+    //             ->whereNull('deleted_at')
+    //             ->whereMonth('created_at', $request->month)
+    //             ->whereYear('created_at', $request->year)
+    //             ->orderBy('created_at', 'desc')
+    //             ->get()
+    //             ->toArray();
+
+    //         $data['data'] = $sales_order;
+    //         $data['month'] = date('F', mktime(0, 0, 0, $request->month, 10));
+    //         $data['year'] = $request->year;
+
+    //         return view('sales_order.export', ['sales_order' => $data]);
+
+    //         return Excel::download(new StockExport($data), 'export.xlsx');
+    //     } else {
+    //         return response()->json(['message' => 'Invalid Request'], 400);
+    //     }
+    // }
+
     public function stock(Request $request)
     {
         try {
@@ -469,7 +556,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Export Stock.
+     * Export Chart of Account.
      */
     public function coaExport(Request $request)
     {

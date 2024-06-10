@@ -23,6 +23,65 @@
                 failed = true;
             }
         });
+
+        $('#dt-sales-order').DataTable({
+            autoWidth: false,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            orderable: false,
+            destroy: true,
+            ajax: {
+                url: '{{ url('dashboard/sales-order/datatable') }}',
+                type: 'POST',
+                cache: false,
+                data: {
+                    _token: token,
+                    month: month,
+                    year: year,
+                },
+                error: function(xhr, error, code) {
+                    failed = true;
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    width: '5%',
+                    searchable: false
+                },
+                {
+                    data: 'invoice_number',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'created_at',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'total_sell_price',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'total_capital_price',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'discount_price',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'grand_profit_price',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'grand_sell_price',
+                    defaultContent: '-',
+                },
+            ],
+            order: [
+                [2, 'desc']
+            ]
+        });
     }
 
     function salesOrderWidget(data) {
@@ -176,6 +235,40 @@
                 }
             },
         });
+    }
+
+    function exportSalesOrder() {
+        let token = $('meta[name="csrf-token"]').attr('content');
+        let year = $('#sales_order_year').val();
+        let month = $('#sales_order_month').val();
+
+        sweetAlertProcess();
+
+        window.location.href = '{{ url('dashboard/sales-order/export') }}/?year=' + year + '&month=' + month;
+
+        // $.ajax({
+        //     xhrFields: {
+        //         responseType: 'blob',
+        //     },
+        //     url: '{{ url('dashboard/stock/export') }}',
+        //     type: 'POST',
+        //     cache: false,
+        //     data: {
+        //         _token: token,
+        //         month: month,
+        //         year: year,
+        //     },
+        //     success: function(data) {
+        //         Swal.close();
+        //         var link = document.createElement('a');
+        //         link.href = window.URL.createObjectURL(data);
+        //         link.download = 'Report_Stock_' + month + '_' + year + '.xlsx';
+        //         link.click();
+        //     },
+        //     error: function(xhr, error, code) {
+        //         sweetAlertError(xhr.responseJSON.message);
+        //     }
+        // });
     }
 
     function dashboardProduct() {

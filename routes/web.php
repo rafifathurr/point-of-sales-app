@@ -52,6 +52,8 @@ Route::group(['middleware' => ['role:super-admin']], function () {
         Route::post('sales-order', [DashboardController::class, 'salesOrder'])->name('sales-order');
         Route::post('product', [DashboardController::class, 'product'])->name('product');
         Route::post('stock', [DashboardController::class, 'stock'])->name('stock');
+        Route::post('sales-order/datatable', [DashboardController::class, 'salesOrderDataTable'])->name('sales-order.dataTable');
+        Route::get('sales-order/export', [DashboardController::class, 'salesOrderExport'])->name('sales-order.export');
         Route::post('stock/datatable', [DashboardController::class, 'stockDataTable'])->name('stock.dataTable');
         Route::post('stock/export', [DashboardController::class, 'stockExport'])->name('stock.export');
         Route::post('coa/datatable', [DashboardController::class, 'coaDataTable'])->name('coa.dataTable');
@@ -181,7 +183,7 @@ Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
      */
     Route::group(['controller' => SalesOrderController::class, 'prefix' => 'sales-order', 'as' => 'sales-order.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
-        Route::get('export/{id}', 'export')->name('export');
+        Route::get('invoice/{id}', 'invoice')->name('invoice');
         Route::get('catalogue-product', 'catalogueProduct')->name('catalogueProduct');
     });
     Route::resource('sales-order', SalesOrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['sales-order' => 'id']);

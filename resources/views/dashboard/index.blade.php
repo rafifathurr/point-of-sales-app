@@ -89,11 +89,57 @@
                                 <canvas id="purchase-type-chart"></canvas>
                             </div>
                         </div>
+                        <div class="col-md-12 p-3 mt-3 border-top border-top-1">
+                            <div class="d-flex justify-content-between my-3">
+                                <div class="p-0 my-auto">
+                                    <h5><b>Sales Order Report</b></h5>
+                                </div>
+                                {{-- <div class="p-0">
+                                    <div class="input-group w-100 mx-auto d-flex">
+                                        <button class="btn btn-success" onclick="exportSalesOrder()" title="Export Report">
+                                            Export
+                                        </button>
+                                    </div>
+                                </div> --}}
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered datatable" id="dt-sales-order">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                No. Invoice
+                                            </th>
+                                            <th>
+                                                Date & Time
+                                            </th>
+                                            <th>
+                                                Sell Price
+                                            </th>
+                                            <th>
+                                                Capital Price
+                                            </th>
+                                            <th>
+                                                Discount
+                                            </th>
+                                            <th>
+                                                Profit
+                                            </th>
+                                            <th>
+                                                Total Sell Price
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card px-3 mt-3">
                     <div class="card-body">
-                        <div class="col-md-12 p-3 mt-3 border-top border-top-1">
+                        <div class="col-md-12 p-3">
                             <div class="d-flex justify-content-between my-3">
                                 <div class="p-0">
                                     <h4 class="py-3"><b>Chart of Account Report</b></h4>

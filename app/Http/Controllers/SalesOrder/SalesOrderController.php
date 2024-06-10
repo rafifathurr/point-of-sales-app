@@ -149,7 +149,7 @@ class SalesOrderController extends Controller
                     // $btn_action .= '<a href="' . route('sales-order.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</a>';
                     $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Delete">Delete</button>';
                 }
-                $btn_action .= '<a href="' . route('sales-order.export', ['id' => $data->id]) . '" class="btn btn-sm btn-success ml-2" target="_blank" title="Print">Print</a>';
+                $btn_action .= '<a href="' . route('sales-order.invoice', ['id' => $data->id]) . '" class="btn btn-sm btn-success ml-2" target="_blank" title="Invoice">Invoice</a>';
                 $btn_action .= '</div>';
                 return $btn_action;
             })
@@ -567,11 +567,31 @@ class SalesOrderController extends Controller
              */
             if (!is_null($sales_order)) {
                 /**
+                 * Get All Payment Method
+                 */
+                $payment_method = PaymentMethod::whereNull('deleted_by')->whereNull('deleted_at')->get();
+
+                /**
+                 * Get All Customer Method
+                 */
+                $customer = Customer::whereNull('deleted_by')->whereNull('deleted_at')->get();
+
+                /**
+                 * Update Route
+                 */
+                $update_route = route('sales-order.update');
+
+                /**
+                 * Statement sales order create
+                 */
+                $hide_button_hamburger_nav = true;
+
+                /**
                  * Show Capital Price Access Based Role
                  */
                 $show_capital_price = User::find(Auth::user()->id)->hasRole(['super-admin', 'admin']);
 
-                return view('sales_order.detail', compact('sales_order', 'show_capital_price'));
+                return view('sales_order.detail', compact('sales_order', 'show_capital_price', 'payment_method', 'customer', 'update_route', 'hide_button_hamburger_nav'));
             } else {
                 return redirect()
                     ->back()
@@ -585,9 +605,9 @@ class SalesOrderController extends Controller
     }
 
     /**
-     * Export the specified resource.
+     * Export invoice the specified resource.
      */
-    public function export(string $id)
+    public function invoice(string $id)
     {
         try {
             /**
@@ -599,14 +619,11 @@ class SalesOrderController extends Controller
              * Validation Sales Order id
              */
             if (!is_null($sales_order)) {
-                $data['sales_order'] = $sales_order;
-
-                // return view('sales_order.export', compact('sales_order'));
 
                 /**
                  * Return PDF format
                  */
-                return PDF::loadView('sales_order.export', ['sales_order' => $sales_order])->stream($sales_order->invoice_number . '.pdf');
+                return PDF::loadView('sales_order.invoice', ['sales_order' => $sales_order])->stream($sales_order->invoice_number . '.pdf');
             } else {
                 return redirect()
                     ->back()
@@ -624,7 +641,32 @@ class SalesOrderController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            /**
+             * Get Sales Order Record from id
+             */
+            $sales_order = SalesOrder::with(['customer', 'paymentMethod', 'salesOrderItem.productSize.product'])->find($id);
+
+            /**
+             * Validation Sales Order id
+             */
+            if (!is_null($sales_order)) {
+                /**
+                 * Show Capital Price Access Based Role
+                 */
+                $show_capital_price = User::find(Auth::user()->id)->hasRole(['super-admin', 'admin']);
+
+                return view('sales_order.edit', compact('sales_order', 'show_capital_price'));
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Invalid Request!']);
+            }
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
+        }
     }
 
     /**
