@@ -244,31 +244,29 @@
 
         sweetAlertProcess();
 
-        window.location.href = '{{ url('dashboard/sales-order/export') }}/?year=' + year + '&month=' + month;
-
-        // $.ajax({
-        //     xhrFields: {
-        //         responseType: 'blob',
-        //     },
-        //     url: '{{ url('dashboard/stock/export') }}',
-        //     type: 'POST',
-        //     cache: false,
-        //     data: {
-        //         _token: token,
-        //         month: month,
-        //         year: year,
-        //     },
-        //     success: function(data) {
-        //         Swal.close();
-        //         var link = document.createElement('a');
-        //         link.href = window.URL.createObjectURL(data);
-        //         link.download = 'Report_Stock_' + month + '_' + year + '.xlsx';
-        //         link.click();
-        //     },
-        //     error: function(xhr, error, code) {
-        //         sweetAlertError(xhr.responseJSON.message);
-        //     }
-        // });
+        $.ajax({
+            xhrFields: {
+                responseType: 'blob',
+            },
+            url: '{{ url('dashboard/sales-order/export') }}',
+            type: 'POST',
+            cache: false,
+            data: {
+                _token: token,
+                month: month,
+                year: year,
+            },
+            success: function(data) {
+                Swal.close();
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(data);
+                link.download = 'Report_Sales_Order_' + month + '_' + year + '.xlsx';
+                link.click();
+            },
+            error: function(xhr, error, code) {
+                sweetAlertError(xhr.responseJSON.message);
+            }
+        });
     }
 
     function dashboardProduct() {

@@ -94,13 +94,13 @@
                                 <div class="p-0 my-auto">
                                     <h5><b>Sales Order Report</b></h5>
                                 </div>
-                                {{-- <div class="p-0">
+                                <div class="p-0">
                                     <div class="input-group w-100 mx-auto d-flex">
                                         <button class="btn btn-success" onclick="exportSalesOrder()" title="Export Report">
                                             Export
                                         </button>
                                     </div>
-                                </div> --}}
+                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered datatable" id="dt-sales-order">

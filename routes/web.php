@@ -53,7 +53,7 @@ Route::group(['middleware' => ['role:super-admin']], function () {
         Route::post('product', [DashboardController::class, 'product'])->name('product');
         Route::post('stock', [DashboardController::class, 'stock'])->name('stock');
         Route::post('sales-order/datatable', [DashboardController::class, 'salesOrderDataTable'])->name('sales-order.dataTable');
-        Route::get('sales-order/export', [DashboardController::class, 'salesOrderExport'])->name('sales-order.export');
+        Route::post('sales-order/export', [DashboardController::class, 'salesOrderExport'])->name('sales-order.export');
         Route::post('stock/datatable', [DashboardController::class, 'stockDataTable'])->name('stock.dataTable');
         Route::post('stock/export', [DashboardController::class, 'stockExport'])->name('stock.export');
         Route::post('coa/datatable', [DashboardController::class, 'coaDataTable'])->name('coa.dataTable');

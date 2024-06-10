@@ -41,12 +41,12 @@
                     <td>
                         {{ $coa_data['name'] }}
                     </td>
-                    <td align="right">
+                    <td style="text-align:right">
                         @if ($coa_data['type'] == 0)
                             {{ 'Rp. ' . number_format($coa_data['balance'], 0, ',', '.') . ',-' }}
                         @endif
                     </td>
-                    <td align="right">
+                    <td style="text-align:right">
                         @if ($coa_data['type'] == 1)
                             {{ 'Rp. ' . number_format($coa_data['balance'], 0, ',', '.') . ',-' }}
                         @endif

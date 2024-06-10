@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Exports\ChartofAccount\ChartofAccountExport;
+use App\Exports\SalesOrder\SalesOrderExport;
 use App\Exports\Stock\StockExport;
 use App\Http\Controllers\Controller;
 use App\Models\ChartofAccount\ChartofAccount;
@@ -244,35 +245,33 @@ class DashboardController extends Controller
     /**
      * Export Stock.
      */
-    // public function salesOrderExport(Request $request)
-    // {
-    //     /**
-    //      * Validation request
-    //      */
-    //     if (!is_null($request->year) && !is_null($request->month)) {
-    //         /**
-    //          * Get All Sales Order
-    //          */
-    //         $sales_order = SalesOrder::with(['customer', 'paymentMethod', 'salesOrderItem.productSize.product'])
-    //             ->whereNull('deleted_by')
-    //             ->whereNull('deleted_at')
-    //             ->whereMonth('created_at', $request->month)
-    //             ->whereYear('created_at', $request->year)
-    //             ->orderBy('created_at', 'desc')
-    //             ->get()
-    //             ->toArray();
+    public function salesOrderExport(Request $request)
+    {
+        /**
+         * Validation request
+         */
+        if (!is_null($request->year) && !is_null($request->month)) {
+            /**
+             * Get All Sales Order
+             */
+            $sales_order = SalesOrder::with(['customer', 'paymentMethod', 'salesOrderItem.productSize.product'])
+                ->whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('created_at', $request->month)
+                ->whereYear('created_at', $request->year)
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->toArray();
 
-    //         $data['data'] = $sales_order;
-    //         $data['month'] = date('F', mktime(0, 0, 0, $request->month, 10));
-    //         $data['year'] = $request->year;
+            $data['data'] = $sales_order;
+            $data['month'] = date('F', mktime(0, 0, 0, $request->month, 10));
+            $data['year'] = $request->year;
 
-    //         return view('sales_order.export', ['sales_order' => $data]);
-
-    //         return Excel::download(new StockExport($data), 'export.xlsx');
-    //     } else {
-    //         return response()->json(['message' => 'Invalid Request'], 400);
-    //     }
-    // }
+            return Excel::download(new SalesOrderExport($data), 'export.xlsx');
+        } else {
+            return response()->json(['message' => 'Invalid Request'], 400);
+        }
+    }
 
     public function stock(Request $request)
     {
