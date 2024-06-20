@@ -25,11 +25,18 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        /**
+         * Get List of Month
+         */
         for ($month = 1; $month <= date('m'); $month++) {
             $dashboard['months'][$month] = date('F', mktime(0, 0, 0, $month, 10));
         }
 
-        $dashboard['years'] = SalesOrder::select(DB::raw('YEAR(created_at) as year'))->whereNull('deleted_at')->groupBy(DB::raw('YEAR(created_at)'))->orderBy(DB::raw('YEAR(created_at)'), 'ASC')->get()->toArray();
+        /**
+         * Get List of Year
+         */
+        $years = SalesOrder::select(DB::raw('YEAR(created_at) as year'))->whereNull('deleted_at')->groupBy(DB::raw('YEAR(created_at)'))->orderBy(DB::raw('YEAR(created_at)'), 'ASC')->get()->toArray();
+        $dashboard['years'] = !empty($years) ? $years : [['year' => date('Y')]];
 
         return view('dashboard.index', compact('dashboard'));
     }
