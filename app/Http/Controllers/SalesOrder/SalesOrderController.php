@@ -579,7 +579,7 @@ class SalesOrderController extends Controller
                 /**
                  * Update Route
                  */
-                $update_route = route('sales-order.update');
+                // $update_route = route('sales-order.update');
 
                 /**
                  * Statement sales order create
@@ -591,7 +591,7 @@ class SalesOrderController extends Controller
                  */
                 $show_capital_price = User::find(Auth::user()->id)->hasRole(['super-admin', 'admin']);
 
-                return view('sales_order.detail', compact('sales_order', 'show_capital_price', 'payment_method', 'customer', 'update_route', 'hide_button_hamburger_nav'));
+                return view('sales_order.detail', compact('sales_order', 'show_capital_price', 'payment_method', 'customer', 'hide_button_hamburger_nav'));
             } else {
                 return redirect()
                     ->back()
