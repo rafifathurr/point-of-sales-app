@@ -127,7 +127,7 @@ class SalesOrderController extends Controller
                 /**
                  * Return Format Date & Time
                  */
-                return date('d M Y H:i:s', strtotime($data->created_at));
+                return date('d F Y H:i:s', strtotime($data->created_at));
             })
             ->addColumn('type', function ($data) {
                 return $data->type == 0 ? 'Offline' : 'Online';

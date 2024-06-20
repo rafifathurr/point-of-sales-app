@@ -215,7 +215,7 @@ class DashboardController extends Controller
                     /**
                      * Return Format Date & Time
                      */
-                    return date('d M Y H:i:s', strtotime($data->created_at));
+                    return date('d F Y H:i:s', strtotime($data->created_at));
                 })
                 ->addColumn('total_sell_price', function ($data) {
                     return '<div align="right"> Rp. ' . number_format($data->total_sell_price, 0, ',', '.') . ',-' . '</div>';
@@ -449,7 +449,7 @@ class DashboardController extends Controller
                     /**
                      * Return Format Date
                      */
-                    return date('d M Y', strtotime($data->date));
+                    return date('d F Y', strtotime($data->date));
                 })
                 ->addColumn('qty', function ($data) {
                     if ($data->type == 0) {
@@ -533,7 +533,7 @@ class DashboardController extends Controller
                     /**
                      * Return Format Date & Time
                      */
-                    return date('d M Y', strtotime($data->date));
+                    return date('d F Y', strtotime($data->date));
                 })
                 ->addColumn('type', function ($data) {
                     /**

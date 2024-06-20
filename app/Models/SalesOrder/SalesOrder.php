@@ -25,7 +25,7 @@ class SalesOrder extends Model
 
     public function salesOrderItem()
     {
-        return $this->hasMany(SalesOrderItem::class, 'sales_order_id', 'id');
+        return $this->hasMany(SalesOrderItem::class, 'sales_order_id', 'id')->whereNull('deleted_at');
     }
 
     public function createdBy()

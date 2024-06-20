@@ -32,7 +32,7 @@
                         {{ $index + 1 }}
                     </td>
                     <td>
-                        {{ date('d M Y', strtotime($stock_data['date'])) }}
+                        {{ date('d F Y', strtotime($stock_data['date'])) }}
                     </td>
                     <td>
                         {{ $stock_data['type'] == 0 ? 'Stock In' : 'Stock Out' }}

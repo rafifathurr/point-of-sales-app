@@ -33,7 +33,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Updated At</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ date('d M Y H:i:s', strtotime($user->updated_at)) }}
+                                {{ date('d F Y H:i:s', strtotime($user->updated_at)) }}
                             </div>
                         </div>
                         <div class="float-right">

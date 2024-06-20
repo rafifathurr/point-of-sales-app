@@ -33,7 +33,7 @@
                         {{ $index + 1 }}
                     </td>
                     <td>
-                        {{ date('d M Y', strtotime($coa_data['date'])) }}
+                        {{ date('d F Y', strtotime($coa_data['date'])) }}
                     </td>
                     <td>
                         {{ $coa_data['account_number']['account_number'] }}

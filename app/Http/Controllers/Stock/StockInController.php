@@ -114,7 +114,7 @@ class StockInController extends Controller
                 /**
                  * Return Format Date
                  */
-                return date('d M Y', strtotime($data->date));
+                return date('d F Y', strtotime($data->date));
             })
             ->addColumn('qty', function ($data) {
                 return '<span class="text-success">+ ' . $data->qty . ' Pcs</span>';

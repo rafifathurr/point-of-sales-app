@@ -78,7 +78,7 @@
                                 {{ $sales_order_data['invoice_number'] }}
                             </td>
                             <td rowspan="{{ count($sales_order_data['sales_order_item']) }}">
-                                {{ date('d M Y H:i:s', strtotime($sales_order_data['created_at'])) }}
+                                {{ date('d F Y H:i:s', strtotime($sales_order_data['created_at'])) }}
                             </td>
                             <td rowspan="{{ count($sales_order_data['sales_order_item']) }}">
                                 {{ $sales_order_data['type'] == 0 ? 'Offline' : 'Online' }}

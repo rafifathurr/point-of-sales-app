@@ -15,7 +15,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Date & Time</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ date('d M Y H:i:s', strtotime($sales_order->created_at)) }}
+                                {{ date('d F Y H:i:s', strtotime($sales_order->created_at)) }}
                             </div>
                         </div>
                         <div class="form-group row">
@@ -45,7 +45,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Updated At</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ date('d M Y H:i:s', strtotime($sales_order->updated_at)) }}
+                                {{ date('d F Y H:i:s', strtotime($sales_order->updated_at)) }}
                             </div>
                         </div>
                         <div class="table-responsive mt-5">

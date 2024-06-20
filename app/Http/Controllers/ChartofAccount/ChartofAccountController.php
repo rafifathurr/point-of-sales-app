@@ -73,7 +73,7 @@ class ChartofAccountController extends Controller
                 /**
                  * Return Format Date & Time
                  */
-                return date('d M Y', strtotime($data->date));
+                return date('d F Y', strtotime($data->date));
             })
             ->addColumn('type', function ($data) {
                 /**
@@ -178,7 +178,7 @@ class ChartofAccountController extends Controller
             if (!is_null($chart_of_account)) {
                 $chart_of_account = $chart_of_account->toArray();
                 $chart_of_account['updated_by'] = $chart_of_account['updated_by']['name'];
-                $chart_of_account['updated_at'] = date('d M Y H:i:s', strtotime($chart_of_account['updated_at']));
+                $chart_of_account['updated_at'] = date('d m Y H:i:s', strtotime($chart_of_account['updated_at']));
                 return response()->json($chart_of_account, 200);
             } else {
                 return response()->json(null, 404);

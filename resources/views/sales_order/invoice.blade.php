@@ -114,7 +114,7 @@
 
                             <td>
                                 <b>Invoice</b> : #{{ $sales_order->invoice_number }}<br />
-                                <b>Date & Time</b>: {{ date('d M Y H:i:s', strtotime($sales_order->created_at)) }}<br />
+                                <b>Date & Time</b>: {{ date('d F Y H:i:s', strtotime($sales_order->created_at)) }}<br />
                                 <b>Created</b>: {{ $sales_order->createdBy->name }}
                             </td>
                         </tr>

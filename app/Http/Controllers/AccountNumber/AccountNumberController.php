@@ -153,7 +153,7 @@ class AccountNumberController extends Controller
              */
             if (!is_null($account_number)) {
                 $account_number = $account_number->toArray();
-                $account_number['updated_at'] = date('d M Y H:i:s', strtotime($account_number['updated_at']));
+                $account_number['updated_at'] = date('d m Y H:i:s', strtotime($account_number['updated_at']));
                 return response()->json($account_number, 200);
             } else {
                 return response()->json(null, 404);
