@@ -14,9 +14,15 @@
                             <form class="pt-3" method="post" action="{{ route('authenticate') }}">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="text"
-                                        class="form-control form-control-lg @error('username') is-invalid @enderror"
-                                        name="username" value="{{ old('username') }}" required>
+                                    <div class="input-group">
+                                        <input type="text"
+                                            class="form-control form-control-lg @error('username') is-invalid @enderror"
+                                            name="username" placeholder="Email or Username" value="{{ old('username') }}"
+                                            required>
+                                        <span class="input-group-text">
+                                            <i class="mdi mdi-email"></i>
+                                        </span>
+                                    </div>
                                     @error('username')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -24,8 +30,13 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control form-control-lg" id="exampleInputPassword1"
-                                        placeholder="Password" name="password" required>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control form-control-lg" id="password" name="password"
+                                            placeholder="Password" value="{{ old('password') }}" required>
+                                        <span class="input-group-text" id="togglePassword" onclick="showPassword()">
+                                            <i class="mdi mdi-eye" id="eye-icon"></i>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="mt-3">
                                     <button type="submit"
@@ -49,4 +60,7 @@
         </div>
         <!-- page-body-wrapper ends -->
     </div>
+    @push('javascript-bottom')
+        @include('javascript.auth.script')
+    @endpush
 @endsection
