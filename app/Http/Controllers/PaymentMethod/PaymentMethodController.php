@@ -346,13 +346,13 @@ class PaymentMethodController extends Controller
             $alphabet = str_split($exploded_name[0]);
             $str_vocal = ['a', 'i', 'u', 'e', 'o'];
             foreach ($alphabet as $char) {
-                if (strlen($slug_name) <= 3 && !in_array($char, $str_vocal)) {
+                if (strlen($slug_name) < 3 && !in_array($char, $str_vocal)) {
                     $slug_name .= $char;
                 }
             }
         } else {
             foreach ($exploded_name as $each_string) {
-                if (strlen($slug_name) <= 3) {
+                if (strlen($slug_name) < 3) {
                     $slug_name .= $each_string[0];
                 }
             }
