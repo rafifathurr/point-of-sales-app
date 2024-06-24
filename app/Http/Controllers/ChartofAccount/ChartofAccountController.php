@@ -52,7 +52,7 @@ class ChartofAccountController extends Controller
             ->whereNull('deleted_by')
             ->whereNull('deleted_at');
 
-        if (User::find(Auth::user()->id)->hasRole(['super-admin', 'admin'])) {
+        if (User::find(Auth::user()->id)->hasRole('super-admin')) {
             $chart_of_account = $chart_of_account->get();
         } else {
             $chart_of_account = $chart_of_account->where('created_by', Auth::user()->id)->get();
