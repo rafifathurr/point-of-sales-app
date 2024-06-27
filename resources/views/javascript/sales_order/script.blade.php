@@ -25,34 +25,20 @@
         }
     });
 
-    function catalogue(page) {
+    function catalogue() {
 
         $('#catalogue').html('');
         let query = $('#search_keyword').val();
 
-        if (page != undefined) {
-            $.get("{{ route('sales-order.catalogueProduct') }}", {
-                page: page,
-                query: query
-            }).done(function(data) {
+        $.get("{{ route('sales-order.catalogueProduct') }}", {
+            query: query
+        }).done(function(data) {
 
-                $('#catalogue').html(data);
+            $('#catalogue').html(data);
 
-            }).fail(function(xhr, status, error) {
-                sweetAlertError(error);
-            });
-        } else {
-            $.get("{{ route('sales-order.catalogueProduct') }}", {
-                query: query
-            }).done(function(data) {
-
-                $('#catalogue').html(data);
-
-            }).fail(function(xhr, status, error) {
-                sweetAlertError(error);
-            });
-        }
-
+        }).fail(function(xhr, status, error) {
+            sweetAlertError(error);
+        });
     }
 
     function dataTable() {
@@ -135,31 +121,38 @@
                     data.product.name + ' - ' + data.size +
                     "<input type='hidden' name = 'sales_order_item[" + data.product.id + "][product]'" +
                     "value = '" + data.product.id + "' > " +
-                    "<input type='hidden' name = 'sales_order_item[" + data.product.id + "][product_size][" +
+                    "<input type='hidden' name = 'sales_order_item[" + data.product.id +
+                    "][product_size][" +
                     data.id + "][product_size]'" +
                     "value = '" + data.id + "' > " +
-                    "<input type='hidden' name = 'sales_order_item[" + data.product.id + "][product_size][" +
+                    "<input type='hidden' name = 'sales_order_item[" + data.product.id +
+                    "][product_size][" +
                     data.id + "][product_name]'" +
                     "value = '" + data.product.name + ' - ' + data.size + "' > " +
                     "</td>");
 
                 let td_qty = $("<td>" +
-                    "<input type='number' class='form-control text-center' name='sales_order_item[" + data.product.id + "][product_size][" + data
+                    "<input type='number' class='form-control text-center' name='sales_order_item[" + data
+                    .product.id + "][product_size][" + data
                     .id + "][qty]' " +
                     "id='qty_" + data.id + "'" +
                     "max = '" + data.stock + "' min='1' value='1'" +
                     "oninput = 'validationQty(this, " + data.id + ")'" +
                     "required> " +
                     "<input type='hidden'" +
-                    "name = 'sales_order_item[" + data.product.id + "][product_size][" + data.id + "][stock]'" +
+                    "name = 'sales_order_item[" + data.product.id + "][product_size][" + data.id +
+                    "][stock]'" +
                     "value = '" + data.stock + "' > " +
-                    "<input type='hidden' id='capital_price_" + data.id + "' name = 'sales_order_item[" + data.product.id + "][product_size][" +
+                    "<input type='hidden' id='capital_price_" + data.id + "' name = 'sales_order_item[" +
+                    data.product.id + "][product_size][" +
                     data.id + "][capital_price]'" +
                     "value = '" + data.capital_price + "' > " +
                     "<input type='hidden' id='sell_price_" + data.id + "' " +
-                    "name = 'sales_order_item[" + data.product.id + "][product_size][" + data.id + "][sell_price]'" +
+                    "name = 'sales_order_item[" + data.product.id + "][product_size][" + data.id +
+                    "][sell_price]'" +
                     "value = '" + data.sell_price + "' > " +
-                    "<input type='hidden' id='discount_" + data.id + "' name = 'sales_order_item[" + data.product.id + "][product_size][" +
+                    "<input type='hidden' id='discount_" + data.id + "' name = 'sales_order_item[" + data
+                    .product.id + "][product_size][" +
                     data.id + "][discount_price]'" +
                     "value = '" + discount + "' > " +
                     "</td>"
@@ -169,11 +162,13 @@
                     "Rp. <span id='price_show_" + data.id + "'>" +
                     currencyFormat(sell_price) +
                     "</span>" +
-                    "<input type='hidden' id='total_sell_price_" + data.id + "' name = 'sales_order_item[" + data.product.id + "][product_size][" +
+                    "<input type='hidden' id='total_sell_price_" + data.id + "' name = 'sales_order_item[" +
+                    data.product.id + "][product_size][" +
                     data.id + "][total_sell_price]'" +
                     "value = '" + sell_price + "' > " +
                     "<input type ='hidden' id = 'total_profit_price_" + data.id + "'" +
-                    "value = '" + profit_price + "' name = 'sales_order_item[" + data.product.id + "][product_size][" +
+                    "value = '" + profit_price + "' name = 'sales_order_item[" + data.product.id +
+                    "][product_size][" +
                     data.id + "][total_profit_price]'" +
                     "> " +
                     "</td>"
