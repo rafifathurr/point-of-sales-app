@@ -25,20 +25,29 @@
         }
     });
 
-    function catalogue() {
+    function catalogue(page) {
 
         $('#catalogue').html('');
         let query = $('#search_keyword').val();
 
-        $.get("{{ route('sales-order.catalogueProduct') }}", {
-            query: query
-        }).done(function(data) {
-
-            $('#catalogue').html(data);
-
-        }).fail(function(xhr, status, error) {
-            sweetAlertError(error);
-        });
+        if (page != undefined) {
+            $.get("{{ route('sales-order.catalogueProduct') }}", {
+                page: page,
+                query: query
+            }).done(function(data) {
+                $('#catalogue').html(data);
+            }).fail(function(xhr, status, error) {
+                sweetAlertError(error);
+            });
+        } else {
+            $.get("{{ route('sales-order.catalogueProduct') }}", {
+                query: query
+            }).done(function(data) {
+                $('#catalogue').html(data);
+            }).fail(function(xhr, status, error) {
+                sweetAlertError(error);
+            });
+        }
     }
 
     function dataTable() {
