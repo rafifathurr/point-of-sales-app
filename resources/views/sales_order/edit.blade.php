@@ -111,7 +111,7 @@
                                                     @if (!is_null(old('sales_order_item')))
                                                         @foreach (old('sales_order_item') as $product_id => $sales_order_item_product)
                                                             @foreach ($sales_order_item_product['product_size'] as $product_size_id => $sales_order_item)
-                                                                <tr id='produxt_size_{{ $product_size_id }}'>
+                                                                <tr id='product_size_{{ $product_size_id }}'>
                                                                     <td>
                                                                         {{ $sales_order_item['product_name'] }}
                                                                         <input type="hidden"

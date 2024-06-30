@@ -124,7 +124,7 @@
 
                 let profit_price = parseInt(sell_price) - data.capital_price;
 
-                let tr = $("<tr id='produxt_size_" + data.id + "'></tr>");
+                let tr = $("<tr id='product_size_" + data.id + "'></tr>");
 
                 let td_product_size = $("<td>" +
                     data.product.name + ' - ' + data.size +
