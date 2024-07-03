@@ -2,16 +2,14 @@
     let failed = false;
 
     function dashboardSalesOrder() {
-        let token = $('meta[name="csrf-token"]').attr('content');
         let year = $('#sales_order_year').val();
         let month = $('#sales_order_month').val();
 
         $.ajax({
             url: '{{ url('dashboard/sales-order') }}',
-            type: 'POST',
+            type: 'GET',
             cache: false,
             data: {
-                _token: token,
                 month: month,
                 year: year,
             },
@@ -33,10 +31,9 @@
             destroy: true,
             ajax: {
                 url: '{{ url('dashboard/sales-order/datatable') }}',
-                type: 'POST',
+                type: 'GET',
                 cache: false,
                 data: {
-                    _token: token,
                     month: month,
                     year: year,
                 },
@@ -238,7 +235,6 @@
     }
 
     function exportSalesOrder() {
-        let token = $('meta[name="csrf-token"]').attr('content');
         let year = $('#sales_order_year').val();
         let month = $('#sales_order_month').val();
 
@@ -249,10 +245,9 @@
                 responseType: 'blob',
             },
             url: '{{ url('dashboard/sales-order/export') }}',
-            type: 'POST',
+            type: 'GET',
             cache: false,
             data: {
-                _token: token,
                 month: month,
                 year: year,
             },
@@ -270,15 +265,11 @@
     }
 
     function dashboardProduct() {
-        let token = $('meta[name="csrf-token"]').attr('content');
 
         $.ajax({
             url: '{{ url('dashboard/product') }}',
-            type: 'POST',
+            type: 'GET',
             cache: false,
-            data: {
-                _token: token,
-            },
             success: function(data) {
                 failed = false;
                 productWidget(data);
@@ -297,16 +288,14 @@
     }
 
     function dashboardStock() {
-        let token = $('meta[name="csrf-token"]').attr('content');
         let year = $('#stock_year').val();
         let month = $('#stock_month').val();
 
         $.ajax({
             url: '{{ url('dashboard/stock') }}',
-            type: 'POST',
+            type: 'GET',
             cache: false,
             data: {
-                _token: token,
                 month: month,
                 year: year,
             },
@@ -328,10 +317,9 @@
             destroy: true,
             ajax: {
                 url: '{{ url('dashboard/stock/datatable') }}',
-                type: 'POST',
+                type: 'GET',
                 cache: false,
                 data: {
-                    _token: token,
                     month: month,
                     year: year,
                 },
@@ -530,7 +518,6 @@
     }
 
     function exportStock() {
-        let token = $('meta[name="csrf-token"]').attr('content');
         let year = $('#stock_year').val();
         let month = $('#stock_month').val();
 
@@ -541,10 +528,9 @@
                 responseType: 'blob',
             },
             url: '{{ url('dashboard/stock/export') }}',
-            type: 'POST',
+            type: 'GET',
             cache: false,
             data: {
-                _token: token,
                 month: month,
                 year: year,
             },
@@ -562,9 +548,25 @@
     }
 
     function dashboardCoa() {
-        let token = $('meta[name="csrf-token"]').attr('content');
         let year = $('#coa_year').val();
         let month = $('#coa_month').val();
+
+        $.ajax({
+            url: '{{ url('dashboard/coa') }}',
+            type: 'GET',
+            cache: false,
+            data: {
+                month: month,
+                year: year,
+            },
+            success: function(data) {
+                failed = false;
+                coaWidget(data);
+            },
+            error: function(xhr, error, code) {
+                failed = true;
+            }
+        });
 
         $('#dt-coa').DataTable({
             autoWidth: false,
@@ -575,10 +577,9 @@
             destroy: true,
             ajax: {
                 url: '{{ url('dashboard/coa/datatable') }}',
-                type: 'POST',
+                type: 'GET',
                 cache: false,
                 data: {
-                    _token: token,
                     month: month,
                     year: year,
                 },
@@ -613,13 +614,114 @@
                 },
             ],
             order: [
-                [1, 'desc']
+                [0, 'asc']
             ]
         });
     }
 
+    function coaWidget(data) {
+        $('#total_debt_coa').html(data.widget.total_debt_coa);
+        $('#total_credit_coa').html(data.widget.total_credit_coa);
+        $('#nominal_debt_coa').html(data.widget.nominal_debt_coa);
+        $('#nominal_credit_coa').html(data.widget.nominal_credit_coa);
+
+        var areaData = {
+            labels: data.perday.days,
+            datasets: [{
+                data: data.perday.coa_debt_data,
+                backgroundColor: '#ff4747',
+                borderWidth: 2,
+                label: "Debt"
+            }, {
+                data: data.perday.coa_credit_data,
+                backgroundColor: '#57b657',
+                borderWidth: 2,
+                label: "Credit"
+            }]
+        };
+        var areaOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                filler: {
+                    propagate: false
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    ticks: {
+                        display: true,
+                        padding: 10,
+                        fontColor: "#6C7383"
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false,
+                        color: 'transparent',
+                        zeroLineColor: '#eeeeee'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        display: true,
+                        autoSkip: false,
+                        maxRotation: 0,
+                        max: data.total_sales_order,
+                        padding: 18,
+                        fontColor: "#6C7383"
+                    },
+                    gridLines: {
+                        display: true,
+                        color: "#f2f2f2",
+                        drawBorder: false
+                    }
+                }]
+            },
+            legend: {
+                display: true
+            },
+            tooltips: {
+                enabled: true
+            },
+            elements: {
+                line: {
+                    tension: .35
+                },
+                point: {
+                    radius: 0
+                }
+            }
+        }
+        var revenueChartCanvas = $("#coa-chart").get(0).getContext("2d");
+        var revenueChart = new Chart(revenueChartCanvas, {
+            type: 'bar',
+            data: areaData,
+            options: areaOptions
+        });
+
+        var coaChartCanvas = $("#coa-type-chart").get(0).getContext("2d");
+        var coaChart = new Chart(coaChartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Debt', 'Credit'],
+                datasets: [{
+                    data: [data.percentage.coa_debt_data, data.percentage.coa_credit_data, ],
+                    backgroundColor: ['#ff4747', '#57b657']
+                }]
+            },
+            options: {
+                maintainAspectRatio: true,
+                responsive: true,
+                legend: {
+                    display: true,
+                },
+            },
+        });
+    }
+
     function exportCoa() {
-        let token = $('meta[name="csrf-token"]').attr('content');
         let year = $('#coa_year').val();
         let month = $('#coa_month').val();
 
@@ -630,10 +732,9 @@
                 responseType: 'blob',
             },
             url: '{{ url('dashboard/coa/export') }}',
-            type: 'POST',
+            type: 'GET',
             cache: false,
             data: {
-                _token: token,
                 month: month,
                 year: year,
             },

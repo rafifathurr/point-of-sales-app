@@ -509,6 +509,136 @@ class DashboardController extends Controller
     /**
      * Show datatable of resource.
      */
+    public function coa(Request $request)
+    {
+        /**
+         * Validation request
+         */
+        if (!is_null($request->year) && !is_null($request->month)) {
+            /**
+             * Config Chart Pie and Widget
+             */
+            $coa_count = count(
+                ChartofAccount::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->whereMonth('date', $request->month)
+                    ->whereYear('date', $request->year)
+                    ->get(),
+            );
+
+            $coa_debt_count = count(
+                ChartofAccount::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->whereMonth('date', $request->month)
+                    ->whereYear('date', $request->year)
+                    ->where('type', 0)
+                    ->get(),
+            );
+
+            $coa_credit_count = count(
+                ChartofAccount::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->whereMonth('date', $request->month)
+                    ->whereYear('date', $request->year)
+                    ->where('type', 1)
+                    ->get(),
+            );
+
+            $coa_debt_nominal = ChartofAccount::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->where('type', 0)
+                ->sum('balance');
+
+            $coa_credit_nominal = ChartofAccount::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->where('type', 1)
+                ->sum('balance');
+
+            /**
+             * Widget Config
+             */
+            $data['widget']['total_debt_coa'][] = $coa_debt_count;
+            $data['widget']['total_credit_coa'][] = $coa_credit_count;
+            $data['widget']['nominal_debt_coa'] = 'Rp. ' . number_format($coa_debt_nominal, 0, ',', '.') . ',-';
+            $data['widget']['nominal_credit_coa'] = 'Rp. ' . number_format($coa_credit_nominal, 0, ',', '.') . ',-';
+
+            /**
+             * Data of Chart Pie
+             */
+            $data['percentage']['coa_debt_data'][] = round(($coa_debt_count / $coa_count) * 100);
+            $data['percentage']['coa_credit_data'][] = round(($coa_credit_count / $coa_count) * 100);
+
+            /**
+             * Config Bar Chart per Day
+             */
+            $number_of_day = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
+            if ($request->month == date('m')) {
+                for ($day = 1; $day <= date('d'); $day++) {
+                    $coa_debt_per_day = count(
+                        ChartofAccount::whereNull('deleted_by')
+                            ->whereNull('deleted_at')
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
+                            ->where('type', 0)
+                            ->get(),
+                    );
+
+                    $coa_credit_per_day = count(
+                        ChartofAccount::whereNull('deleted_by')
+                            ->whereNull('deleted_at')
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
+                            ->where('type', 1)
+                            ->get(),
+                    );
+
+                    $data['perday']['days'][] = $day;
+                    $data['perday']['coa_debt_data'][] = $coa_debt_per_day;
+                    $data['perday']['coa_credit_data'][] = $coa_credit_per_day;
+                }
+            } else {
+                for ($day = 1; $day <= $number_of_day; $day++) {
+                    $coa_debt_per_day = count(
+                        ChartofAccount::whereNull('deleted_by')
+                            ->whereNull('deleted_at')
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
+                            ->where('type', 0)
+                            ->get(),
+                    );
+
+                    $coa_credit_per_day = count(
+                        ChartofAccount::whereNull('deleted_by')
+                            ->whereNull('deleted_at')
+                            ->whereDay('date', $day)
+                            ->whereMonth('date', $request->month)
+                            ->whereYear('date', $request->year)
+                            ->where('type', 1)
+                            ->get(),
+                    );
+
+                    $data['perday']['days'][] = $day;
+                    $data['perday']['coa_debt_data'][] = $coa_debt_per_day;
+                    $data['perday']['coa_credit_data'][] = $coa_credit_per_day;
+                }
+            }
+
+            return response()->json($data, 200);
+        } else {
+            return response()->json(['message' => 'Invalid Request'], 400);
+        }
+    }
+
+    /**
+     * Show datatable of resource.
+     */
     public function coaDataTable(Request $request)
     {
         /**

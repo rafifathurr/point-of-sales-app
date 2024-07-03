@@ -49,15 +49,16 @@ Route::group(['middleware' => ['role:super-admin']], function () {
      */
     Route::group(['controller' => DashboardController::class, 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
-        Route::post('sales-order', [DashboardController::class, 'salesOrder'])->name('sales-order');
-        Route::post('product', [DashboardController::class, 'product'])->name('product');
-        Route::post('stock', [DashboardController::class, 'stock'])->name('stock');
-        Route::post('sales-order/datatable', [DashboardController::class, 'salesOrderDataTable'])->name('sales-order.dataTable');
-        Route::post('sales-order/export', [DashboardController::class, 'salesOrderExport'])->name('sales-order.export');
-        Route::post('stock/datatable', [DashboardController::class, 'stockDataTable'])->name('stock.dataTable');
-        Route::post('stock/export', [DashboardController::class, 'stockExport'])->name('stock.export');
-        Route::post('coa/datatable', [DashboardController::class, 'coaDataTable'])->name('coa.dataTable');
-        Route::post('coa/export', [DashboardController::class, 'coaExport'])->name('coa.export');
+        Route::get('sales-order', [DashboardController::class, 'salesOrder'])->name('sales-order');
+        Route::get('stock', [DashboardController::class, 'stock'])->name('stock');
+        Route::get('coa', [DashboardController::class, 'coa'])->name('coa');
+        Route::get('product', [DashboardController::class, 'product'])->name('product');
+        Route::get('sales-order/datatable', [DashboardController::class, 'salesOrderDataTable'])->name('sales-order.dataTable');
+        Route::get('sales-order/export', [DashboardController::class, 'salesOrderExport'])->name('sales-order.export');
+        Route::get('stock/datatable', [DashboardController::class, 'stockDataTable'])->name('stock.dataTable');
+        Route::get('stock/export', [DashboardController::class, 'stockExport'])->name('stock.export');
+        Route::get('coa/datatable', [DashboardController::class, 'coaDataTable'])->name('coa.dataTable');
+        Route::get('coa/export', [DashboardController::class, 'coaExport'])->name('coa.export');
     });
 
     /**

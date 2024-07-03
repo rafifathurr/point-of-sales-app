@@ -43,7 +43,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Income</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_income"></h5>
+                                            <h5 class="mb-2" id="total_income">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Profit</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_profit"></h5>
+                                            <h5 class="mb-2" id="total_profit">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -63,7 +63,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Sales Order</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_sales_order"></h5>
+                                            <h5 class="mb-2" id="total_sales_order">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -73,7 +73,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Products Sold</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_product_sold"></h5>
+                                            <h5 class="mb-2" id="total_product_sold">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@
                                     <div class="input-group w-100 mx-auto d-flex">
                                         <div class="p-0">
                                             <div class="row ml-auto">
-                                                <div class="col-md-3 pb-3 pl-0">
+                                                <div class="col-md-4 pb-3 pl-0">
                                                     <select class="form-control" id="coa_month">
                                                         @foreach ($dashboard['months'] as $month_num => $month)
                                                             <option value="{{ $month_num }}"
@@ -158,7 +158,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-3 pb-3 pl-0">
+                                                <div class="col-md-4 pb-3 pl-0">
                                                     <select class="form-control" id="coa_year">
                                                         @foreach ($dashboard['years'] as $year)
                                                             <option value="{{ $year['year'] }}"
@@ -168,16 +168,9 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-3 mx-auto pb-3 px-0">
-                                                    <button class="btn btn-primary" onclick="dashboardCoa()"
-                                                        title="Filter">
+                                                <div class="col-md-4 mx-auto pb-3 px-0">
+                                                    <button class="btn btn-primary" onclick="dashboardCoa()" title="Filter">
                                                         Filter
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-3 mx-auto pb-3 px-0">
-                                                    <button class="btn btn-success" onclick="exportCoa()"
-                                                        title="Filter">
-                                                        Export
                                                     </button>
                                                 </div>
                                             </div>
@@ -185,31 +178,98 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-bordered datatable" id="dt-coa">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                #
-                                            </th>
-                                            <th>
-                                                Date
-                                            </th>
-                                            <th>
-                                                Account Number
-                                            </th>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <th>
-                                                Type
-                                            </th>
-                                            <th>
-                                                Balance
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                            <div class="row">
+                                <div class="col-md-3 mb-3 stretch-card transparent">
+                                    <div class="card bg-danger text-white">
+                                        <div class="card-body">
+                                            <h5 class="mb-4 text-bold"><b>Total Debt</b></h5>
+                                            <span class="text-right">
+                                                <h5 class="mb-2" id="total_debt_coa">-</h5>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3 stretch-card transparent">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <h5 class="mb-4 text-bold"><b>Total Credit</b></h5>
+                                            <span class="text-right">
+                                                <h5 class="mb-2" id="total_credit_coa">-</h5>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3 stretch-card transparent">
+                                    <div class="card bg-danger text-white">
+                                        <div class="card-body">
+                                            <h5 class="mb-4 text-bold"><b>Nominal Debt</b></h5>
+                                            <span class="text-right">
+                                                <h5 class="mb-2" id="nominal_debt_coa">-</h5>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3 stretch-card transparent">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <h5 class="mb-4 text-bold"><b>Nominal Credit</b></h5>
+                                            <span class="text-right">
+                                                <h5 class="mb-2" id="nominal_credit_coa">-</h5>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-3 pb-3">
+                                <div class="col-md-6">
+                                    <h4 class="mt-4 mb-4"><b>Chart of Account Statistic</b></h4>
+                                    <canvas id="coa-chart"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="mt-4 mb-4"><b>Chart of Account Type Statistic</b></h4>
+                                    <canvas id="coa-type-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-12 p-3 mt-3 border-top border-top-1">
+                                <div class="d-flex justify-content-between my-3">
+                                    <div class="p-0 my-auto">
+                                        <h5><b>Sales Order Report</b></h5>
+                                    </div>
+                                    <div class="p-0">
+                                        <div class="input-group w-100 mx-auto d-flex">
+                                            <button class="btn btn-success" onclick="exportSalesOrder()"
+                                                title="Export Report">
+                                                Export
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered datatable" id="dt-coa">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    #
+                                                </th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    Account Number
+                                                </th>
+                                                <th>
+                                                    Name
+                                                </th>
+                                                <th>
+                                                    Type
+                                                </th>
+                                                <th>
+                                                    Balance
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -261,7 +321,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Stock In</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_stock_in"></h5>
+                                            <h5 class="mb-2" id="total_stock_in">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -271,7 +331,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Stock Out</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_stock_out"></h5>
+                                            <h5 class="mb-2" id="total_stock_out">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -281,7 +341,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Qty Stock In</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_qty_stock_in"></h5>
+                                            <h5 class="mb-2" id="total_qty_stock_in">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -291,7 +351,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Qty Stock Out</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_qty_stock_out"></h5>
+                                            <h5 class="mb-2" id="total_qty_stock_out">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -355,7 +415,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Product</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_product"></h5>
+                                            <h5 class="mb-2" id="total_product">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -365,7 +425,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Active Product</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_active_product"></h5>
+                                            <h5 class="mb-2" id="total_active_product">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -375,7 +435,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Inactive Product</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_inactive_product"></h5>
+                                            <h5 class="mb-2" id="total_inactive_product">-</h5>
                                         </span>
                                     </div>
                                 </div>
@@ -385,7 +445,7 @@
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Category Product</b></h5>
                                         <span class="text-right">
-                                            <h5 class="mb-2" id="total_category_product"></h5>
+                                            <h5 class="mb-2" id="total_category_product">-</h5>
                                         </span>
                                     </div>
                                 </div>
