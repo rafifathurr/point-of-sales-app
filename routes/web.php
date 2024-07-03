@@ -26,29 +26,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/**
- * Guest Access Middleware
- */
-Route::group(['middleware' => 'guest'], function () {
-    /**
-     * Auth Route
-     */
-    Route::get('login', [AuthController::class, 'login'])->name('login');
-    Route::post('authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
-});
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
+Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 /**
- * Auth Home Route
+ * Home Route
  */
 Route::group(['middleware' => 'auth'], function () {
-    /**
-     * Logout Route
-     */
-    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-
-    /**
-     * Home Route
-     */
     Route::get('/', function () {
         return view('home');
     })->name('home');
@@ -58,6 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
  * Super Admin Route Access
  */
 Route::group(['middleware' => ['role:super-admin']], function () {
+
     /**
      * Route Dashboard Method Module
      */
@@ -109,6 +95,7 @@ Route::group(['middleware' => ['role:super-admin']], function () {
  * Admin Route Access
  */
 Route::group(['middleware' => ['role:admin']], function () {
+
     /**
      * Route Stock In Module
      */
@@ -124,6 +111,7 @@ Route::group(['middleware' => ['role:admin']], function () {
  * Super Admin and Admin Route Access
  */
 Route::group(['middleware' => ['role:super-admin|admin']], function () {
+
     /**
      * Route Product Module
      */
@@ -166,6 +154,7 @@ Route::group(['middleware' => ['role:super-admin|admin']], function () {
  * Admin and Cashier Route Access
  */
 Route::group(['middleware' => ['role:admin|cashier']], function () {
+
     /**
      * Route Customer Module
      */
@@ -181,6 +170,7 @@ Route::group(['middleware' => ['role:admin|cashier']], function () {
  * Super Admin, Admin and Cashier Route Access
  */
 Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
+
     /**
      * Route Chart of Account Module
      */
