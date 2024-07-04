@@ -67,11 +67,8 @@
                                 <table class="table table-bordered datatable" id="product_size">
                                     <thead>
                                         <tr>
-                                            <th width="10%">
+                                            <th width="15%">
                                                 Size
-                                            </th>
-                                            <th>
-                                                Weight
                                             </th>
                                             <th>
                                                 Stock
@@ -94,13 +91,6 @@
                                         <tr id="form_size_product">
                                             <td>
                                                 <input type="text" class="form-control" id="size" id="size">
-                                            </td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    <input type="number" class="form-control" id="weight"
-                                                        min="0">
-                                                    <span class="input-group-text bg-default p-2">Gram</span>
-                                                </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex">
@@ -141,14 +131,6 @@
                                                     <input type='text' class='form-control'
                                                         name='product_size[{{ $index }}][size]'
                                                         value='{{ $product_size->size }}' required>
-                                                </td>
-                                                <td>
-                                                    <div class='d-flex'>
-                                                        <input type='number' class='form-control'
-                                                            name='product_size[{{ $index }}][weight]'
-                                                            min='0' value='{{ $product_size->weight }}' required>
-                                                        <span class='input-group-text bg-default p-2'>Gram</span>
-                                                    </div>
                                                 </td>
                                                 <td>
                                                     <div class='d-flex'>

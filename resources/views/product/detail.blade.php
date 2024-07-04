@@ -66,9 +66,6 @@
                                             Size
                                         </th>
                                         <th>
-                                            Weight
-                                        </th>
-                                        <th>
                                             Stock
                                         </th>
                                         @if ($show_capital_price)
@@ -89,9 +86,6 @@
                                         <tr>
                                             <td>
                                                 {{ $product_size->size }}
-                                            </td>
-                                            <td>
-                                                {{ $product_size->weight }} Gram
                                             </td>
                                             <td>
                                                 {{ $product_size->stock }} Pcs

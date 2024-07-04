@@ -214,7 +214,6 @@ class ProductController extends Controller
                                 $product_size = ProductSize::lockforUpdate()->create([
                                     'product_id' => $product->id,
                                     'size' => $size['size'],
-                                    'weight' => $size['weight'],
                                     'stock' => $size['stock'],
                                     'capital_price' => isset($size['capital_price']) ? $size['capital_price'] : null,
                                     'sell_price' => $size['sell_price'],
@@ -612,7 +611,7 @@ class ProductController extends Controller
                                                     $product_size = ProductSize::lockforUpdate()->create([
                                                         'product_id' => $id,
                                                         'size' => $size['size'],
-                                                        'weight' => $size['weight'],
+                
                                                         'stock' => $size['stock'],
                                                         'capital_price' => $size['capital_price'],
                                                         'sell_price' => $size['sell_price'],
@@ -626,7 +625,7 @@ class ProductController extends Controller
                                                     $product_size = ProductSize::lockforUpdate()->create([
                                                         'product_id' => $id,
                                                         'size' => $size['size'],
-                                                        'weight' => $size['weight'],
+                
                                                         'stock' => $size['stock'],
                                                         'sell_price' => $size['sell_price'],
                                                         'created_by' => Auth::user()->id,
@@ -836,7 +835,7 @@ class ProductController extends Controller
                                             $product_size = ProductSize::lockforUpdate()->create([
                                                 'product_id' => $id,
                                                 'size' => $size['size'],
-                                                'weight' => $size['weight'],
+        
                                                 'stock' => $size['stock'],
                                                 'capital_price' => $size['capital_price'],
                                                 'sell_price' => $size['sell_price'],
@@ -850,7 +849,7 @@ class ProductController extends Controller
                                             $product_size = ProductSize::lockforUpdate()->create([
                                                 'product_id' => $id,
                                                 'size' => $size['size'],
-                                                'weight' => $size['weight'],
+        
                                                 'stock' => $size['stock'],
                                                 'sell_price' => $size['sell_price'],
                                                 'created_by' => Auth::user()->id,

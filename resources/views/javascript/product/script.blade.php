@@ -70,7 +70,6 @@
 
     function addSizeProduct() {
         let size = $('#size').val();
-        let weight = $('#weight').val();
         let stock = $('#stock_item').val();
         let capital_price = $('#capital_price').val();
         let sell_price = $('#sell_price').val();
@@ -79,7 +78,7 @@
         let size_id = size.toLowerCase();
         let index = $("#product_size tbody tr").length - 1;
 
-        if (size != '' && weight != '' && stock != '' && capital_price != '' && sell_price != '') {
+        if (size != '' && stock != '' && capital_price != '' && sell_price != '') {
 
             let form_product = $("#form_size_product");
             let tr = $("<tr></tr>");
@@ -87,15 +86,6 @@
                 "<input type='text' class='form-control' name='product_size[" + index + "][size]' value='" +
                 size +
                 "' required>" +
-                "</td>");
-            let td_weight = $("<td>" +
-                "<div class='d-flex'>" +
-                "<input type='number' class='form-control' name='product_size[" + index +
-                "][weight]' min='0' value='" +
-                weight +
-                "' required>" +
-                "<span class='input-group-text bg-default p-2'>Gram</span>" +
-                "</div>" +
                 "</td>");
             let td_stock = $("<td>" +
                 "<div class='d-flex'>" +
@@ -161,7 +151,7 @@
             );
 
             // Append Tr Element
-            (tr.append(td_size).append(td_weight).append(td_stock).append(td_capital_price).append(td_sell_price)
+            (tr.append(td_size).append(td_stock).append(td_capital_price).append(td_sell_price)
                 .append(td_discount).append(td_del)).insertAfter(form_product)
 
             // Append To Table
@@ -169,7 +159,6 @@
 
             // Reset Field Value
             $('#size').val('');
-            $('#weight').val('');
             $('#stock_item').val('');
             $('#capital_price').val('');
             $('#sell_price').val('');
