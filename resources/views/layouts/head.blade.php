@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendors/ti-icons/css/themify-icons.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendors/sweetalert2/sweetalert2.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendors/select2/select2.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('js/select.dataTables.min.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ asset('css/vertical-layout-light/style.css') }}" />

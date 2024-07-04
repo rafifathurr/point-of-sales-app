@@ -30,6 +30,13 @@
                                             </div>
                                         </div>
                                         <hr>
+                                        <div class="row g-4 mt-5" id="waiting-container">
+                                            <div class="col-md-12">
+                                                <h5 class="text-center">
+                                                    <b>Please Waiting...</b>
+                                                </h5>
+                                            </div>
+                                        </div>
                                         <div id="catalogue">
                                         </div>
                                     </div>
@@ -73,9 +80,31 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="customer">Customer Member</label>
-                                                <select class="form-control" id="customer" name="customer">
-                                                    <option disabled hidden selected>Choose Customer Member</option>
+                                                <label for="customer_phone">Customer Phone</label>
+                                                <div class="input-group">
+                                                    <select class="form-control" id="customer_phone"
+                                                        style="height: 2.875rem !important;"
+                                                        onchange="customerChange(this)">
+                                                        @foreach ($customer as $cst)
+                                                            @if (!is_null(old('customer')) && old('customer') == $cst->id)
+                                                                <option value="{{ $cst->id }}" selected>
+                                                                    {{ $cst->phone }}
+                                                                </option>
+                                                            @else
+                                                                <option value="{{ $cst->id }}">
+                                                                    {{ $cst->phone }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                    <span class="input-group-text"
+                                                        onclick="resetSelected()">
+                                                        <i class="mdi mdi-refresh"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="customer">Customer Name</label>
+                                                <select class="form-control" id="customer" name="customer" readonly>
                                                     @foreach ($customer as $cst)
                                                         @if (!is_null(old('customer')) && old('customer') == $cst->id)
                                                             <option value="{{ $cst->id }}" selected>
@@ -131,6 +160,7 @@
                                                                             id="qty_{{ $product_size_id }}"
                                                                             max = '{{ $sales_order_item['stock'] }}'
                                                                             min='1'
+                                                                            oninput = "validationQty(this, {{ $product_size_id }})"
                                                                             value="{{ $sales_order_item['qty'] }}"
                                                                             name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][qty]">
                                                                         <input type='hidden'
@@ -213,7 +243,7 @@
                                             <a href="{{ route('sales-order.index') }}" class="btn btn-sm btn-danger">
                                                 Back
                                             </a>
-                                            <button type="submit" class="btn btn-sm btn-primary ml-2">Submit</button>
+                                            <button type="submit" class="btn btn-sm btn-primary mr-2">Submit</button>
                                         </div>
                                     </div>
                                 </div>
@@ -234,6 +264,8 @@
     @include('javascript.sales_order.script')
     <script>
         catalogue();
+        $('#customer_phone').val('').change();
+        $('#customer').val('').change();
     </script>
 </body>
 

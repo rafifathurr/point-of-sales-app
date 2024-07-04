@@ -70,38 +70,76 @@ class SalesOrderController extends Controller
         return view('sales_order.create', compact('payment_method', 'customer', 'store_route', 'hide_button_hamburger_nav'));
     }
 
+    /**
+     * Get Catalogue Menu
+     */
     public function catalogueProduct(Request $request)
     {
+        /**
+         * Request Parameter
+         */
         $input = $request->all();
 
-        if (!is_null($input['query'])) {
-            /**
-             * Get All Product
-             */
-            $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
-                ->whereHas('product', function ($query) use ($input) {
-                    return $query->where('status', 1)->where('name', 'like', '%' . $input['query'] . '%');
-                })
-                ->whereNull('deleted_by')
-                ->whereNull('deleted_at')
-                ->paginate(9);
-        } else {
-            /**
-             * Get All Product
-             */
-            $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
-                ->whereHas('product', function ($query) {
-                    return $query->where('status', 1);
-                })
-                ->whereNull('deleted_by')
-                ->whereNull('deleted_at')
-                ->paginate(9);
-        }
+        /**
+         * Request For Update Order
+         */
+        if (!isset($input['update'])) {
+            if (!is_null($input['query'])) {
+                /**
+                 * Get All Product
+                 */
+                $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
+                    ->whereHas('product', function ($query) use ($input) {
+                        return $query->where('status', 1)->where('name', 'like', '%' . $input['query'] . '%');
+                    })
+                    ->whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->paginate(9);
+            } else {
+                /**
+                 * Get All Product
+                 */
+                $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
+                    ->whereHas('product', function ($query) {
+                        return $query->where('status', 1);
+                    })
+                    ->whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->paginate(9);
+            }
 
-        if (count($product_size) > 0) {
-            return view('sales_order.includes.catalogue', ['product_size' => $product_size]);
+            if (count($product_size) > 0) {
+                return view('sales_order.includes.catalogue', ['product_size' => $product_size, 'update' => false]);
+            } else {
+                return view('sales_order.includes.notfound');
+            }
         } else {
-            return view('sales_order.includes.notfound');
+            if (!is_null($input['query'])) {
+                /**
+                 * Get All Product
+                 */
+                $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
+                    ->whereHas('product', function ($query) use ($input) {
+                        return $query->where('name', 'like', '%' . $input['query'] . '%');
+                    })
+                    ->whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->paginate(9);
+            } else {
+                /**
+                 * Get All Product
+                 */
+                $product_size = ProductSize::with(['product.categoryProduct', 'discount'])
+                    ->whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->paginate(9);
+            }
+
+            if (count($product_size) > 0) {
+                return view('sales_order.includes.catalogue', ['product_size' => $product_size, 'update' => false]);
+            } else {
+                return view('sales_order.includes.notfound');
+            }
         }
     }
 
@@ -145,8 +183,8 @@ class SalesOrderController extends Controller
                 /**
                  * Validation Role Has Access Edit and Delete
                  */
-                if (User::find(Auth::user()->id)->hasRole(['admin', 'cashier'])) {
-                    // $btn_action .= '<a href="' . route('sales-order.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</a>';
+                if (User::find(Auth::user()->id)->hasRole(['admin', 'cashier']) && Auth::user()->id == $data->created_by) {
+                    $btn_action .= '<a href="' . route('sales-order.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</a>';
                     $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Delete">Delete</button>';
                 }
                 $btn_action .= '<a href="' . route('sales-order.invoice', ['id' => $data->id]) . '" class="btn btn-sm btn-success ml-2" target="_blank" title="Invoice">Invoice</a>';
@@ -216,19 +254,20 @@ class SalesOrderController extends Controller
                  */
                 if (!is_null($sales_order->customer_id)) {
                     /**
-                     * Configuration calculation point customer
+                     * Customer Record
                      */
-                    if (intval($sales_order->grand_sell_price) >= 100000) {
-                        $point_result = round(intval($sales_order->grand_sell_price) / 100000);
-                    } else {
-                        $point_result = 0;
-                    }
+                    $customer = Customer::find($sales_order->customer_id);
+
+                    /**
+                     * Calculation Point
+                     */
+                    $calculation_point = $customer->point + $this->generatePoint($sales_order->grand_sell_price);
 
                     /**
                      * Update Customer Point Record
                      */
                     $customer_update = Customer::where('id', $sales_order->customer_id)->update([
-                        'point' => $point_result,
+                        'point' => $calculation_point,
                         'updated_by' => Auth::user()->id,
                     ]);
 
@@ -566,32 +605,18 @@ class SalesOrderController extends Controller
              * Validation Sales Order id
              */
             if (!is_null($sales_order)) {
-                /**
-                 * Get All Payment Method
-                 */
-                $payment_method = PaymentMethod::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
                 /**
-                 * Get All Customer Method
+                 * Point Obtained from Sales Order
                  */
-                $customer = Customer::whereNull('deleted_by')->whereNull('deleted_at')->get();
-
-                /**
-                 * Update Route
-                 */
-                // $update_route = route('sales-order.update');
-
-                /**
-                 * Statement sales order create
-                 */
-                $hide_button_hamburger_nav = true;
+                $point_obtained = $this->generatePoint($sales_order->grand_sell_price);
 
                 /**
                  * Show Capital Price Access Based Role
                  */
                 $show_capital_price = User::find(Auth::user()->id)->hasRole(['super-admin', 'admin']);
 
-                return view('sales_order.detail', compact('sales_order', 'show_capital_price', 'payment_method', 'customer', 'hide_button_hamburger_nav'));
+                return view('sales_order.detail', compact('sales_order', 'show_capital_price', 'point_obtained'));
             } else {
                 return redirect()
                     ->back()
@@ -619,7 +644,6 @@ class SalesOrderController extends Controller
              * Validation Sales Order id
              */
             if (!is_null($sales_order)) {
-
                 /**
                  * Return PDF format
                  */
@@ -652,11 +676,25 @@ class SalesOrderController extends Controller
              */
             if (!is_null($sales_order)) {
                 /**
-                 * Show Capital Price Access Based Role
+                 * Update Route
                  */
-                $show_capital_price = User::find(Auth::user()->id)->hasRole(['super-admin', 'admin']);
+                $update_route = route('sales-order.update', ['id' => $id]);
 
-                return view('sales_order.edit', compact('sales_order', 'show_capital_price'));
+                /**
+                 * Get All Payment Method
+                 */
+                $payment_method = PaymentMethod::whereNull('deleted_by')->whereNull('deleted_at')->get();
+
+                /**
+                 * Get All Customer Method
+                 */
+                $customer = Customer::whereNull('deleted_by')->whereNull('deleted_at')->get();
+                /**
+                 * Statement sales order create
+                 */
+                $hide_button_hamburger_nav = true;
+
+                return view('sales_order.edit', compact('update_route', 'sales_order', 'payment_method', 'customer', 'hide_button_hamburger_nav'));
             } else {
                 return redirect()
                     ->back()
@@ -674,7 +712,555 @@ class SalesOrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            /**
+             * Validation Request Body Variables
+             */
+            $request->validate([
+                'type' => 'required',
+                'payment_method' => 'required',
+                'sales_order_item' => 'required',
+                'total_capital_price' => 'required',
+                'total_sell_price' => 'required',
+                'discount_price' => 'required',
+                'grand_sell_price' => 'required',
+                'grand_profit_price' => 'required',
+            ]);
+
+            /**
+             * Last Sales Order Record
+             */
+            $sales_order = SalesOrder::with(['customer', 'paymentMethod', 'salesOrderItem.productSize.product'])->find($id);
+
+            /**
+             * Begin Transaction
+             */
+            DB::beginTransaction();
+
+            /**
+             * Update Sales Order
+             */
+            $sales_order_updated = SalesOrder::where('id', $id)->update([
+                'customer_id' => $request->customer,
+                'payment_method_id' => $request->payment_method,
+                'type' => $request->type,
+                'total_capital_price' => $request->total_capital_price,
+                'total_sell_price' => $request->total_sell_price,
+                'discount_price' => $request->discount_price,
+                'grand_sell_price' => $request->grand_sell_price,
+                'grand_profit_price' => $request->grand_profit_price,
+                'updated_by' => Auth::user()->id,
+            ]);
+
+            if ($sales_order_updated) {
+                /**
+                 * Validation request customer
+                 */
+                if (!is_null($request->customer) || !is_null($sales_order->customer_id)) {
+                    /**
+                     * Validation Request Customer and Customer Record Sales Order
+                     */
+                    if (!is_null($request->customer) && !is_null($sales_order->customer_id)) {
+                        /**
+                         * Validation Customer Requested Equals thann Sales Order Customer Record
+                         */
+                        if ($request->customer == $sales_order->customer_id) {
+                            /**
+                             * Customer Record
+                             */
+                            $customer = Customer::find($sales_order->customer_id);
+
+                            /**
+                             * Calculation Last Point
+                             */
+                            $calculation_point_last = $customer->point - $this->generatePoint($sales_order->grand_sell_price);
+
+                            /**
+                             * Check Calculation Less Than 0
+                             */
+                            if ($calculation_point_last < 0) {
+                                $calculation_point_last = 0;
+                            }
+
+                            /**
+                             * Calculation Point Result
+                             */
+                            $calculation_point_result = $calculation_point_last + $this->generatePoint($request->grand_sell_price);
+
+                            /**
+                             * Update Customer Point Record
+                             */
+                            $customer_update = Customer::where('id', $sales_order->customer_id)->update([
+                                'point' => $calculation_point_result,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+
+                            if ($customer_update) {
+                                /**
+                                 * Destroy Last Sales Order Item
+                                 */
+                                $sales_order_item_destroy = SalesOrderItem::where('sales_order_id', $id)->update([
+                                    'deleted_by' => Auth::user()->id,
+                                    'deleted_at' => date('Y-m-d H:i:s'),
+                                ]);
+
+                                if ($sales_order_item_destroy) {
+                                    /**
+                                     * Each Sales Order Item Product Request
+                                     */
+                                    foreach ($request->sales_order_item as $sales_order_item_request_product) {
+                                        /**
+                                         * Each Sales Order Item Product Size Request
+                                         */
+                                        foreach ($sales_order_item_request_product['product_size'] as $product_size_id => $sales_order_item_request_product_size) {
+                                            /**
+                                             * Create Sales Order Item Record
+                                             */
+                                            $sales_order_item = SalesOrderItem::lockforUpdate()->create([
+                                                'product_size_id' => $product_size_id,
+                                                'sales_order_id' => $sales_order->id,
+                                                'qty' => $sales_order_item_request_product_size['qty'],
+                                                'capital_price' => $sales_order_item_request_product_size['capital_price'],
+                                                'sell_price' => $sales_order_item_request_product_size['sell_price'],
+                                                'discount_price' => $sales_order_item_request_product_size['discount_price'],
+                                                'total_sell_price' => $sales_order_item_request_product_size['total_sell_price'],
+                                                'total_profit_price' => $sales_order_item_request_product_size['total_profit_price'],
+                                                'created_by' => Auth::user()->id,
+                                                'updated_by' => Auth::user()->id,
+                                            ]);
+
+                                            /**
+                                             * Validation Create Sales Order Item Record
+                                             */
+                                            if (!$sales_order_item) {
+                                                /**
+                                                 * Failed Store Record
+                                                 */
+                                                DB::rollBack();
+                                                return redirect()
+                                                    ->back()
+                                                    ->with(['failed' => 'Failed Store Sales Order Item'])
+                                                    ->withInput();
+                                            }
+                                        }
+                                    }
+
+                                    DB::commit();
+                                    return redirect()
+                                        ->route('sales-order.show', ['id' => $sales_order->id])
+                                        ->with(['success' => 'Successfully Update Sales Order']);
+                                } else {
+                                    /**
+                                     * Failed Update Destroy
+                                     */
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Destroy Sales Order Item'])
+                                        ->withInput();
+                                }
+                            } else {
+                                /**
+                                 * Failed Update Record
+                                 */
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Failed Update Customer'])
+                                    ->withInput();
+                            }
+                        } else {
+                            /**
+                             * Customer Record
+                             */
+                            $customer = Customer::find($sales_order->customer_id);
+                            $customer_new = Customer::find($request->customer);
+
+                            /**
+                             * Calculation Last Point
+                             */
+                            $calculation_point_last = $customer->point - $this->generatePoint($sales_order->grand_sell_price);
+
+                            /**
+                             * Check Calculation Less Than 0
+                             */
+                            if ($calculation_point_last < 0) {
+                                $calculation_point_last = 0;
+                            }
+
+                            /**
+                             * Calculation Point Result
+                             */
+                            $calculation_point_result = $customer_new->point + $this->generatePoint($request->grand_sell_price);
+
+                            /**
+                             * Update Customer Point Record
+                             */
+                            $customer_update = Customer::where('id', $sales_order->customer_id)->update([
+                                'point' => $calculation_point_last,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+
+                            $customer_new_update = Customer::where('id', $request->customer)->update([
+                                'point' => $calculation_point_result,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+
+                            if ($customer_update && $customer_new_update) {
+                                /**
+                                 * Destroy Last Sales Order Item
+                                 */
+                                $sales_order_item_destroy = SalesOrderItem::where('sales_order_id', $id)->update([
+                                    'deleted_by' => Auth::user()->id,
+                                    'deleted_at' => date('Y-m-d H:i:s'),
+                                ]);
+
+                                if ($sales_order_item_destroy) {
+                                    /**
+                                     * Each Sales Order Item Product Request
+                                     */
+                                    foreach ($request->sales_order_item as $sales_order_item_request_product) {
+                                        /**
+                                         * Each Sales Order Item Product Size Request
+                                         */
+                                        foreach ($sales_order_item_request_product['product_size'] as $product_size_id => $sales_order_item_request_product_size) {
+                                            /**
+                                             * Create Sales Order Item Record
+                                             */
+                                            $sales_order_item = SalesOrderItem::lockforUpdate()->create([
+                                                'product_size_id' => $product_size_id,
+                                                'sales_order_id' => $sales_order->id,
+                                                'qty' => $sales_order_item_request_product_size['qty'],
+                                                'capital_price' => $sales_order_item_request_product_size['capital_price'],
+                                                'sell_price' => $sales_order_item_request_product_size['sell_price'],
+                                                'discount_price' => $sales_order_item_request_product_size['discount_price'],
+                                                'total_sell_price' => $sales_order_item_request_product_size['total_sell_price'],
+                                                'total_profit_price' => $sales_order_item_request_product_size['total_profit_price'],
+                                                'created_by' => Auth::user()->id,
+                                                'updated_by' => Auth::user()->id,
+                                            ]);
+
+                                            /**
+                                             * Validation Create Sales Order Item Record
+                                             */
+                                            if (!$sales_order_item) {
+                                                /**
+                                                 * Failed Store Record
+                                                 */
+                                                DB::rollBack();
+                                                return redirect()
+                                                    ->back()
+                                                    ->with(['failed' => 'Failed Store Sales Order Item'])
+                                                    ->withInput();
+                                            }
+                                        }
+                                    }
+
+                                    DB::commit();
+                                    return redirect()
+                                        ->route('sales-order.show', ['id' => $sales_order->id])
+                                        ->with(['success' => 'Successfully Update Sales Order']);
+                                } else {
+                                    /**
+                                     * Failed Update Destroy
+                                     */
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Destroy Sales Order Item'])
+                                        ->withInput();
+                                }
+                            } else {
+                                /**
+                                 * Failed Update Record
+                                 */
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Failed Update Customer'])
+                                    ->withInput();
+                            }
+                        }
+                    } else {
+                        /**
+                         * Validation Customer Requested and Last Record Haven't Customer Record
+                         */
+                        if (!is_null($request->customer) && is_null($sales_order->customer_id)) {
+                            /**
+                             * Customer Record
+                             */
+                            $customer = Customer::find($request->customer);
+
+                            /**
+                             * Calculation Point
+                             */
+                            $calculation_point = $customer->point + $this->generatePoint($request->grand_sell_price);
+
+                            /**
+                             * Update Customer Point Record
+                             */
+                            $customer_update = Customer::where('id', $request->customer)->update([
+                                'point' => $calculation_point,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+
+                            if ($customer_update) {
+                                /**
+                                 * Destroy Last Sales Order Item
+                                 */
+                                $sales_order_item_destroy = SalesOrderItem::where('sales_order_id', $id)->update([
+                                    'deleted_by' => Auth::user()->id,
+                                    'deleted_at' => date('Y-m-d H:i:s'),
+                                ]);
+
+                                if ($sales_order_item_destroy) {
+                                    /**
+                                     * Each Sales Order Item Product Request
+                                     */
+                                    foreach ($request->sales_order_item as $sales_order_item_request_product) {
+                                        /**
+                                         * Each Sales Order Item Product Size Request
+                                         */
+                                        foreach ($sales_order_item_request_product['product_size'] as $product_size_id => $sales_order_item_request_product_size) {
+                                            /**
+                                             * Create Sales Order Item Record
+                                             */
+                                            $sales_order_item = SalesOrderItem::lockforUpdate()->create([
+                                                'product_size_id' => $product_size_id,
+                                                'sales_order_id' => $sales_order->id,
+                                                'qty' => $sales_order_item_request_product_size['qty'],
+                                                'capital_price' => $sales_order_item_request_product_size['capital_price'],
+                                                'sell_price' => $sales_order_item_request_product_size['sell_price'],
+                                                'discount_price' => $sales_order_item_request_product_size['discount_price'],
+                                                'total_sell_price' => $sales_order_item_request_product_size['total_sell_price'],
+                                                'total_profit_price' => $sales_order_item_request_product_size['total_profit_price'],
+                                                'created_by' => Auth::user()->id,
+                                                'updated_by' => Auth::user()->id,
+                                            ]);
+
+                                            /**
+                                             * Validation Create Sales Order Item Record
+                                             */
+                                            if (!$sales_order_item) {
+                                                /**
+                                                 * Failed Store Record
+                                                 */
+                                                DB::rollBack();
+                                                return redirect()
+                                                    ->back()
+                                                    ->with(['failed' => 'Failed Store Sales Order Item'])
+                                                    ->withInput();
+                                            }
+                                        }
+                                    }
+
+                                    DB::commit();
+                                    return redirect()
+                                        ->route('sales-order.show', ['id' => $sales_order->id])
+                                        ->with(['success' => 'Successfully Update Sales Order']);
+                                } else {
+                                    /**
+                                     * Failed Update Destroy
+                                     */
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Destroy Sales Order Item'])
+                                        ->withInput();
+                                }
+                            } else {
+                                /**
+                                 * Failed Update Record
+                                 */
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Failed Update Customer'])
+                                    ->withInput();
+                            }
+                        } else {
+                            /**
+                             * Customer Record
+                             */
+                            $customer = Customer::find($sales_order->customer_id);
+
+                            /**
+                             * Calculation Point
+                             */
+                            $calculation_point = $customer->point - $this->generatePoint($sales_order->grand_sell_price);
+
+                            /**
+                             * Check Calculation Less Than 0
+                             */
+                            if ($calculation_point < 0) {
+                                $calculation_point = 0;
+                            }
+
+                            /**
+                             * Update Customer Point Record
+                             */
+                            $customer_update = Customer::where('id', $sales_order->customer_id)->update([
+                                'point' => $calculation_point,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+
+                            if ($customer_update) {
+                                /**
+                                 * Destroy Last Sales Order Item
+                                 */
+                                $sales_order_item_destroy = SalesOrderItem::where('sales_order_id', $id)->update([
+                                    'deleted_by' => Auth::user()->id,
+                                    'deleted_at' => date('Y-m-d H:i:s'),
+                                ]);
+
+                                if ($sales_order_item_destroy) {
+                                    /**
+                                     * Each Sales Order Item Product Request
+                                     */
+                                    foreach ($request->sales_order_item as $sales_order_item_request_product) {
+                                        /**
+                                         * Each Sales Order Item Product Size Request
+                                         */
+                                        foreach ($sales_order_item_request_product['product_size'] as $product_size_id => $sales_order_item_request_product_size) {
+                                            /**
+                                             * Create Sales Order Item Record
+                                             */
+                                            $sales_order_item = SalesOrderItem::lockforUpdate()->create([
+                                                'product_size_id' => $product_size_id,
+                                                'sales_order_id' => $sales_order->id,
+                                                'qty' => $sales_order_item_request_product_size['qty'],
+                                                'capital_price' => $sales_order_item_request_product_size['capital_price'],
+                                                'sell_price' => $sales_order_item_request_product_size['sell_price'],
+                                                'discount_price' => $sales_order_item_request_product_size['discount_price'],
+                                                'total_sell_price' => $sales_order_item_request_product_size['total_sell_price'],
+                                                'total_profit_price' => $sales_order_item_request_product_size['total_profit_price'],
+                                                'created_by' => Auth::user()->id,
+                                                'updated_by' => Auth::user()->id,
+                                            ]);
+
+                                            /**
+                                             * Validation Create Sales Order Item Record
+                                             */
+                                            if (!$sales_order_item) {
+                                                /**
+                                                 * Failed Store Record
+                                                 */
+                                                DB::rollBack();
+                                                return redirect()
+                                                    ->back()
+                                                    ->with(['failed' => 'Failed Store Sales Order Item'])
+                                                    ->withInput();
+                                            }
+                                        }
+                                    }
+
+                                    DB::commit();
+                                    return redirect()
+                                        ->route('sales-order.show', ['id' => $sales_order->id])
+                                        ->with(['success' => 'Successfully Update Sales Order']);
+                                } else {
+                                    /**
+                                     * Failed Update Destroy
+                                     */
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Destroy Sales Order Item'])
+                                        ->withInput();
+                                }
+                            } else {
+                                /**
+                                 * Failed Update Record
+                                 */
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Failed Update Customer'])
+                                    ->withInput();
+                            }
+                        }
+                    }
+                } else {
+                    /**
+                     * Destroy Last Sales Order Item
+                     */
+                    $sales_order_item_destroy = SalesOrderItem::where('sales_order_id', $id)->update([
+                        'deleted_by' => Auth::user()->id,
+                        'deleted_at' => date('Y-m-d H:i:s'),
+                    ]);
+
+                    if ($sales_order_item_destroy) {
+                        /**
+                         * Each Sales Order Item Product Request
+                         */
+                        foreach ($request->sales_order_item as $sales_order_item_request_product) {
+                            /**
+                             * Each Sales Order Item Product Size Request
+                             */
+                            foreach ($sales_order_item_request_product['product_size'] as $product_size_id => $sales_order_item_request_product_size) {
+                                /**
+                                 * Create Sales Order Item Record
+                                 */
+                                $sales_order_item = SalesOrderItem::lockforUpdate()->create([
+                                    'product_size_id' => $product_size_id,
+                                    'sales_order_id' => $sales_order->id,
+                                    'qty' => $sales_order_item_request_product_size['qty'],
+                                    'capital_price' => $sales_order_item_request_product_size['capital_price'],
+                                    'sell_price' => $sales_order_item_request_product_size['sell_price'],
+                                    'discount_price' => $sales_order_item_request_product_size['discount_price'],
+                                    'total_sell_price' => $sales_order_item_request_product_size['total_sell_price'],
+                                    'total_profit_price' => $sales_order_item_request_product_size['total_profit_price'],
+                                    'created_by' => Auth::user()->id,
+                                    'updated_by' => Auth::user()->id,
+                                ]);
+
+                                /**
+                                 * Validation Create Sales Order Item Record
+                                 */
+                                if (!$sales_order_item) {
+                                    /**
+                                     * Failed Store Record
+                                     */
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Failed Store Sales Order Item'])
+                                        ->withInput();
+                                }
+                            }
+                        }
+
+                        DB::commit();
+                        return redirect()
+                            ->route('sales-order.show', ['id' => $sales_order->id])
+                            ->with(['success' => 'Successfully Update Sales Order']);
+                    } else {
+                        /**
+                         * Failed Update Destroy
+                         */
+                        DB::rollBack();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Failed Destroy Sales Order Item'])
+                            ->withInput();
+                    }
+                }
+            } else {
+                /**
+                 * Failed Update Record
+                 */
+                DB::rollBack();
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Failed Update Sales Order'])
+                    ->withInput();
+            }
+        } catch (Exception $e) {
+            return redirect()
+                ->route('sales-order.create')
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**
@@ -728,5 +1314,19 @@ class SalesOrderController extends Controller
         } catch (Exception $e) {
             session()->flash('failed', $e->getMessage());
         }
+    }
+
+    /**
+     * Calculation Point Formula
+     */
+    private function generatePoint($price)
+    {
+        $point_result = 0;
+        if (intval($price) >= 100000) {
+            $point_result = round(intval($price) / 100000);
+        } else {
+            $point_result = 0;
+        }
+        return $point_result;
     }
 }

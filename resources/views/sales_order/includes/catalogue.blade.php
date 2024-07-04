@@ -3,11 +3,10 @@
         <div class="col-md-6 col-lg-4 col-xl-4 py-3">
             <div class="rounded position-relative shadow">
                 <div class="w-100 rounded-top border-bottom border-bottom-secondary bg-image"
-                    style="background-image:url('{{ '../' . $per_product_size->product->picture }}')">
+                    style="background-image:url('{{ asset($per_product_size->product->picture) }}')">
                 </div>
                 <div class="position-absolute" style="top: 10px; left: 10px;">
-                    <div
-                        class="p-1 bg-primary text-white px-2 py-1 mr-1 rounded shadow">
+                    <div class="p-1 bg-primary text-white px-2 py-1 mr-1 rounded shadow">
                         <b>{{ $per_product_size->product->categoryProduct->name }}</b>
                     </div>
                 </div>
@@ -32,10 +31,7 @@
                         @if ($per_product_size->discount->percentage > 0)
                             @php
                                 $product_sell_price =
-                                    ($per_product_size->sell_price *
-                                        (100 -
-                                            $per_product_size->discount
-                                                ->percentage)) /
+                                    ($per_product_size->sell_price * (100 - $per_product_size->discount->percentage)) /
                                     100;
                             @endphp
                             <h5 class="text-dark mb-2">
@@ -59,9 +55,9 @@
                         @endif
                     </div>
                     <div class="my-3">
-                        <button type="button"
-                            onclick="addProduct({{ $per_product_size->id }})"
-                            class="btn btn-sm btn-block btn-outline-primary rounded">
+                        <button type="button" onclick="addProduct({{ $per_product_size->id }})"
+                            class="btn btn-sm btn-block btn-outline-primary rounded"
+                            id="button_product_size_{{ $per_product_size->id }}">
                             {{-- <i class="fa fa-plus me-2"></i> &nbsp; --}}
                             Add Product
                         </button>
@@ -76,14 +72,28 @@
         {{ $product_size->links() }}
     </div>
 </div>
-<script>
-    $('.pagination a').on('click', function(event) {
-        event.preventDefault();
+@if ($update)
+    <script>
+        $('.pagination a').on('click', function(event) {
+            event.preventDefault();
 
-        $('li').removeClass('active');
-        $(this).parent('li').addClass('active');
+            $('li').removeClass('active');
+            $(this).parent('li').addClass('active');
 
-        let page = $(this).attr('href').split('page=')[1];
-        catalogue(page);
-    });
-</script>
+            let page = $(this).attr('href').split('page=')[1];
+            catalogueUpdate(page);
+        });
+    </script>
+@else
+    <script>
+        $('.pagination a').on('click', function(event) {
+            event.preventDefault();
+
+            $('li').removeClass('active');
+            $(this).parent('li').addClass('active');
+
+            let page = $(this).attr('href').split('page=')[1];
+            catalogue(page);
+        });
+    </script>
+@endif

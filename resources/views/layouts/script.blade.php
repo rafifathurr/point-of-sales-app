@@ -6,6 +6,7 @@
 <script src="{{ asset('vendors/datatables.net/jquery.dataTables.js') }}"></script>
 <script src="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script>
 <script src="{{ asset('vendors/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
 <script src="{{ asset('js/dataTables.select.min.js') }}"></script>
 
 <!-- End plugin js for this page -->

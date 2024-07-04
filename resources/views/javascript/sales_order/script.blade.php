@@ -1,4 +1,8 @@
 <script type="text/javascript">
+    $('#customer_phone').select2();
+    $('#customer').css("pointer-events", "none");
+    $('.select2-selection--single').css('height', '2.875rem');
+
     $("form").submit(function(e) {
         e.preventDefault();
         if ($("input[name='sales_order_item_check[]']").val() === undefined) {
@@ -25,8 +29,18 @@
         }
     });
 
+    function resetSelected() {
+        $('#customer_phone').val('').change();
+        $('#customer').val('').change();
+    }
+
+    function customerChange(element) {
+        $('#customer').val(element.value);
+    }
+
     function catalogue(page) {
 
+        $('#waiting-container').addClass('d-block');
         $('#catalogue').html('');
         let query = $('#search_keyword').val();
 
@@ -35,6 +49,8 @@
                 page: page,
                 query: query
             }).done(function(data) {
+                $('#waiting-container').removeClass('d-block');
+                $('#waiting-container').addClass('d-none');
                 $('#catalogue').html(data);
             }).fail(function(xhr, status, error) {
                 sweetAlertError(error);
@@ -43,6 +59,40 @@
             $.get("{{ route('sales-order.catalogueProduct') }}", {
                 query: query
             }).done(function(data) {
+                $('#waiting-container').removeClass('d-block');
+                $('#waiting-container').addClass('d-none');
+                $('#catalogue').html(data);
+            }).fail(function(xhr, status, error) {
+                sweetAlertError(error);
+            });
+        }
+    }
+
+    function catalogueUpdate(page) {
+
+        $('#waiting-container').addClass('d-block');
+        $('#catalogue').html('');
+        let query = $('#search_keyword').val();
+
+        if (page != undefined) {
+            $.get("{{ route('sales-order.catalogueProduct') }}", {
+                page: page,
+                update: true,
+                query: query
+            }).done(function(data) {
+                $('#waiting-container').removeClass('d-block');
+                $('#waiting-container').addClass('d-none');
+                $('#catalogue').html(data);
+            }).fail(function(xhr, status, error) {
+                sweetAlertError(error);
+            });
+        } else {
+            $.get("{{ route('sales-order.catalogueProduct') }}", {
+                update: true,
+                query: query
+            }).done(function(data) {
+                $('#waiting-container').removeClass('d-block');
+                $('#waiting-container').addClass('d-none');
                 $('#catalogue').html(data);
             }).fail(function(xhr, status, error) {
                 sweetAlertError(error);
@@ -97,7 +147,7 @@
                 },
             ],
             order: [
-                [2, 'desc']
+                [1, 'asc']
             ]
         });
     }
@@ -185,7 +235,7 @@
 
                 let td_del = $(
                     "<td align='center'>" +
-                    "<button type='button' class='delete-row btn btn-sm btn-danger' value='Delete'>Del</button>" +
+                    "<button type='button' class='delete-row btn btn-sm btn-danger' value='Delete'><i class='fas fa-trash'></i></button>" +
                     "<input type='hidden' class='form-control' name='sales_order_item_check[]' value='" +
                     data.id +
                     "'>" +
@@ -250,6 +300,7 @@
             if (element.value.length == element.max.length) {
                 if (element.value > element.max) {
                     $('#' + element.id).val(element.max);
+
                 }
             } else {
                 if (element.value.length > element.max.length) {

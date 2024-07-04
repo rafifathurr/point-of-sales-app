@@ -21,7 +21,13 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Customer</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ isset($sales_order->customer) ? $sales_order->customer->name . ' - ' . $sales_order->customer->point . ' Point' : '-' }}
+                                {{ isset($sales_order->customer) ? $sales_order->customer->name : '-' }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Total Point Obtained</label>
+                            <div class="col-sm-9 col-form-label">
+                                {{ isset($sales_order->customer) ? $point_obtained : '-' }}
                             </div>
                         </div>
                         <div class="form-group row">

@@ -11,8 +11,9 @@
         <div class="container-fluid page-body-wrapper">
             <div class="main-panel w-100">
                 <div class="content-wrapper">
-                    <form action="{{ route('sales-order.store') }}" id="form_page" method="post">
+                    <form class="forms-sample" method="post" action="{{ $update_route }}">
                         @csrf
+                        @method('patch')
                         <div class="row">
                             <div class="col-md-7 grid-margin stretch-card">
                                 <div class="card">
@@ -30,6 +31,13 @@
                                             </div>
                                         </div>
                                         <hr>
+                                        <div class="row g-4 mt-5" id="waiting-container">
+                                            <div class="col-md-12">
+                                                <h5 class="text-center">
+                                                    <b>Please Waiting...</b>
+                                                </h5>
+                                            </div>
+                                        </div>
                                         <div id="catalogue">
                                         </div>
                                     </div>
@@ -47,10 +55,10 @@
                                                 <select class="form-control" id="type" name="type" required>
                                                     <option disabled hidden selected>Choose Purchase Type</option>
                                                     <option value="0"
-                                                        @if (!is_null(old('type')) && old('type') == 0) selected @endif>
+                                                        @if ($sales_order->type == 0) selected @endif>
                                                         Offline</option>
                                                     <option value="1"
-                                                        @if (!is_null(old('type')) && old('type') == 1) selected @endif>Online
+                                                        @if ($sales_order->type == 1) selected @endif>Online
                                                     </option>
                                                 </select>
                                             </div>
@@ -61,7 +69,7 @@
                                                     required>
                                                     <option disabled hidden selected>Choose Payment Method</option>
                                                     @foreach ($payment_method as $pm)
-                                                        @if (!is_null(old('payment_method')) && old('payment_method') == $pm->id)
+                                                        @if ($sales_order->payment_method_id == $pm->id)
                                                             <option value="{{ $pm->id }}" selected>
                                                                 {{ $pm->name }}
                                                             </option>
@@ -73,11 +81,31 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="customer">Customer Member</label>
-                                                <select class="form-control" id="customer" name="customer">
-                                                    <option disabled hidden selected>Choose Customer Member</option>
+                                                <label for="customer_phone">Customer Phone</label>
+                                                <div class="input-group">
+                                                    <select class="form-control" id="customer_phone"
+                                                        onchange="customerChange(this)">
+                                                        @foreach ($customer as $cst)
+                                                            @if (!is_null($sales_order->customer_id) && $sales_order->customer_id == $cst->id)
+                                                                <option value="{{ $cst->id }}" selected>
+                                                                    {{ $cst->phone }}
+                                                                </option>
+                                                            @else
+                                                                <option value="{{ $cst->id }}">
+                                                                    {{ $cst->phone }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                    <span class="input-group-text" onclick="resetSelected()">
+                                                        <i class="mdi mdi-refresh"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="customer">Customer Name</label>
+                                                <select class="form-control" id="customer" name="customer" readonly>
                                                     @foreach ($customer as $cst)
-                                                        @if (!is_null(old('customer')) && old('customer') == $cst->id)
+                                                        @if (!is_null($sales_order->customer_id) && $sales_order->customer_id == $cst->id)
                                                             <option value="{{ $cst->id }}" selected>
                                                                 {{ $cst->name }}
                                                             </option>
@@ -108,71 +136,61 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="table_body">
-                                                    @if (!is_null(old('sales_order_item')))
-                                                        @foreach (old('sales_order_item') as $product_id => $sales_order_item_product)
-                                                            @foreach ($sales_order_item_product['product_size'] as $product_size_id => $sales_order_item)
-                                                                <tr id='product_size_{{ $product_size_id }}'>
-                                                                    <td>
-                                                                        {{ $sales_order_item['product_name'] }}
-                                                                        <input type="hidden"
-                                                                            name="sales_order_item[{{ $product_id }}][product]"
-                                                                            value="{{ $product_id }}">
-                                                                        <input type="hidden"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][product_size]"
-                                                                            value="{{ $sales_order_item['product_size'] }}">
-                                                                        <input type="hidden"
-                                                                            id="product_size_{{ $product_size_id }}"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][product_name]"
-                                                                            value="{{ $sales_order_item['product_name'] }}">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="number"
-                                                                            class="form-control text-center"
-                                                                            id="qty_{{ $product_size_id }}"
-                                                                            max = '{{ $sales_order_item['stock'] }}'
-                                                                            min='1'
-                                                                            value="{{ $sales_order_item['qty'] }}"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][qty]">
-                                                                        <input type='hidden'
-                                                                            name = 'sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][stock]'
-                                                                            value = '{{ $sales_order_item['stock'] }}'>
-                                                                        <input type="hidden"
-                                                                            id="capital_price_{{ $product_size_id }}"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][capital_price]"
-                                                                            value="{{ $sales_order_item['capital_price'] }}">
-                                                                        <input type="hidden"
-                                                                            id="sell_price_{{ $product_size_id }}"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][sell_price]"
-                                                                            value="{{ $sales_order_item['sell_price'] }}">
-                                                                        <input type="hidden"
-                                                                            id="discount_{{ $product_size_id }}"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][discount_price]"
-                                                                            value="{{ $sales_order_item['discount_price'] }}">
-                                                                    </td>
-                                                                    <td align="right">
-                                                                        Rp. <span
-                                                                            id="price_show_{{ $product_size_id }}">{{ number_format($sales_order_item['total_sell_price'], 0, ',', '.') }}</span>
-                                                                        <input type="hidden"
-                                                                            id="total_sell_price_{{ $product_size_id }}"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][total_sell_price]"
-                                                                            value="{{ $sales_order_item['total_sell_price'] }}">
-                                                                        <input type="hidden"
-                                                                            id="total_profit_price_{{ $product_size_id }}"
-                                                                            name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][total_profit_price]"
-                                                                            value="{{ $sales_order_item['total_profit_price'] }}">
-                                                                    </td>
-                                                                    <td align="center">
-                                                                        <button type="button"
-                                                                            class="delete-row btn btn-sm btn-danger"
-                                                                            title="Delete">Del</button>
-                                                                        <input type="hidden"
-                                                                            name="sales_order_item_check[]"
-                                                                            value="{{ $product_size_id }}">
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                        @endforeach
-                                                    @endif
+                                                    @foreach ($sales_order->salesOrderItem as $sales_order_item)
+                                                        <tr id='product_size_{{ $sales_order_item->product_size_id }}'>
+                                                            <td>
+                                                                {{ $sales_order_item->productSize->product->name . ' - ' . $sales_order_item->productSize->size }}
+                                                                <input type="hidden"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product]"
+                                                                    value="{{ $sales_order_item->productSize->product_id }}">
+                                                                <input type="hidden"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][product_size]"
+                                                                    value="{{ $sales_order_item->product_size_id }}">
+                                                                <input type="hidden"
+                                                                    id="product_size_{{ $sales_order_item->product_size_id }}"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][product_name]"
+                                                                    value="{{ $sales_order_item->productSize->product->name . ' - ' . $sales_order_item->productSize->size }}">
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" class="form-control text-center"
+                                                                    id="qty_{{ $sales_order_item->product_size_id }}"
+                                                                    min='1' value="{{ $sales_order_item->qty }}"
+                                                                    oninput = "validationQty(this, {{ $sales_order_item->product_size_id }})"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][qty]">
+                                                                <input type="hidden"
+                                                                    id="capital_price_{{ $sales_order_item->product_size_id }}"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][capital_price]"
+                                                                    value="{{ $sales_order_item->capital_price }}">
+                                                                <input type="hidden"
+                                                                    id="sell_price_{{ $sales_order_item->product_size_id }}"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][sell_price]"
+                                                                    value="{{ $sales_order_item->sell_price }}">
+                                                                <input type="hidden"
+                                                                    id="discount_{{ $sales_order_item->product_size_id }}"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][discount_price]"
+                                                                    value="{{ $sales_order_item->discount_price }}">
+                                                            </td>
+                                                            <td align="right">
+                                                                Rp. <span
+                                                                    id="price_show_{{ $sales_order_item->product_size_id }}">{{ number_format($sales_order_item['total_sell_price'], 0, ',', '.') }}</span>
+                                                                <input type="hidden"
+                                                                    id="total_sell_price_{{ $sales_order_item->product_size_id }}"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][total_sell_price]"
+                                                                    value="{{ $sales_order_item->total_sell_price }}">
+                                                                <input type="hidden"
+                                                                    id="total_profit_price_{{ $sales_order_item->product_size_id }}"
+                                                                    name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][total_profit_price]"
+                                                                    value="{{ $sales_order_item->total_profit_price }}">
+                                                            </td>
+                                                            <td align="center">
+                                                                <button type="button"
+                                                                    class="delete-row btn btn-sm btn-danger"
+                                                                    title="Delete">Del</button>
+                                                                <input type="hidden" name="sales_order_item_check[]"
+                                                                    value="{{ $sales_order_item->product_size_id }}">
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
@@ -183,23 +201,23 @@
                                                             &nbsp;
                                                             <input type="hidden" name="total_capital_price"
                                                                 id="total_capital_price"
-                                                                value="{{ old('total_capital_price') }}">
+                                                                value="{{ $sales_order->total_capital_price }}">
                                                             <input type="hidden" name="total_sell_price"
                                                                 id="total_sell_price"
-                                                                value="{{ old('total_sell_price') }}">
+                                                                value="{{ $sales_order->total_sell_price }}">
                                                             <input type="hidden" name="discount_price"
                                                                 id="discount_price"
-                                                                value="{{ old('discount_price') }}">
+                                                                value="{{ $sales_order->discount_price }}">
                                                             <input type="hidden" name="grand_sell_price"
                                                                 id="grand_sell_price"
-                                                                value="{{ old('grand_sell_price') }}">
+                                                                value="{{ $sales_order->grand_sell_price }}">
                                                             <input type="hidden" name="grand_profit_price"
                                                                 id="grand_profit_price"
-                                                                value="{{ old('grand_profit_price') }}">
+                                                                value="{{ $sales_order->grand_profit_price }}">
                                                         </td>
                                                         <td align="right">
                                                             <span
-                                                                id="total_price_all_product_show">{{ !is_null(old('grand_sell_price')) ? 'Rp. ' . number_format(old('grand_sell_price'), 0, ',', '.') : 'Rp. 0' }}</span>
+                                                                id="total_price_all_product_show">{{ 'Rp. ' . number_format($sales_order->grand_sell_price, 0, ',', '.') }}</span>
                                                         </td>
                                                         <td>
                                                             &nbsp;
