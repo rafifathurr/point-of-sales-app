@@ -94,7 +94,7 @@ class SalesOrderController extends Controller
                     })
                     ->whereNull('deleted_by')
                     ->whereNull('deleted_at')
-                    ->paginate(9);
+                    ->paginate(4);
             } else {
                 /**
                  * Get All Product
@@ -105,7 +105,7 @@ class SalesOrderController extends Controller
                     })
                     ->whereNull('deleted_by')
                     ->whereNull('deleted_at')
-                    ->paginate(9);
+                    ->paginate(4);
             }
 
             if (count($product_size) > 0) {

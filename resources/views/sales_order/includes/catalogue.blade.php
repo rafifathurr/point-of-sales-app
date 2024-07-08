@@ -1,6 +1,6 @@
 <div class="row g-4 justify-content-start mt-5">
     @foreach ($product_size as $per_product_size)
-        <div class="col-md-6 col-lg-4 col-xl-4 py-3">
+        <div class="col-md-6 col-lg-6 col-xl-6 py-3">
             <div class="rounded position-relative shadow">
                 <div class="w-100 rounded-top border-bottom border-bottom-secondary bg-image"
                     style="background-image:url('{{ asset($per_product_size->product->picture) }}')">
