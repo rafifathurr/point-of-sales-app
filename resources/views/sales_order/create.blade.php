@@ -81,26 +81,20 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="customer_phone">Customer Phone</label>
-                                                <div class="input-group">
-                                                    <select class="form-control" id="customer_phone"
-                                                        style="height: 2.875rem !important;"
-                                                        onchange="customerChange(this)">
-                                                        @foreach ($customer as $cst)
-                                                            @if (!is_null(old('customer')) && old('customer') == $cst->id)
-                                                                <option value="{{ $cst->id }}" selected>
-                                                                    {{ $cst->phone }}
-                                                                </option>
-                                                            @else
-                                                                <option value="{{ $cst->id }}">
-                                                                    {{ $cst->phone }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                    <span class="input-group-text"
-                                                        onclick="resetSelected()">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </span>
-                                                </div>
+                                                <select class="form-control" id="customer_phone"
+                                                    style="height: 2.875rem !important;"
+                                                    onchange="customerChange(this)">
+                                                    @foreach ($customer as $cst)
+                                                        @if (!is_null(old('customer')) && old('customer') == $cst->id)
+                                                            <option value="{{ $cst->id }}" selected>
+                                                                {{ $cst->phone }}
+                                                            </option>
+                                                        @else
+                                                            <option value="{{ $cst->id }}">
+                                                                {{ $cst->phone }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="customer">Customer Name</label>
@@ -116,6 +110,12 @@
                                                         @endif
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                            <div class="text-right mb-3">
+                                                <button type="button" onclick="resetSelected()"
+                                                    class="btn btn-sm btn-warning text-white mr-2">
+                                                    Reset Customer</span>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="table-responsive mb-5">
