@@ -74,11 +74,11 @@
                     defaultContent: '-',
                 },
                 {
-                    data: 'type',
+                    data: 'debt',
                     defaultContent: '-',
                 },
                 {
-                    data: 'balance',
+                    data: 'credit',
                     defaultContent: '-',
                 },
                 {
@@ -89,10 +89,25 @@
                     searchable: false
                 },
             ],
+            footerCallback: function(row, data, start, end, display) {
+                let total_debt = 0;
+                let total_credit = 0;
+                data.forEach(function(element) {
+                    total_debt += element.num_debt;
+                    total_credit += element.num_credit;
+                });
+
+                $('#total_debt').html(currencyFormat(total_debt));
+                $('#total_credit').html(currencyFormat(total_credit));
+            },
             order: [
                 [0, 'asc']
             ]
         });
+    }
+
+    function currencyFormat(value) {
+        return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     }
 
     function openModal(category, id) {
@@ -100,11 +115,11 @@
         $.get('{{ url('coa') }}/' + id, {}).done(function(data) {
             Swal.close();
             $('#' + category).modal('show');
-            $('#id_'+category).html(id);
+            $('#id_' + category).html(id);
             let url_update = $('#url_edit').val() + '/' + id;
             $('#form-edit').attr('action', url_update);
             Object.entries(data).forEach(([key, value], index) => {
-                $('#'+key+'_'+category).val(value);
+                $('#' + key + '_' + category).val(value);
             });
         }).fail(function(xhr, status, error) {
             sweetAlertError(error);

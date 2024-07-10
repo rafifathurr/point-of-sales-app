@@ -75,14 +75,33 @@ class ChartofAccountController extends Controller
                  */
                 return date('d F Y', strtotime($data->date));
             })
-            ->addColumn('type', function ($data) {
-                /**
-                 * Return Type
-                 */
-                return $data->type == 0 ? 'Debt' : 'Credit';
+            ->addColumn('debt', function ($data) {
+                if ($data->type == 0) {
+                    return '<div align="right"> Rp. ' . number_format($data->balance, 0, ',', '.') . ',-' . '</div>';
+                } else {
+                    return null;
+                }
             })
-            ->addColumn('balance', function ($data) {
-                return '<div align="right"> Rp. ' . number_format($data->balance, 0, ',', '.') . ',-' . '</div>';
+            ->addColumn('num_debt', function ($data) {
+                if ($data->type == 0) {
+                    return $data->balance;
+                } else {
+                    return 0;
+                }
+            })
+            ->addColumn('credit', function ($data) {
+                if ($data->type == 1) {
+                    return '<div align="right"> Rp. ' . number_format($data->balance, 0, ',', '.') . ',-' . '</div>';
+                } else {
+                    return null;
+                }
+            })
+            ->addColumn('num_credit', function ($data) {
+                if ($data->type == 1) {
+                    return $data->balance;
+                } else {
+                    return 0;
+                }
             })
             ->addColumn('action', function ($data) {
                 $btn_action = '<div align="center">';
@@ -92,8 +111,8 @@ class ChartofAccountController extends Controller
                 $btn_action .= '</div>';
                 return $btn_action;
             })
-            ->only(['account_number', 'date', 'type', 'name', 'balance', 'action'])
-            ->rawColumns(['balance', 'action'])
+            ->only(['account_number', 'date', 'name', 'debt', 'credit', 'num_debt', 'num_credit', 'action'])
+            ->rawColumns(['debt', 'credit', 'action'])
             ->make(true);
 
         return $dataTable;

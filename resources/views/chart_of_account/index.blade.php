@@ -16,7 +16,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="table-responsive pt-3">
+                        <div class="table-responsive">
                             <input type="hidden" id="url_dt" value="{{ $datatable_route }}">
                             <table class="table table-bordered datatable" id="dt-coa">
                                 <thead>
@@ -34,16 +34,32 @@
                                             Name
                                         </th>
                                         <th>
-                                            Type
+                                            Debt
                                         </th>
                                         <th>
-                                            Balance
+                                            Credit
                                         </th>
                                         <th>
                                             Action
                                         </th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr>
+                                        <td style="text-align:center" colspan="4">
+                                            <b>Total</b>
+                                        </td>
+                                        <td style="text-align:right">
+                                            Rp. <span id="total_debt"></span>,-
+                                        </td>
+                                        <td style="text-align:right">
+                                            Rp. <span id="total_credit"></span>,-
+                                        </td>
+                                        <td>
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -193,8 +209,7 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form class="forms-sample" id="form-edit" method="post" action=""
-                    enctype="multipart/form-data">
+                <form class="forms-sample" id="form-edit" method="post" action="" enctype="multipart/form-data">
                     @csrf
                     @method('patch')
                     <div class="modal-header">
