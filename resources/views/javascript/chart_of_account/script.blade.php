@@ -75,10 +75,12 @@
                 },
                 {
                     data: 'debt',
+                    className: 'text-right',
                     defaultContent: '-',
                 },
                 {
                     data: 'credit',
+                    className: 'text-right',
                     defaultContent: '-',
                 },
                 {
