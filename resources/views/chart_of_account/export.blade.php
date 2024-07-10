@@ -57,6 +57,22 @@
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td style="text-align:center" colspan="4">
+                    <b>Total</b>
+                </td>
+                <td style="text-align:right">
+                    Rp. {{ number_format($coa['total_debt'], 0, ',', '.') }},-
+                </td>
+                <td style="text-align:right">
+                    Rp. {{ number_format($coa['total_credit'], 0, ',', '.') }},-
+                </td>
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 

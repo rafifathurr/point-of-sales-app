@@ -233,11 +233,11 @@
                             <div class="col-md-12 p-3 mt-3 border-top border-top-1">
                                 <div class="d-flex justify-content-between my-3">
                                     <div class="p-0 my-auto">
-                                        <h5><b>Sales Order Report</b></h5>
+                                        <h5><b>Chart of Account Report</b></h5>
                                     </div>
                                     <div class="p-0">
                                         <div class="input-group w-100 mx-auto d-flex">
-                                            <button class="btn btn-success" onclick="exportSalesOrder()"
+                                            <button class="btn btn-success" onclick="exportCoa()"
                                                 title="Export Report">
                                                 Export
                                             </button>
@@ -261,13 +261,26 @@
                                                     Name
                                                 </th>
                                                 <th>
-                                                    Type
+                                                    Debt
                                                 </th>
                                                 <th>
-                                                    Balance
+                                                    Credit
                                                 </th>
                                             </tr>
                                         </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <td style="text-align:center" colspan="4">
+                                                    <b>Total</b>
+                                                </td>
+                                                <td style="text-align:right">
+                                                    Rp. <span id="total_debt"></span>,-
+                                                </td>
+                                                <td style="text-align:right">
+                                                    Rp. <span id="total_credit"></span>,-
+                                                </td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

@@ -605,18 +605,33 @@
                     defaultContent: '-',
                 },
                 {
-                    data: 'type',
+                    data: 'debt',
                     defaultContent: '-',
                 },
                 {
-                    data: 'balance',
+                    data: 'credit',
                     defaultContent: '-',
                 },
             ],
+            footerCallback: function(row, data, start, end, display) {
+                let total_debt = 0;
+                let total_credit = 0;
+                data.forEach(function(element) {
+                    total_debt += element.num_debt;
+                    total_credit += element.num_credit;
+                });
+
+                $('#total_debt').html(currencyFormat(total_debt));
+                $('#total_credit').html(currencyFormat(total_credit));
+            },
             order: [
                 [0, 'asc']
             ]
         });
+    }
+
+    function currencyFormat(value) {
+        return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     }
 
     function coaWidget(data) {

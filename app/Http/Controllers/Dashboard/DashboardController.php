@@ -569,8 +569,8 @@ class DashboardController extends Controller
             /**
              * Data of Chart Pie
              */
-            $data['percentage']['coa_debt_data'][] = round(($coa_debt_count / $coa_count) * 100);
-            $data['percentage']['coa_credit_data'][] = round(($coa_credit_count / $coa_count) * 100);
+            $data['percentage']['coa_debt_data'][] = $coa_count > 0 ? round(($coa_debt_count / $coa_count) * 100) : 0;
+            $data['percentage']['coa_credit_data'][] = $coa_count > 0 ? round(($coa_credit_count / $coa_count) * 100) : 0;
 
             /**
              * Config Bar Chart per Day
@@ -672,17 +672,36 @@ class DashboardController extends Controller
                      */
                     return date('d F Y', strtotime($data->date));
                 })
-                ->addColumn('type', function ($data) {
-                    /**
-                     * Return Type
-                     */
-                    return $data->type == 0 ? 'Debt' : 'Credit';
+                ->addColumn('debt', function ($data) {
+                    if ($data->type == 0) {
+                        return '<div align="right"> Rp. ' . number_format($data->balance, 0, ',', '.') . ',-' . '</div>';
+                    } else {
+                        return null;
+                    }
                 })
-                ->addColumn('balance', function ($data) {
-                    return '<div align="right"> Rp. ' . number_format($data->balance, 0, ',', '.') . ',-' . '</div>';
+                ->addColumn('num_debt', function ($data) {
+                    if ($data->type == 0) {
+                        return $data->balance;
+                    } else {
+                        return 0;
+                    }
                 })
-                ->only(['account_number', 'date', 'type', 'name', 'balance'])
-                ->rawColumns(['balance'])
+                ->addColumn('credit', function ($data) {
+                    if ($data->type == 1) {
+                        return '<div align="right"> Rp. ' . number_format($data->balance, 0, ',', '.') . ',-' . '</div>';
+                    } else {
+                        return null;
+                    }
+                })
+                ->addColumn('num_credit', function ($data) {
+                    if ($data->type == 1) {
+                        return $data->balance;
+                    } else {
+                        return 0;
+                    }
+                })
+                ->only(['account_number', 'date', 'name', 'debt', 'credit', 'num_debt', 'num_credit'])
+                ->rawColumns(['debt', 'credit'])
                 ->make(true);
 
             return $dataTable;
@@ -712,7 +731,25 @@ class DashboardController extends Controller
                 ->get()
                 ->toArray();
 
+            $total_debt_coa = ChartofAccount::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->where('type', 0)
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->orderBy('date', 'desc')
+                ->sum('balance');
+
+            $total_credit_coa = ChartofAccount::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->where('type', 1)
+                ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
+                ->orderBy('date', 'desc')
+                ->sum('balance');
+
             $data['data'] = $chart_of_account;
+            $data['total_debt'] = $total_debt_coa;
+            $data['total_credit'] = $total_credit_coa;
             $data['month'] = date('F', mktime(0, 0, 0, $request->month, 10));
             $data['year'] = $request->year;
 
