@@ -74,8 +74,8 @@ class DashboardController extends Controller
                  */
                 $total_debt_balance = ChartofAccount::whereNull('deleted_by')
                     ->whereNull('deleted_at')
-                    ->whereMonth('created_at', $request->month)
-                    ->whereYear('created_at', $request->year)
+                    ->whereMonth('date', $request->month)
+                    ->whereYear('date', $request->year)
                     ->where('type', 0)
                     ->sum('balance');
 
