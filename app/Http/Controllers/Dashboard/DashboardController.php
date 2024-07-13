@@ -70,6 +70,16 @@ class DashboardController extends Controller
                     ->sum('grand_profit_price');
 
                 /**
+                 * Total profit by request month and year
+                 */
+                $total_debt_balance = ChartofAccount::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->whereMonth('created_at', $request->month)
+                    ->whereYear('created_at', $request->year)
+                    ->where('type', 1)
+                    ->sum('balance');
+
+                /**
                  * Convert string result
                  */
                 $data['total_income'] = 'Rp. ' . number_format($total_income, 0, ',', '.') . ',-';
@@ -78,6 +88,11 @@ class DashboardController extends Controller
                  * Convert string result
                  */
                 $data['total_profit'] = 'Rp. ' . number_format($total_profit, 0, ',', '.') . ',-';
+
+                /**
+                 * Convert string result
+                 */
+                $data['total_loss'] = 'Rp. ' . number_format($total_profit - $total_debt_balance, 0, ',', '.') . ',-';
 
                 /**
                  * Total sales order by request month and year

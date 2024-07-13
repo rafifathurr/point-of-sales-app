@@ -101,6 +101,7 @@
 
                 $('#total_debt').html(currencyFormat(total_debt));
                 $('#total_credit').html(currencyFormat(total_credit));
+                $('#accumulation_coa').html(currencyFormat(total_credit - total_debt));
             },
             order: [
                 [0, 'asc']

@@ -84,6 +84,7 @@
     function salesOrderWidget(data) {
         $('#total_income').html(data.total_income);
         $('#total_profit').html(data.total_profit);
+        $('#total_loss').html(data.total_loss);
         $('#total_sales_order').html(data.total_sales_order);
         $('#total_product_sold').html(data.total_product_sold);
 

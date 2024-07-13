@@ -37,8 +37,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-3 mb-3 stretch-card transparent">
+                        <div class="row mb-3">
+                            <div class="col-md-4 mb-3 stretch-card transparent">
                                 <div class="card card-tale">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Income</b></h5>
@@ -48,8 +48,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-3 stretch-card transparent">
-                                <div class="card card-dark-blue">
+                            <div class="col-md-4 mb-3 stretch-card transparent">
+                                <div class="card bg-success text-white">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Profit</b></h5>
                                         <span class="text-right">
@@ -58,7 +58,19 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-3 stretch-card transparent">
+                            <div class="col-md-4 mb-3 stretch-card transparent">
+                                <div class="card bg-danger text-white">
+                                    <div class="card-body">
+                                        <h5 class="mb-4 text-bold"><b>Total Loss</b></h5>
+                                        <span class="text-right">
+                                            <h5 class="mb-2" id="total_loss">-</h5>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3 stretch-card transparent">
                                 <div class="card card-light-blue">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Sales Order</b></h5>
@@ -68,7 +80,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-3 stretch-card transparent">
+                            <div class="col-md-6 mb-3 stretch-card transparent">
                                 <div class="card card-light-danger">
                                     <div class="card-body">
                                         <h5 class="mb-4 text-bold"><b>Total Products Sold</b></h5>
@@ -79,7 +91,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row py-3 pb-3">
+                        <div class="row py-3">
                             <div class="col-md-6">
                                 <h4 class="mt-4 mb-4"><b>Sales Order Statistic</b></h4>
                                 <canvas id="sales-chart"></canvas>

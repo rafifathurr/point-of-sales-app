@@ -9,7 +9,12 @@
                             <div class="p-2">
                                 <h4 class="card-title">Chart of Account</h4>
                             </div>
-                            <div class="p-2">
+                            <div class="p-2 my-auto">
+                                <div class="bg-info p-3 rounded">
+                                    <h4 class="card-title text-white my-auto">Total Accumulation : Rp. <span id="accumulation_coa">0</span>,-</h4>
+                                </div>
+                            </div>
+                            <div class="p-2 my-auto">
                                 <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
                                     data-target="#create">
                                     Add Chart of Account

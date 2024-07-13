@@ -50,13 +50,8 @@ class ChartofAccountController extends Controller
          */
         $chart_of_account = ChartofAccount::with(['accountNumber', 'createdBy'])
             ->whereNull('deleted_by')
-            ->whereNull('deleted_at');
-
-        if (User::find(Auth::user()->id)->hasRole('super-admin')) {
-            $chart_of_account = $chart_of_account->get();
-        } else {
-            $chart_of_account = $chart_of_account->where('created_by', Auth::user()->id)->get();
-        }
+            ->whereNull('deleted_at')
+            ->get();
 
         /**
          * Datatable Configuration
@@ -106,8 +101,14 @@ class ChartofAccountController extends Controller
             ->addColumn('action', function ($data) {
                 $btn_action = '<div align="center">';
                 $btn_action .= '<button onclick="openModal(' . "'show'" . ',' . $data->id . ')" class="btn btn-sm btn-primary" title="Detail">Detail</button>';
-                $btn_action .= '<button onclick="openModal(' . "'edit'" . ',' . $data->id . ')" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</button>';
-                $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Delete">Delete</button>';
+
+                /**
+                 * Validation Data Was Created By user same as use login
+                 */
+                if (Auth::user()->id == $data->created_by) {
+                    $btn_action .= '<button onclick="openModal(' . "'edit'" . ',' . $data->id . ')" class="btn btn-sm btn-warning ml-2" title="Edit">Edit</button>';
+                    $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Delete">Delete</button>';
+                }
                 $btn_action .= '</div>';
                 return $btn_action;
             })
