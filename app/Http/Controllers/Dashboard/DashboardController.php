@@ -92,7 +92,7 @@ class DashboardController extends Controller
                 /**
                  * Convert string result
                  */
-                $data['total_loss'] = 'Rp. ' . number_format($total_profit - $total_debt_balance, 0, ',', '.') . ',-';
+                $data['total_loss'] = 'Rp. ' . number_format($total_debt_balance, 0, ',', '.') . ',-';
 
                 /**
                  * Total sales order by request month and year
