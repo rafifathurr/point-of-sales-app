@@ -22,6 +22,23 @@
             }
         });
 
+        $.ajax({
+            url: '{{ url('dashboard/sales-order/profit-loss') }}',
+            type: 'GET',
+            cache: false,
+            data: {
+                month: month,
+                year: year,
+            },
+            success: function(data) {
+                failed = false;
+                $('#profit_loss_view').html(data);
+            },
+            error: function(xhr, error, code) {
+                failed = true;
+            }
+        });
+
         $('#dt-sales-order').DataTable({
             autoWidth: false,
             responsive: true,

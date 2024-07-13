@@ -147,6 +147,15 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="col-md-12 p-3 mt-3 border-top border-top-1">
+                            <div class="d-flex justify-content-between my-3">
+                                <div class="p-0 my-auto">
+                                    <h5><b>Profit Loss</b></h5>
+                                </div>
+                            </div>
+                            <div id="profit_loss_view">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card px-3 mt-3">
@@ -181,7 +190,8 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-4 mx-auto pb-3 px-0">
-                                                    <button class="btn btn-primary" onclick="dashboardCoa()" title="Filter">
+                                                    <button class="btn btn-primary" onclick="dashboardCoa()"
+                                                        title="Filter">
                                                         Filter
                                                     </button>
                                                 </div>
@@ -249,8 +259,7 @@
                                     </div>
                                     <div class="p-0">
                                         <div class="input-group w-100 mx-auto d-flex">
-                                            <button class="btn btn-success" onclick="exportCoa()"
-                                                title="Export Report">
+                                            <button class="btn btn-success" onclick="exportCoa()" title="Export Report">
                                                 Export
                                             </button>
                                         </div>

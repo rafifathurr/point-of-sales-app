@@ -70,7 +70,7 @@ class DashboardController extends Controller
                     ->sum('grand_profit_price');
 
                 /**
-                 * Total profit by request month and year
+                 * Total debt of coa by request month and year
                  */
                 $total_debt_balance = ChartofAccount::whereNull('deleted_by')
                     ->whereNull('deleted_at')
@@ -202,6 +202,60 @@ class DashboardController extends Controller
                 }
 
                 return response()->json($data, 200);
+            } else {
+                return response()->json(['message' => 'Invalid Request'], 400);
+            }
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+    }
+
+    /**
+     * Sales Order Profit Loss Report
+     */
+    public function salesOrderProfitLoss(Request $request)
+    {
+        try {
+            /**
+             * Validation request
+             */
+            if (!is_null($request->year) && !is_null($request->month)) {
+                /**
+                 * Total profit by request month and year
+                 */
+                $total_profit = SalesOrder::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->whereMonth('created_at', $request->month)
+                    ->whereYear('created_at', $request->year)
+                    ->sum('grand_profit_price');
+
+                /**
+                 * Total debt of coa by request month and year
+                 */
+                $total_debt_balance = ChartofAccount::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->whereMonth('date', $request->month)
+                    ->whereYear('date', $request->year)
+                    ->where('type', 0)
+                    ->sum('balance');
+
+                /**
+                 * Total Balance Profit Loss
+                 */
+                $total_profit_loss = $total_profit - $total_debt_balance;
+
+                /**
+                 * List of Debt Char of Account
+                 */
+                $coa_debt = ChartofAccount::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->whereMonth('date', $request->month)
+                    ->whereYear('date', $request->year)
+                    ->where('type', 0)
+                    ->orderBy('date', 'asc')
+                    ->get();
+
+                return view('dashboard.includes.profit_loss', ['total_profit' => $total_profit, 'total_profit_loss' => $total_profit_loss, 'coa_debt' => $coa_debt]);
             } else {
                 return response()->json(['message' => 'Invalid Request'], 400);
             }
