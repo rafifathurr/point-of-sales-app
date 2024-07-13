@@ -76,7 +76,7 @@ class DashboardController extends Controller
                     ->whereNull('deleted_at')
                     ->whereMonth('created_at', $request->month)
                     ->whereYear('created_at', $request->year)
-                    ->where('type', 1)
+                    ->where('type', 0)
                     ->sum('balance');
 
                 /**
