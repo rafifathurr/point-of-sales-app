@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('sales_order', function (Blueprint $table) {
             $table->integer('payment_method_id')->nullable()->change();
-            $table->tinyInteger('payment_type')->default(0)->comment('0 as Payment Cash, 1 as Payment Point and 2 as Payment Cash and Point')->change();
+            $table->tinyInteger('payment_type')->default(0)->comment('0 as Payment Cash, 1 as Payment Point and 2 as Payment Cash and Point');
             $table->bigInteger('total_point');
         });
     }
