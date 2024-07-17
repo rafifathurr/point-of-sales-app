@@ -83,28 +83,3 @@
         catalogue(page);
     });
 </script>
-{{-- @if ($update)
-    <script>
-        $('.pagination a').on('click', function(event) {
-            event.preventDefault();
-
-            $('li').removeClass('active');
-            $(this).parent('li').addClass('active');
-
-            let page = $(this).attr('href').split('page=')[1];
-            catalogueUpdate(page);
-        });
-    </script>
-@else
-    <script>
-        $('.pagination a').on('click', function(event) {
-            event.preventDefault();
-
-            $('li').removeClass('active');
-            $(this).parent('li').addClass('active');
-
-            let page = $(this).attr('href').split('page=')[1];
-            catalogue(page);
-        });
-    </script>
-@endif --}}

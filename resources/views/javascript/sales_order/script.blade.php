@@ -31,8 +31,8 @@
     });
 
     function resetSelected() {
-        $('#customer_phone').val('').change();
-        $('#customer').val('').change();
+        $('#customer_phone').val('').trigger('change');
+        $('#customer').val('').trigger('change');
         $('#customer_point').val('');
         $('#point_result').val('');
         catalogue();
@@ -50,7 +50,7 @@
                 alertError(error);
             });
         } else {
-            $('#payment_type').val(0).change();
+            $('#payment_type').val(0).trigger('change');
         }
     }
 
@@ -208,6 +208,10 @@
             $.get("{{ route('sales-order.paymentMethodForm') }}", {}).done(function(data) {
                 catalogue();
                 $('#payment_method_form').html(data);
+
+                if (update) {
+                    $('#payment_method').val($('#payment_method_record').val()).trigger('change');
+                }
             }).fail(function(xhr, status, error) {
                 sweetAlertError(error);
             });

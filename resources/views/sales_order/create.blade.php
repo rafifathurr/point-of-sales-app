@@ -115,7 +115,7 @@
                                                 <input type="number" class="form-control" id="customer_point"
                                                     value="{{ old('customer_point') }}" readonly>
                                                 <input type="hidden" class="form-control" id="point_result"
-                                                    name="point_result" value="{{ old('point_result') }}" readonly>
+                                                    name="point_result" value="{{ old('point_result') }}">
                                             </div>
                                             <div class="text-right mb-3">
                                                 <button type="button" onclick="resetSelected()"
@@ -269,8 +269,8 @@
     @include('layouts.script')
     @include('javascript.sales_order.script')
     <script>
-        $('#customer_phone').val('').change();
-        $('#customer').val('').change();
+        $('#customer_phone').val('').trigger('change');
+        $('#customer').val('').trigger('change');
     </script>
 </body>
 

@@ -20,7 +20,7 @@
                                     <div class="card-body px-5 py-5">
                                         <div class="d-flex justify-content-between">
                                             <div class="p-2">
-                                                <h4 class="card-title">Catalogue Product</h4>
+                                                <h4 class="card-title">List of Catalogue Product</h4>
                                             </div>
                                             <div class="p-0">
                                                 <div class="input-group w-100 mx-auto d-flex">
@@ -47,7 +47,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="p-3">
-                                            <h4 class="card-title">Sales Order</h4>
+                                            <h4 class="card-title">Edit Sales Order</h4>
                                             <hr>
                                             <div class="form-group">
                                                 <label for="type">Purchase Type <span
@@ -63,43 +63,41 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="payment_method">Payment Method <span
+                                                <input type="hidden" id="payment_type_record"
+                                                    value="{{ $sales_order->payment_type }}">
+                                                <input type="hidden" id="payment_method_record"
+                                                    value="{{ $sales_order->payment_method_id }}">
+                                                <label for="payment_type">Payment Type <span
                                                         class="text-danger">*</span></label>
-                                                <select class="form-control" id="payment_method" name="payment_method"
-                                                    required>
-                                                    <option disabled hidden selected>Choose Payment Method</option>
-                                                    @foreach ($payment_method as $pm)
-                                                        @if ($sales_order->payment_method_id == $pm->id)
-                                                            <option value="{{ $pm->id }}" selected>
-                                                                {{ $pm->name }}
+                                                <select class="form-control" id="payment_type" name="payment_type"
+                                                    onchange="settingPaymentType(this)" required>
+                                                    <option disabled hidden selected>Choose Payment Type</option>
+                                                    <option @if ($sales_order->payment_type == 0) selected @endif
+                                                        value="0">
+                                                        Payment Cash
+                                                    </option>
+                                                    <option @if ($sales_order->payment_type == 1) selected @endif
+                                                        value="1">
+                                                        Payment Point
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div id="payment_method_form"></div>
+                                            <div class="form-group">
+                                                <label for="customer_phone">Customer Phone</label>
+                                                <select class="form-control" id="customer_phone"
+                                                    onchange="customerChange(this)">
+                                                    @foreach ($customer as $cst)
+                                                        @if (!is_null($sales_order->customer_id) && $sales_order->customer_id == $cst->id)
+                                                            <option value="{{ $cst->id }}" selected>
+                                                                {{ $cst->phone }}
                                                             </option>
                                                         @else
-                                                            <option value="{{ $pm->id }}">
-                                                                {{ $pm->name }}</option>
+                                                            <option value="{{ $cst->id }}">
+                                                                {{ $cst->phone }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="customer_phone">Customer Phone</label>
-                                                <div class="input-group">
-                                                    <select class="form-control" id="customer_phone"
-                                                        onchange="customerChange(this)">
-                                                        @foreach ($customer as $cst)
-                                                            @if (!is_null($sales_order->customer_id) && $sales_order->customer_id == $cst->id)
-                                                                <option value="{{ $cst->id }}" selected>
-                                                                    {{ $cst->phone }}
-                                                                </option>
-                                                            @else
-                                                                <option value="{{ $cst->id }}">
-                                                                    {{ $cst->phone }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                    <span class="input-group-text" onclick="resetSelected()">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </span>
-                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="customer">Customer Name</label>
@@ -115,6 +113,21 @@
                                                         @endif
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="total_percentage">Customer Point</label>
+                                                <input type="number" class="form-control" id="customer_point"
+                                                    @if (!is_null($sales_order->customer_id)) value="{{ $sales_order->customer->point - $sales_order->total_point }}" @endif
+                                                    readonly>
+                                                <input type="hidden" class="form-control" id="point_result"
+                                                    name="point_result"
+                                                    @if (!is_null($sales_order->customer_id)) value="{{ $sales_order->customer->point }}" @endif>
+                                            </div>
+                                            <div class="text-right mb-3">
+                                                <button type="button" onclick="resetSelected()"
+                                                    class="btn btn-sm btn-warning text-white mr-2">
+                                                    Reset Customer</span>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="table-responsive mb-5">
@@ -154,7 +167,8 @@
                                                             <td>
                                                                 <input type="number" class="form-control text-center"
                                                                     id="qty_{{ $sales_order_item->product_size_id }}"
-                                                                    min='1' value="{{ $sales_order_item->qty }}"
+                                                                    min='1'
+                                                                    value="{{ $sales_order_item->qty }}"
                                                                     oninput = "validationQty(this, {{ $sales_order_item->product_size_id }})"
                                                                     name="sales_order_item[{{ $sales_order_item->productSize->product_id }}][product_size][{{ $sales_order_item->product_size_id }}][qty]">
                                                                 <input type="hidden"
@@ -250,9 +264,17 @@
     <!-- container-scroller -->
     @include('layouts.script')
     @include('javascript.sales_order.script')
+    @if (is_null($sales_order->customer_id))
+        <script>
+            $('#customer_phone').val('').trigger('change');
+            $('#customer').val('').trigger('change');
+        </script>
+    @endif
     <script>
         update = true;
         catalogue();
+        $('#payment_type').val($('#payment_type_record').val()).trigger('change');
     </script>
 </body>
+
 </html>
