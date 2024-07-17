@@ -187,6 +187,7 @@ Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
         Route::get('invoice/{id}', 'invoice')->name('invoice');
         Route::get('catalogue-product', 'catalogueProduct')->name('catalogueProduct');
+        Route::get('payment-method-form', 'paymentMethodForm')->name('paymentMethodForm');
     });
     Route::resource('sales-order', SalesOrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['sales-order' => 'id']);
 

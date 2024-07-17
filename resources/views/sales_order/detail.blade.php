@@ -18,18 +18,26 @@
                                 {{ date('d F Y H:i:s', strtotime($sales_order->created_at)) }}
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Customer</label>
-                            <div class="col-sm-9 col-form-label">
-                                {{ isset($sales_order->customer) ? $sales_order->customer->name : '-' }}
+                        @if (!is_null($sales_order->customer_id))
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Customer</label>
+                                <div class="col-sm-9 col-form-label">
+                                    {{ $sales_order->customer->name }}
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Total Point Obtained</label>
-                            <div class="col-sm-9 col-form-label">
-                                {{ isset($sales_order->customer) ? $point_obtained : '-' }}
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Current Point Customer</label>
+                                <div class="col-sm-9 col-form-label">
+                                    {{ number_format($sales_order->customer->point, 0, ',', '.') }}
+                                </div>
                             </div>
-                        </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Total Point Obtained</label>
+                                <div class="col-sm-9 col-form-label">
+                                    {{ number_format($sales_order->total_point, 0, ',', '.') }}
+                                </div>
+                            </div>
+                        @endif
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Purchase Type</label>
                             <div class="col-sm-9 col-form-label">
@@ -37,9 +45,15 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Payment Type</label>
+                            <div class="col-sm-9 col-form-label">
+                                {{ $sales_order->payment_type == 0 ? 'Cash' : 'Point' }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Payment Method</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ $sales_order->paymentMethod->name }}
+                                {{ $sales_order->payment_type == 0 ? $sales_order->paymentMethod->name : 'Point' }}
                             </div>
                         </div>
                         <div class="form-group row">
@@ -144,7 +158,8 @@
                             <a href="{{ route('sales-order.index') }}" class="btn btn-sm btn-danger">
                                 Back
                             </a>
-                            <a href="{{ route('sales-order.invoice', ['id'=>$sales_order->id]) }}" class="btn btn-sm btn-success" target="_blank">
+                            <a href="{{ route('sales-order.invoice', ['id' => $sales_order->id]) }}"
+                                class="btn btn-sm btn-success" target="_blank">
                                 Print
                             </a>
                         </div>

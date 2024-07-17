@@ -72,7 +72,18 @@
         {{ $product_size->links() }}
     </div>
 </div>
-@if ($update)
+<script>
+    $('.pagination a').on('click', function(event) {
+        event.preventDefault();
+
+        $('li').removeClass('active');
+        $(this).parent('li').addClass('active');
+
+        let page = $(this).attr('href').split('page=')[1];
+        catalogue(page);
+    });
+</script>
+{{-- @if ($update)
     <script>
         $('.pagination a').on('click', function(event) {
             event.preventDefault();
@@ -96,4 +107,4 @@
             catalogue(page);
         });
     </script>
-@endif
+@endif --}}

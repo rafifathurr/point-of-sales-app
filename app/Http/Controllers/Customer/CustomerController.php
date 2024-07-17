@@ -152,7 +152,7 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         try {
             /**
@@ -161,14 +161,22 @@ class CustomerController extends Controller
             $customer = Customer::find($id);
 
             /**
-             * Validation Customer id
+             * Validation Requested
              */
-            if (!is_null($customer)) {
-                return view('customer.detail', compact('customer'));
+            if ($request->ajax()) {
+                if (!is_null($customer)) {
+                    return response()->json(['customer' => $customer], 200);
+                } else {
+                    return response()->json(['message' => 'Invalid Request!'], 400);
+                }
             } else {
-                return redirect()
-                    ->back()
-                    ->with(['failed' => 'Invalid Request!']);
+                if (!is_null($customer)) {
+                    return view('customer.detail', compact('customer'));
+                } else {
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Invalid Request!']);
+                }
             }
         } catch (Exception $e) {
             return redirect()

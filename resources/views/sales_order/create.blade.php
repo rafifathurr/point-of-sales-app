@@ -62,23 +62,22 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="payment_method">Payment Method <span
+                                                <label for="payment_type">Payment Type <span
                                                         class="text-danger">*</span></label>
-                                                <select class="form-control" id="payment_method" name="payment_method"
-                                                    required>
-                                                    <option disabled hidden selected>Choose Payment Method</option>
-                                                    @foreach ($payment_method as $pm)
-                                                        @if (!is_null(old('payment_method')) && old('payment_method') == $pm->id)
-                                                            <option value="{{ $pm->id }}" selected>
-                                                                {{ $pm->name }}
-                                                            </option>
-                                                        @else
-                                                            <option value="{{ $pm->id }}">
-                                                                {{ $pm->name }}</option>
-                                                        @endif
-                                                    @endforeach
+                                                <select class="form-control" id="payment_type" name="payment_type"
+                                                    onchange="settingPaymentType(this)" required>
+                                                    <option disabled hidden selected>Choose Payment Type</option>
+                                                    <option value="0"
+                                                        @if (!is_null(old('payment_type')) && old('payment_type') == 0) selected @endif>
+                                                        Payment Cash
+                                                    </option>
+                                                    <option value="1"
+                                                        @if (!is_null(old('payment_type')) && old('payment_type') == 1) selected @endif>
+                                                        Payment Point
+                                                    </option>
                                                 </select>
                                             </div>
+                                            <div id="payment_method_form"></div>
                                             <div class="form-group">
                                                 <label for="customer_phone">Customer Phone</label>
                                                 <select class="form-control" id="customer_phone"
@@ -110,6 +109,13 @@
                                                         @endif
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="total_percentage">Customer Point</label>
+                                                <input type="number" class="form-control" id="customer_point"
+                                                    value="{{ old('customer_point') }}" readonly>
+                                                <input type="hidden" class="form-control" id="point_result"
+                                                    name="point_result" value="{{ old('point_result') }}" readonly>
                                             </div>
                                             <div class="text-right mb-3">
                                                 <button type="button" onclick="resetSelected()"
@@ -263,7 +269,6 @@
     @include('layouts.script')
     @include('javascript.sales_order.script')
     <script>
-        catalogue();
         $('#customer_phone').val('').change();
         $('#customer').val('').change();
     </script>

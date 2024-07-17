@@ -251,8 +251,8 @@
     @include('layouts.script')
     @include('javascript.sales_order.script')
     <script>
+        update = true;
         catalogue();
     </script>
 </body>
-
 </html>

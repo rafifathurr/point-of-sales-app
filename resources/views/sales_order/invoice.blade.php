@@ -153,7 +153,8 @@
             </tr>
 
             <tr class="details">
-                <td colspan="3">{{ $sales_order->paymentMethod->name }}</td>
+                <td colspan="3">{{ $sales_order->payment_type == 0 ? $sales_order->paymentMethod->name : 'Point' }}
+                </td>
             </tr>
 
             <tr class="heading">

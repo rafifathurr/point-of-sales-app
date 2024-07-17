@@ -24,4 +24,20 @@
     <link rel="shortcut icon" href="{{ asset('images/renata_label.png') }}" />
     <!-- CSRF -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        .select2-container {
+            display: block !important;
+            width: auto !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: calc(2.25rem + 2px) !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            top: 6px !important;
+            right: 3px !important;
+        }
+    </style>
 </head>

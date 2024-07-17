@@ -1,4 +1,5 @@
 <script type="text/javascript">
+    let update = false;
     $('#customer_phone').select2();
     $('#customer').css("pointer-events", "none");
     $('.select2-selection--single').css('height', '2.875rem');
@@ -32,71 +33,187 @@
     function resetSelected() {
         $('#customer_phone').val('').change();
         $('#customer').val('').change();
+        $('#customer_point').val('');
+        $('#point_result').val('');
+        catalogue();
     }
 
     function customerChange(element) {
         $('#customer').val(element.value);
+
+        if (element.value != '') {
+            $.get('{{ url('customer') }}/' + element.value, {}).done(function(data) {
+                $('#customer_point').val(data.customer.point);
+                $('#point_result').val(data.customer.point);
+                catalogue();
+            }).fail(function(xhr, status, error) {
+                alertError(error);
+            });
+        } else {
+            $('#payment_type').val(0).change();
+        }
     }
 
     function catalogue(page) {
 
-        $('#waiting-container').addClass('d-block');
-        $('#catalogue').html('');
         let query = $('#search_keyword').val();
 
-        if (page != undefined) {
-            $.get("{{ route('sales-order.catalogueProduct') }}", {
-                page: page,
-                query: query
-            }).done(function(data) {
-                $('#waiting-container').removeClass('d-block');
-                $('#waiting-container').addClass('d-none');
-                $('#catalogue').html(data);
-            }).fail(function(xhr, status, error) {
-                sweetAlertError(error);
-            });
+        if (!update) {
+
+            if ($('#payment_type').val() == 0) {
+
+
+                $('#waiting-container').addClass('d-block');
+                $('#catalogue').html('');
+
+                if (page != undefined) {
+                    $.get("{{ route('sales-order.catalogueProduct') }}", {
+                        page: page,
+                        payment_type: $('#payment_type').val(),
+                        price: null,
+                        query: query
+                    }).done(function(data) {
+                        $('#waiting-container').removeClass('d-block');
+                        $('#waiting-container').addClass('d-none');
+                        $('#catalogue').html(data);
+                    }).fail(function(xhr, status, error) {
+                        sweetAlertError(error);
+                    });
+                } else {
+                    $.get("{{ route('sales-order.catalogueProduct') }}", {
+                        payment_type: $('#payment_type').val(),
+                        price: null,
+                        query: query
+                    }).done(function(data) {
+                        $('#waiting-container').removeClass('d-block');
+                        $('#waiting-container').addClass('d-none');
+                        $('#catalogue').html(data);
+                    }).fail(function(xhr, status, error) {
+                        sweetAlertError(error);
+                    });
+                }
+            } else {
+
+                if ($('#point_result').val() != '') {
+
+                    $('#waiting-container').addClass('d-block');
+                    $('#catalogue').html('');
+
+                    if (page != undefined) {
+                        $.get("{{ route('sales-order.catalogueProduct') }}", {
+                            page: page,
+                            payment_type: $('#payment_type').val(),
+                            price: $('#point_result').val(),
+                            query: query
+                        }).done(function(data) {
+                            $('#waiting-container').removeClass('d-block');
+                            $('#waiting-container').addClass('d-none');
+                            $('#catalogue').html(data);
+                        }).fail(function(xhr, status, error) {
+                            sweetAlertError(error);
+                        });
+                    } else {
+                        $.get("{{ route('sales-order.catalogueProduct') }}", {
+                            payment_type: $('#payment_type').val(),
+                            price: $('#point_result').val(),
+                            query: query
+                        }).done(function(data) {
+                            $('#waiting-container').removeClass('d-block');
+                            $('#waiting-container').addClass('d-none');
+                            $('#catalogue').html(data);
+                        }).fail(function(xhr, status, error) {
+                            sweetAlertError(error);
+                        });
+                    }
+                }
+            }
         } else {
-            $.get("{{ route('sales-order.catalogueProduct') }}", {
-                query: query
-            }).done(function(data) {
-                $('#waiting-container').removeClass('d-block');
-                $('#waiting-container').addClass('d-none');
-                $('#catalogue').html(data);
-            }).fail(function(xhr, status, error) {
-                sweetAlertError(error);
-            });
+            if ($('#payment_type').val() == 0) {
+
+
+                $('#waiting-container').addClass('d-block');
+                $('#catalogue').html('');
+
+                if (page != undefined) {
+                    $.get("{{ route('sales-order.catalogueProduct') }}", {
+                        page: page,
+                        payment_type: $('#payment_type').val(),
+                        price: null,
+                        update: update,
+                        query: query
+                    }).done(function(data) {
+                        $('#waiting-container').removeClass('d-block');
+                        $('#waiting-container').addClass('d-none');
+                        $('#catalogue').html(data);
+                    }).fail(function(xhr, status, error) {
+                        sweetAlertError(error);
+                    });
+                } else {
+                    $.get("{{ route('sales-order.catalogueProduct') }}", {
+                        payment_type: $('#payment_type').val(),
+                        price: null,
+                        update: update,
+                        query: query
+                    }).done(function(data) {
+                        $('#waiting-container').removeClass('d-block');
+                        $('#waiting-container').addClass('d-none');
+                        $('#catalogue').html(data);
+                    }).fail(function(xhr, status, error) {
+                        sweetAlertError(error);
+                    });
+                }
+            } else {
+
+                if ($('#point_result').val() != '') {
+
+                    $('#waiting-container').addClass('d-block');
+                    $('#catalogue').html('');
+
+                    if (page != undefined) {
+                        $.get("{{ route('sales-order.catalogueProduct') }}", {
+                            page: page,
+                            payment_type: $('#payment_type').val(),
+                            price: $('#point_result').val(),
+                            update: update,
+                            query: query
+                        }).done(function(data) {
+                            $('#waiting-container').removeClass('d-block');
+                            $('#waiting-container').addClass('d-none');
+                            $('#catalogue').html(data);
+                        }).fail(function(xhr, status, error) {
+                            sweetAlertError(error);
+                        });
+                    } else {
+                        $.get("{{ route('sales-order.catalogueProduct') }}", {
+                            payment_type: $('#payment_type').val(),
+                            price: $('#point_result').val(),
+                            update: update,
+                            query: query
+                        }).done(function(data) {
+                            $('#waiting-container').removeClass('d-block');
+                            $('#waiting-container').addClass('d-none');
+                            $('#catalogue').html(data);
+                        }).fail(function(xhr, status, error) {
+                            sweetAlertError(error);
+                        });
+                    }
+                }
+            }
         }
     }
 
-    function catalogueUpdate(page) {
-
-        $('#waiting-container').addClass('d-block');
-        $('#catalogue').html('');
-        let query = $('#search_keyword').val();
-
-        if (page != undefined) {
-            $.get("{{ route('sales-order.catalogueProduct') }}", {
-                page: page,
-                update: true,
-                query: query
-            }).done(function(data) {
-                $('#waiting-container').removeClass('d-block');
-                $('#waiting-container').addClass('d-none');
-                $('#catalogue').html(data);
+    function settingPaymentType(element) {
+        if (element.value == 0) {
+            $('#point_result').val('');
+            $.get("{{ route('sales-order.paymentMethodForm') }}", {}).done(function(data) {
+                catalogue();
+                $('#payment_method_form').html(data);
             }).fail(function(xhr, status, error) {
                 sweetAlertError(error);
             });
         } else {
-            $.get("{{ route('sales-order.catalogueProduct') }}", {
-                update: true,
-                query: query
-            }).done(function(data) {
-                $('#waiting-container').removeClass('d-block');
-                $('#waiting-container').addClass('d-none');
-                $('#catalogue').html(data);
-            }).fail(function(xhr, status, error) {
-                sweetAlertError(error);
-            });
+            catalogue();
+            $('#payment_method_form').html('');
         }
     }
 
@@ -155,19 +272,19 @@
     function addProduct(product) {
         let token = $('meta[name="csrf-token"]').attr('content');
 
-        $.post("{{ route('product.getProductSize') }}", {
-            _token: token,
-            product: product,
-        }).done(function(data) {
-
-            if ($("#qty_" + data.id).length == 0) {
+        if ($("#product_size_" + product).length == 0) {
+            $.post("{{ route('product.getProductSize') }}", {
+                _token: token,
+                product: product,
+            }).done(function(data) {
 
                 let sell_price = 0;
                 let discount = 0;
 
                 if (data.discount.percentage > 0) {
                     discount = parseInt(data.sell_price) * (parseInt(data.discount.percentage)) / 100;
-                    sell_price = parseInt(data.sell_price) * (100 - parseInt(data.discount.percentage)) / 100;
+                    sell_price = parseInt(data.sell_price) * (100 - parseInt(data.discount.percentage)) /
+                        100;
                 } else {
                     sell_price = data.sell_price;
                 }
@@ -191,7 +308,8 @@
                     "</td>");
 
                 let td_qty = $("<td>" +
-                    "<input type='number' class='form-control text-center' name='sales_order_item[" + data
+                    "<input type='number' class='form-control text-center' name='sales_order_item[" +
+                    data
                     .product.id + "][product_size][" + data
                     .id + "][qty]' " +
                     "id='qty_" + data.id + "'" +
@@ -202,7 +320,8 @@
                     "name = 'sales_order_item[" + data.product.id + "][product_size][" + data.id +
                     "][stock]'" +
                     "value = '" + data.stock + "' > " +
-                    "<input type='hidden' id='capital_price_" + data.id + "' name = 'sales_order_item[" +
+                    "<input type='hidden' id='capital_price_" + data.id +
+                    "' name = 'sales_order_item[" +
                     data.product.id + "][product_size][" +
                     data.id + "][capital_price]'" +
                     "value = '" + data.capital_price + "' > " +
@@ -210,7 +329,8 @@
                     "name = 'sales_order_item[" + data.product.id + "][product_size][" + data.id +
                     "][sell_price]'" +
                     "value = '" + data.sell_price + "' > " +
-                    "<input type='hidden' id='discount_" + data.id + "' name = 'sales_order_item[" + data
+                    "<input type='hidden' id='discount_" + data.id + "' name = 'sales_order_item[" +
+                    data
                     .product.id + "][product_size][" +
                     data.id + "][discount_price]'" +
                     "value = '" + discount + "' > " +
@@ -221,7 +341,8 @@
                     "Rp. <span id='price_show_" + data.id + "'>" +
                     currencyFormat(sell_price) +
                     "</span>" +
-                    "<input type='hidden' id='total_sell_price_" + data.id + "' name = 'sales_order_item[" +
+                    "<input type='hidden' id='total_sell_price_" + data.id +
+                    "' name = 'sales_order_item[" +
                     data.product.id + "][product_size][" +
                     data.id + "][total_sell_price]'" +
                     "value = '" + sell_price + "' > " +
@@ -247,37 +368,37 @@
 
                 // Append To Table
                 $("#product_size tbody").append(tr);
+                getAccumulationPrice();
+            }).fail(function(xhr, status, error) {
+                sweetAlertError(error);
+            });
+        } else {
+            let last_qty = $("#qty_" + product).val();
+            let product_size_capital_price = $("#capital_price_" + product).val();
+            let product_size_sell_price = $("#sell_price_" + product).val();
+            let product_size_discount_price = $("#discount_" + product).val();
+
+            let total_sell_price = 0;
+            let total_discount_price = 0;
+            let total_qty = parseInt(last_qty) + 1;
+
+            if (parseInt(product_size_discount_price) > 0) {
+                total_discount_price = parseInt(product_size_discount_price) * total_qty;
+                total_sell_price = (parseInt(product_size_sell_price) * total_qty) - total_discount_price;
             } else {
-                let last_qty = $("#qty_" + data.id).val();
-                let product_size_capital_price = $("#capital_price_" + data.id).val();
-                let product_size_sell_price = $("#sell_price_" + data.id).val();
-                let product_size_discount_price = $("#discount_" + data.id).val();
-
-                let total_sell_price = 0;
-                let total_discount_price = 0;
-                let total_qty = parseInt(last_qty) + 1;
-
-                if (parseInt(product_size_discount_price) > 0) {
-                    total_discount_price = parseInt(product_size_discount_price) * total_qty;
-                    total_sell_price = (parseInt(product_size_sell_price) * total_qty) - total_discount_price;
-                } else {
-                    total_sell_price = parseInt(product_size_sell_price) * total_qty;
-                }
-
-                let total_profit_price = total_sell_price - (parseInt(product_size_capital_price) * total_qty);
-
-                $('#price_show_' + data.id).html(currencyFormat(total_sell_price));
-                $('#qty_' + data.id).val(total_qty);
-                $('#total_sell_price_' + data.id).val(total_sell_price);
-                $('#total_profit_price_' + data.id).val(total_profit_price);
-
+                total_sell_price = parseInt(product_size_sell_price) * total_qty;
             }
 
-            getAccumulationPrice();
+            let total_profit_price = total_sell_price - (parseInt(product_size_capital_price) * total_qty);
 
-        }).fail(function(xhr, status, error) {
-            sweetAlertError(error);
-        });
+            $('#price_show_' + product).html(currencyFormat(total_sell_price));
+            $('#qty_' + product).val(total_qty);
+            $('#total_sell_price_' + product).val(total_sell_price);
+            $('#total_profit_price_' + product).val(total_profit_price);
+
+            getAccumulationPrice();
+        }
+
     }
 
     // Currency Format
@@ -366,6 +487,26 @@
         $('#discount_price').val(discount_price);
         $('#grand_sell_price').val(grand_sell_price_all_product);
         $('#grand_profit_price').val(grand_profit_price_all_product);
+
+        if ($('#payment_type').val() == 1) {
+            let customer_point = $('#customer_point').val();
+            let customer_point_result = parseInt(customer_point) - grand_sell_price_all_product;
+            $('#point_result').val(customer_point_result);
+
+            if (customer_point_result < parseInt(customer_point)) {
+                $("input[name='sales_order_item_check[]']")
+                    .map(function() {
+                        $("#qty_" + $(this).val()).attr('readonly', true);
+                    });
+            } else {
+                $("input[name='sales_order_item_check[]']")
+                    .map(function() {
+                        $("#qty_" + $(this).val()).attr('readonly', false);
+                    });
+            }
+
+            catalogue();
+        }
     }
 
     function destroyRecord(id) {
