@@ -153,7 +153,8 @@
             </tr>
 
             <tr class="details">
-                <td colspan="3"> {{ $sales_order->payment_type == 0 ? (!is_null($sales_order->payment_method_id) ? $sales_order->paymentMethod->name : 'Shopee') : 'Point' }}
+                <td colspan="3">
+                    {{ $sales_order->payment_type == 0 ? (!is_null($sales_order->payment_method_id) ? $sales_order->paymentMethod->name : 'Shopee') : 'Point' }}
                 </td>
             </tr>
 
@@ -162,7 +163,9 @@
                 <td align="center">Discount</td>
                 <td align="center">Price</td>
             </tr>
-
+            @php
+                $grand_sell_price = 0;
+            @endphp
             @foreach ($sales_order->salesOrderItem as $sales_order_item)
                 <tr class="item">
                     <td>
@@ -172,20 +175,40 @@
                         Rp. {{ number_format($sales_order_item->discount_price, 0, ',', '.') }} ,-
                     </td>
                     <td align="right">
-                        Rp. {{ number_format($sales_order_item->total_sell_price, 0, ',', '.') }}
-                        ,-
+                        @if (
+                            ($sales_order_item->sell_price - $sales_order_item->discount_price) * $sales_order_item->qty !=
+                                $sales_order_item->total_sell_price)
+                            Rp.
+                            {{ number_format(($sales_order_item->sell_price - $sales_order_item->discount_price) * $sales_order_item->qty, 0, ',', '.') }}
+                            ,-
+                            @php
+                                $grand_sell_price +=
+                                    ($sales_order_item->sell_price - $sales_order_item->discount_price) *
+                                    $sales_order_item->qty;
+                            @endphp
+                        @else
+                            Rp. {{ number_format($sales_order_item->total_sell_price, 0, ',', '.') }}
+                            ,-
+                            @php
+                                $grand_sell_price += $sales_order_item->total_sell_price;
+                            @endphp
+                        @endif
                     </td>
                 </tr>
             @endforeach
-
             <tr class="total">
                 <td colspan="2"><b>Total</b></td>
                 <td align="right">
-                    Rp. {{ number_format($sales_order->grand_sell_price, 0, ',', '.') }}
-                    ,-
+                    @if ($grand_sell_price != $sales_order->grand_sell_price)
+                        Rp.
+                        {{ number_format($grand_sell_price, 0, ',', '.') }}
+                        ,-
+                    @else
+                        Rp. {{ number_format($sales_order->grand_sell_price, 0, ',', '.') }}
+                        ,-
+                    @endif
                 </td>
             </tr>
-
         </table>
     </div>
 </body>

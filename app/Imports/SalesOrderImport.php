@@ -44,7 +44,12 @@ class SalesOrderImport implements ToArray
                         ];
 
                         $sell_price = intval($row[3]) * intval($row[4]);
-                        $total_sell_price = (intval($row[3]) - intval($row[5]) - intval($row[6])) * intval($row[4]);
+
+                        if ($row[6] != null) {
+                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]) - intval($row[6]);
+                        } else {
+                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]);
+                        }
 
                         $this->data[$row[1]]['sales_order_item'][$product_slug][$product_size_slug] = [
                             'product_size_slug' => $product_size_slug,
@@ -63,7 +68,12 @@ class SalesOrderImport implements ToArray
                         $this->data[$row[1]]['grand_sell_price'] = $grand_sell_price_order;
                     } else {
                         $sell_price = intval($row[3]) * intval($row[4]);
-                        $total_sell_price = (intval($row[3]) - intval($row[5]) - intval($row[6])) * intval($row[4]);
+
+                        if ($row[6] != null) {
+                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]) - intval($row[6]);
+                        } else {
+                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]);
+                        }
 
                         $this->data[$row[1]]['sales_order_item'][$product_slug][$product_size_slug] = [
                             'product_size_slug' => $product_size_slug,
