@@ -15,13 +15,13 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Category Product</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ $product->categoryProduct->name }}
+                                {{ $product->categoryProduct->name ?? '-' }}
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Supplier</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ $product->supplier->name }}
+                                {{ $product->supplier->name ?? '-' }}
                             </div>
                         </div>
                         <div class="form-group row">

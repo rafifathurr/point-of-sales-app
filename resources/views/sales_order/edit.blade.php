@@ -11,7 +11,7 @@
         <div class="container-fluid page-body-wrapper">
             <div class="main-panel w-100">
                 <div class="content-wrapper">
-                    <form class="forms-sample" method="post" action="{{ $update_route }}">
+                    <form class="forms-sample" id="form_order" method="post" action="{{ $update_route }}">
                         @csrf
                         @method('patch')
                         <div class="row">

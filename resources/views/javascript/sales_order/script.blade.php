@@ -4,7 +4,7 @@
     $('#customer').css("pointer-events", "none");
     $('.select2-selection--single').css('height', '2.875rem');
 
-    $("form").submit(function(e) {
+    $("#form_order").submit(function(e) {
         e.preventDefault();
         if ($("input[name='sales_order_item_check[]']").val() === undefined) {
             sweetAlertWarning('Please Complete The Record!');
@@ -24,10 +24,32 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     sweetAlertProcess();
-                    $('form').unbind('submit').submit();
+                    $('#form_order').unbind('submit').submit();
                 }
             })
         }
+    });
+
+    $("#form_import").submit(function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are You Sure Want To Import Record?',
+            icon: 'question',
+            showCancelButton: true,
+            allowOutsideClick: false,
+            customClass: {
+                confirmButton: 'btn btn-primary mr-2 mb-3',
+                cancelButton: 'btn btn-danger mb-3',
+            },
+            buttonsStyling: false,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sweetAlertProcess();
+                $('#form_import').unbind('submit').submit();
+            }
+        })
     });
 
     function resetSelected() {

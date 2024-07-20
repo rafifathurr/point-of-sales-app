@@ -43,7 +43,6 @@ Route::group(['middleware' => 'auth'], function () {
  * Super Admin Route Access
  */
 Route::group(['middleware' => ['role:super-admin']], function () {
-
     /**
      * Route Dashboard Method Module
      */
@@ -96,7 +95,6 @@ Route::group(['middleware' => ['role:super-admin']], function () {
  * Admin Route Access
  */
 Route::group(['middleware' => ['role:admin']], function () {
-
     /**
      * Route Stock In Module
      */
@@ -112,7 +110,6 @@ Route::group(['middleware' => ['role:admin']], function () {
  * Super Admin and Admin Route Access
  */
 Route::group(['middleware' => ['role:super-admin|admin']], function () {
-
     /**
      * Route Product Module
      */
@@ -155,10 +152,12 @@ Route::group(['middleware' => ['role:super-admin|admin']], function () {
  * Admin and Cashier Route Access
  */
 Route::group(['middleware' => ['role:admin|cashier']], function () {
-
     /**
-     * Route Customer Module
+     * Route Sales Order Module
      */
+    Route::group(['controller' => SalesOrderController::class, 'prefix' => 'sales-order', 'as' => 'sales-order.'], function () {
+        Route::post('import', 'import')->name('import');
+    });
     Route::resource('sales-order', SalesOrderController::class, ['except' => ['index', 'show']])->parameters(['sales-order' => 'id']);
 
     /**
@@ -171,7 +170,6 @@ Route::group(['middleware' => ['role:admin|cashier']], function () {
  * Super Admin, Admin and Cashier Route Access
  */
 Route::group(['middleware' => ['role:super-admin|admin|cashier']], function () {
-
     /**
      * Route Chart of Account Module
      */

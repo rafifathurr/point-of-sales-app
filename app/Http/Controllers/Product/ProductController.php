@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -73,7 +74,11 @@ class ProductController extends Controller
                 /**
                  * Return Relation Category Product
                  */
-                return $data->categoryProduct->name;
+                if(!is_null($data->category_product_id)){
+                    return $data->categoryProduct->name;
+                }else{
+                    return $data->category_product_id;
+                }
             })
             ->addColumn('status', function ($data) {
                 /**
@@ -151,6 +156,7 @@ class ProductController extends Controller
                  */
                 $product = Product::lockforUpdate()->create([
                     'name' => $request->name,
+                    'slug' => Str::slug($request->name),
                     'category_product_id' => $request->category_product,
                     'supplier_id' => $request->supplier,
                     'description' => $request->description,
@@ -214,6 +220,7 @@ class ProductController extends Controller
                                 $product_size = ProductSize::lockforUpdate()->create([
                                     'product_id' => $product->id,
                                     'size' => $size['size'],
+                                    'slug' => Str::slug($size['size']),
                                     'stock' => $size['stock'],
                                     'capital_price' => isset($size['capital_price']) ? $size['capital_price'] : null,
                                     'sell_price' => $size['sell_price'],
@@ -495,6 +502,7 @@ class ProductController extends Controller
                      */
                     $product_update = Product::where('id', $id)->update([
                         'name' => $request->name,
+                        'slug' => Str::slug($request->name),
                         'category_product_id' => $request->category_product,
                         'supplier_id' => $request->supplier,
                         'description' => $request->description,
@@ -611,7 +619,7 @@ class ProductController extends Controller
                                                     $product_size = ProductSize::lockforUpdate()->create([
                                                         'product_id' => $id,
                                                         'size' => $size['size'],
-                
+                                                        'slug' => Str::slug($size['size']),
                                                         'stock' => $size['stock'],
                                                         'capital_price' => $size['capital_price'],
                                                         'sell_price' => $size['sell_price'],
@@ -625,7 +633,7 @@ class ProductController extends Controller
                                                     $product_size = ProductSize::lockforUpdate()->create([
                                                         'product_id' => $id,
                                                         'size' => $size['size'],
-                
+                                                        'slug' => Str::slug($size['size']),
                                                         'stock' => $size['stock'],
                                                         'sell_price' => $size['sell_price'],
                                                         'created_by' => Auth::user()->id,
@@ -835,7 +843,7 @@ class ProductController extends Controller
                                             $product_size = ProductSize::lockforUpdate()->create([
                                                 'product_id' => $id,
                                                 'size' => $size['size'],
-        
+                                                'slug' => Str::slug($size['size']),
                                                 'stock' => $size['stock'],
                                                 'capital_price' => $size['capital_price'],
                                                 'sell_price' => $size['sell_price'],
@@ -849,7 +857,7 @@ class ProductController extends Controller
                                             $product_size = ProductSize::lockforUpdate()->create([
                                                 'product_id' => $id,
                                                 'size' => $size['size'],
-        
+                                                'slug' => Str::slug($size['size']),
                                                 'stock' => $size['stock'],
                                                 'sell_price' => $size['sell_price'],
                                                 'created_by' => Auth::user()->id,

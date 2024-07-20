@@ -153,7 +153,7 @@
             </tr>
 
             <tr class="details">
-                <td colspan="3">{{ $sales_order->payment_type == 0 ? $sales_order->paymentMethod->name : 'Point' }}
+                <td colspan="3"> {{ $sales_order->payment_type == 0 ? (!is_null($sales_order->payment_method_id) ? $sales_order->paymentMethod->name : 'Shopee') : 'Point' }}
                 </td>
             </tr>
 

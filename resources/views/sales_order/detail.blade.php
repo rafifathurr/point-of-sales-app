@@ -53,7 +53,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Payment Method</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ $sales_order->payment_type == 0 ? $sales_order->paymentMethod->name : 'Point' }}
+                                {{ $sales_order->payment_type == 0 ? (!is_null($sales_order->payment_method_id) ? $sales_order->paymentMethod->name : 'Shopee') : 'Point' }}
                             </div>
                         </div>
                         <div class="form-group row">

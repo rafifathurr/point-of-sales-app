@@ -11,7 +11,7 @@
         <div class="container-fluid page-body-wrapper">
             <div class="main-panel w-100">
                 <div class="content-wrapper">
-                    <form action="{{ route('sales-order.store') }}" id="form_page" method="post">
+                    <form action="{{ route('sales-order.store') }}" id="form_order" method="post">
                         @csrf
                         <div class="row">
                             <div class="col-md-7 grid-margin stretch-card">
