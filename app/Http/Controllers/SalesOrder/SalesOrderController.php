@@ -1166,7 +1166,6 @@ class SalesOrderController extends Controller
                             /**
                              * Validation Product by Slug
                              */
-
                             $product_size_record = ProductSize::with(['product'])
                                 ->whereNull('deleted_by')
                                 ->whereNull('deleted_at')
@@ -1241,8 +1240,8 @@ class SalesOrderController extends Controller
                                 }
 
                                 /*
-                                * Check Last Empty Stock of Product Another Product Request
-                                */
+                                 * Check Last Empty Stock of Product Another Product Request
+                                 */
                                 $last_stock_product_record = ProductSize::where('product_id', $product_size_record->product_id)
                                     ->whereNull('deleted_by')
                                     ->whereNull('deleted_at')
@@ -1365,235 +1364,119 @@ class SalesOrderController extends Controller
                             }
                         }
                     } else {
-                         /**
+                        $product_name = ucwords(str_replace('-', ' ', $product_slug));
+
+                        /**
+                         * Create Product Record
+                         */
+                        $product = Product::lockforUpdate()->create([
+                            'name' => $product_name,
+                            'slug' => $product_slug,
+                            'status' => 0,
+                            'created_by' => Auth::user()->id,
+                            'updated_by' => Auth::user()->id,
+                        ]);
+
+                        /**
+                         * Validation Create Product Record
+                         */
+                        if (!$product) {
+                            /**
+                             * Failed Store Record
+                             */
+                            DB::rollBack();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Failed Add Product'])
+                                ->withInput();
+                        }
+
+                        /**
                          * Each Sales Order Item Product Size Import
                          */
                         foreach ($sales_order_product as $product_size_slug => $sales_order_product_size) {
-                            /**
-                             * Validation Product by Slug
-                             */
-                            $product_record = Product::whereNull('deleted_by')->whereNull('deleted_at')->where('slug', $product_slug)->first();
+                            $product_size_name = ucwords(str_replace('-', ' ', $product_size_slug));
 
-                            $product_size_record = ProductSize::with(['product'])
-                                ->whereNull('deleted_by')
-                                ->whereNull('deleted_at')
-                                ->whereHas('product', function ($query) use ($product_slug) {
-                                    return $query->where('slug', $product_slug);
-                                })
-                                ->where('slug', $product_size_slug)
-                                ->first();
+                            $total_capital_price += $sales_order_product_size['capital_price'] * $sales_order_product_size['qty'];
+                            $grand_profit_price += $sales_order_product_size['total_sell_price'] - $sales_order_product_size['capital_price'] * $sales_order_product_size['qty'];
 
                             /**
-                             * Validation Product by Slug
+                             * Create Product Size Record
                              */
-                            if (!is_null($product_size_record)) {
-                                $total_capital_price += $product_size_record->capital_price * $sales_order_product_size['qty'];
-                                $grand_profit_price += $sales_order_product_size['total_sell_price'] - $product_size_record->capital_price * $sales_order_product_size['qty'];
+                            $product_size = ProductSize::lockforUpdate()->create([
+                                'product_id' => $product->id,
+                                'size' => $product_size_name,
+                                'slug' => $product_size_slug,
+                                'stock' => 0,
+                                'capital_price' => $sales_order_product_size['capital_price'],
+                                'sell_price' => $sales_order_product_size['sell_price'],
+                                'created_by' => Auth::user()->id,
+                                'updated_by' => Auth::user()->id,
+                            ]);
 
-                                /**
-                                 * Create Sales Order Item Record
-                                 */
-                                $sales_order_item = SalesOrderItem::lockforUpdate()->create([
-                                    'product_size_id' => $product_size_record->id,
-                                    'sales_order_id' => $sales_order->id,
-                                    'qty' => $sales_order_product_size['qty'],
-                                    'capital_price' => $product_size_record->capital_price,
-                                    'sell_price' => $sales_order_product_size['sell_price'],
-                                    'discount_price' => $sales_order_product_size['discount_price'],
-                                    'total_sell_price' => $sales_order_product_size['total_sell_price'],
-                                    'total_profit_price' => $sales_order_product_size['total_sell_price'] - $product_size_record->capital_price * $sales_order_product_size['qty'],
-                                    'created_by' => Auth::user()->id,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
-
-                                /**
-                                 * Validation Create Sales Order Item Record
-                                 */
-                                if (!$sales_order_item) {
-                                    /**
-                                     * Failed Store Record
-                                     */
-                                    DB::rollBack();
-                                    return redirect()
-                                        ->back()
-                                        ->with(['failed' => 'Failed Store Sales Order Item'])
-                                        ->withInput();
+                            /**
+                             * Validation Create Product Size Record
+                             */
+                            if ($product_size) {
+                                if ($sales_order_product_size['discount_price'] > 0) {
+                                    $percentage = $sales_order_product_size['discount_price'] / ($sales_order_product_size['sell_price'] / 100);
+                                } else {
+                                    $percentage = 0;
                                 }
 
                                 /**
-                                 * Calculation Stock
+                                 * Create Product Discount Record
                                  */
-                                $calculation_stock = intval($product_size_record->stock) - intval($sales_order_product_size['qty']);
-
-                                /**
-                                 * Update Stock of Product
-                                 */
-                                $product_size_update = ProductSize::where('id', $product_size_record->id)->update([
-                                    'stock' => $calculation_stock,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
-
-                                /**
-                                 * Validation Update Stock of Product
-                                 */
-                                if (!$product_size_update) {
-                                    /**
-                                     * Failed Store Record
-                                     */
-                                    DB::rollBack();
-                                    return redirect()
-                                        ->back()
-                                        ->with(['failed' => 'Failed Update Stock Product'])
-                                        ->withInput();
-                                }
-
-                                /*
-                                * Check Last Empty Stock of Product Another Product Request
-                                */
-                                $last_stock_product_record = ProductSize::where('product_id', $product_size_record->product_id)
-                                    ->whereNull('deleted_by')
-                                    ->whereNull('deleted_at')
-                                    ->where('id', '!=', $product_size_record->id)
-                                    ->where('stock', '>', 0)
-                                    ->get()
-                                    ->toArray();
-
-                                /**
-                                 * Validation Status and Stock of Product
-                                 */
-                                if (empty($last_stock_product_record) && $calculation_stock == 0) {
-                                    /**
-                                     * Update Status Product
-                                     */
-                                    $product_update = Product::where('id', $product_size_record->product_id)->update([
-                                        'status' => 0,
-                                        'updated_by' => Auth::user()->id,
-                                    ]);
-
-                                    /**
-                                     * Validation Update Product
-                                     */
-                                    if (!$product_update) {
-                                        /**
-                                         * Failed Store Record
-                                         */
-                                        DB::rollBack();
-                                        return redirect()
-                                            ->back()
-                                            ->with(['failed' => 'Failed Update Product'])
-                                            ->withInput();
-                                    }
-                                }
-                            } else {
-                                $product_name = ucwords(str_replace('-', ' ', $product_slug));
-                                $product_size_name = ucwords(str_replace('-', ' ', $product_size_slug));
-
-                                $total_capital_price += $sales_order_product_size['capital_price'] * $sales_order_product_size['qty'];
-                                $grand_profit_price += $sales_order_product_size['total_sell_price'] - $sales_order_product_size['capital_price'] * $sales_order_product_size['qty'];
-
-                                /**
-                                 * Create Product Record
-                                 */
-                                $product = Product::lockforUpdate()->create([
-                                    'name' => $product_name,
-                                    'slug' => $product_slug,
-                                    'status' => 0,
-                                    'created_by' => Auth::user()->id,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
-
-                                /**
-                                 * Validation Create Product Record
-                                 */
-                                if (!$product) {
-                                    /**
-                                     * Failed Store Record
-                                     */
-                                    DB::rollBack();
-                                    return redirect()
-                                        ->back()
-                                        ->with(['failed' => 'Failed Add Product'])
-                                        ->withInput();
-                                }
-
-                                /**
-                                 * Create Product Size Record
-                                 */
-                                $product_size = ProductSize::lockforUpdate()->create([
-                                    'product_id' => $product->id,
-                                    'size' => $product_size_name,
-                                    'slug' => $product_size_slug,
-                                    'stock' => 0,
-                                    'capital_price' => $sales_order_product_size['capital_price'],
-                                    'sell_price' => $sales_order_product_size['sell_price'],
-                                    'created_by' => Auth::user()->id,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
-
-                                /**
-                                 * Validation Create Product Size Record
-                                 */
-                                if ($product_size) {
-                                    if ($sales_order_product_size['discount_price'] > 0) {
-                                        $percentage = $sales_order_product_size['discount_price'] / ($sales_order_product_size['sell_price'] / 100);
-                                    } else {
-                                        $percentage = 0;
-                                    }
-
-                                    /**
-                                     * Create Product Discount Record
-                                     */
-                                    $product_discount = Discount::lockforUpdate()->create([
-                                        'product_size_id' => $product_size->id,
-                                        'percentage' => $percentage,
-                                        'created_by' => Auth::user()->id,
-                                        'updated_by' => Auth::user()->id,
-                                    ]);
-
-                                    /**
-                                     * Validation Create Product Discount Record
-                                     */
-                                    if (!$product_discount) {
-                                        /**
-                                         * Failed Store Record
-                                         */
-                                        DB::rollBack();
-                                        return redirect()
-                                            ->back()
-                                            ->with(['failed' => 'Failed Store Product Discount'])
-                                            ->withInput();
-                                    }
-                                }
-
-                                /**
-                                 * Create Sales Order Item Record
-                                 */
-                                $sales_order_item = SalesOrderItem::lockforUpdate()->create([
+                                $product_discount = Discount::lockforUpdate()->create([
                                     'product_size_id' => $product_size->id,
-                                    'sales_order_id' => $sales_order->id,
-                                    'qty' => $sales_order_product_size['qty'],
-                                    'capital_price' => $product_size->capital_price,
-                                    'sell_price' => $sales_order_product_size['sell_price'],
-                                    'discount_price' => $sales_order_product_size['discount_price'],
-                                    'total_sell_price' => $sales_order_product_size['total_sell_price'],
-                                    'total_profit_price' => $sales_order_product_size['total_sell_price'] - $product_size->capital_price * $sales_order_product_size['qty'],
+                                    'percentage' => $percentage,
                                     'created_by' => Auth::user()->id,
                                     'updated_by' => Auth::user()->id,
                                 ]);
 
                                 /**
-                                 * Validation Create Sales Order Item Record
+                                 * Validation Create Product Discount Record
                                  */
-                                if (!$sales_order_item) {
+                                if (!$product_discount) {
                                     /**
                                      * Failed Store Record
                                      */
                                     DB::rollBack();
                                     return redirect()
                                         ->back()
-                                        ->with(['failed' => 'Failed Store Sales Order Item'])
+                                        ->with(['failed' => 'Failed Store Product Discount'])
                                         ->withInput();
                                 }
+                            }
+
+                            /**
+                             * Create Sales Order Item Record
+                             */
+                            $sales_order_item = SalesOrderItem::lockforUpdate()->create([
+                                'product_size_id' => $product_size->id,
+                                'sales_order_id' => $sales_order->id,
+                                'qty' => $sales_order_product_size['qty'],
+                                'capital_price' => $product_size->capital_price,
+                                'sell_price' => $sales_order_product_size['sell_price'],
+                                'discount_price' => $sales_order_product_size['discount_price'],
+                                'total_sell_price' => $sales_order_product_size['total_sell_price'],
+                                'total_profit_price' => $sales_order_product_size['total_sell_price'] - $product_size->capital_price * $sales_order_product_size['qty'],
+                                'created_by' => Auth::user()->id,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+
+                            /**
+                             * Validation Create Sales Order Item Record
+                             */
+                            if (!$sales_order_item) {
+                                /**
+                                 * Failed Store Record
+                                 */
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Failed Store Sales Order Item'])
+                                    ->withInput();
                             }
                         }
                     }
