@@ -74,7 +74,7 @@
                                                     <option disabled hidden selected>Choose Payment Type</option>
                                                     <option @if ($sales_order->payment_type == 0) selected @endif
                                                         value="0">
-                                                        Payment Cash
+                                                        Payment Non Point
                                                     </option>
                                                     <option @if ($sales_order->payment_type == 1) selected @endif
                                                         value="1">

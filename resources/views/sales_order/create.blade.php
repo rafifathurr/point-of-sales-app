@@ -69,7 +69,7 @@
                                                     <option disabled hidden selected>Choose Payment Type</option>
                                                     <option value="0"
                                                         @if (!is_null(old('payment_type')) && old('payment_type') == 0) selected @endif>
-                                                        Payment Cash
+                                                        Payment Non Point
                                                     </option>
                                                     <option value="1"
                                                         @if (!is_null(old('payment_type')) && old('payment_type') == 1) selected @endif>

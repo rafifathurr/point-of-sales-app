@@ -47,7 +47,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Payment Type</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ $sales_order->payment_type == 0 ? 'Cash' : 'Point' }}
+                                {{ $sales_order->payment_type == 0 ? 'Non Point' : 'Point' }}
                             </div>
                         </div>
                         <div class="form-group row">
