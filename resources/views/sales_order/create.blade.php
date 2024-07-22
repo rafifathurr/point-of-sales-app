@@ -19,7 +19,7 @@
                                     <div class="card-body px-5 py-5">
                                         <div class="d-flex justify-content-between">
                                             <div class="p-2">
-                                                <h4 class="card-title">Liat of Catalogue Product</h4>
+                                                <h4 class="card-title">List of Catalogue Product</h4>
                                             </div>
                                             <div class="p-0">
                                                 <div class="input-group w-100 mx-auto d-flex">

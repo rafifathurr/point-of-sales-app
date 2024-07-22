@@ -104,7 +104,7 @@
                 $('#accumulation_coa').html(currencyFormat(total_credit - total_debt));
             },
             order: [
-                [0, 'asc']
+                [0, 'desc']
             ]
         });
     }

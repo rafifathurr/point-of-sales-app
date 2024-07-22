@@ -93,7 +93,7 @@
                 },
             ],
             order: [
-                [2, 'desc']
+                [0, 'desc']
             ]
         });
     }
@@ -368,7 +368,7 @@
                 }
             ],
             order: [
-                [1, 'desc']
+                [0, 'desc']
             ]
         });
     }
@@ -645,7 +645,7 @@
                 $('#total_credit').html(currencyFormat(total_credit));
             },
             order: [
-                [0, 'asc']
+                [0, 'desc']
             ]
         });
     }

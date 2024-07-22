@@ -252,7 +252,7 @@ class DashboardController extends Controller
                     ->whereMonth('date', $request->month)
                     ->whereYear('date', $request->year)
                     ->where('type', 0)
-                    ->orderBy('date', 'asc')
+                    ->orderBy('date', 'desc')
                     ->get();
 
                 return view('dashboard.includes.profit_loss', ['total_profit' => $total_profit, 'total_profit_loss' => $total_profit_loss, 'coa_debt' => $coa_debt]);
