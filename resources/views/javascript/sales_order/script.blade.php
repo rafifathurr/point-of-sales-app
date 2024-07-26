@@ -77,17 +77,11 @@
     }
 
     function catalogue(page) {
-
         let query = $('#search_keyword').val();
-
         if (!update) {
-
             if ($('#payment_type').val() == 0) {
-
-
                 $('#waiting-container').addClass('d-block');
                 $('#catalogue').html('');
-
                 if (page != undefined) {
                     $.get("{{ route('sales-order.catalogueProduct') }}", {
                         page: page,
@@ -115,12 +109,9 @@
                     });
                 }
             } else {
-
                 if ($('#point_result').val() != '') {
-
                     $('#waiting-container').addClass('d-block');
                     $('#catalogue').html('');
-
                     if (page != undefined) {
                         $.get("{{ route('sales-order.catalogueProduct') }}", {
                             page: page,
@@ -151,11 +142,8 @@
             }
         } else {
             if ($('#payment_type').val() == 0) {
-
-
                 $('#waiting-container').addClass('d-block');
                 $('#catalogue').html('');
-
                 if (page != undefined) {
                     $.get("{{ route('sales-order.catalogueProduct') }}", {
                         page: page,
@@ -185,12 +173,9 @@
                     });
                 }
             } else {
-
                 if ($('#point_result').val() != '') {
-
                     $('#waiting-container').addClass('d-block');
                     $('#catalogue').html('');
-
                     if (page != undefined) {
                         $.get("{{ route('sales-order.catalogueProduct') }}", {
                             page: page,
@@ -297,16 +282,13 @@
 
     function addProduct(product) {
         let token = $('meta[name="csrf-token"]').attr('content');
-
         if ($("#product_size_" + product).length == 0) {
             $.post("{{ route('product.getProductSize') }}", {
                 _token: token,
                 product: product,
             }).done(function(data) {
-
                 let sell_price = 0;
                 let discount = 0;
-
                 if (data.discount.percentage > 0) {
                     discount = parseInt(data.sell_price) * (parseInt(data.discount.percentage)) / 100;
                     sell_price = parseInt(data.sell_price) * (100 - parseInt(data.discount.percentage)) /
@@ -314,11 +296,8 @@
                 } else {
                     sell_price = data.sell_price;
                 }
-
                 let profit_price = parseInt(sell_price) - data.capital_price;
-
                 let tr = $("<tr id='product_size_" + data.id + "'></tr>");
-
                 let td_product_size = $("<td>" +
                     data.product.name + ' - ' + data.size +
                     "<input type='hidden' name = 'sales_order_item[" + data.product.id + "][product]'" +
@@ -332,7 +311,6 @@
                     data.id + "][product_name]'" +
                     "value = '" + data.product.name + ' - ' + data.size + "' > " +
                     "</td>");
-
                 let td_qty = $("<td>" +
                     "<input type='number' class='form-control text-center' name='sales_order_item[" +
                     data
@@ -362,7 +340,6 @@
                     "value = '" + discount + "' > " +
                     "</td>"
                 );
-
                 let td_price = $("<td align='right'>" +
                     "Rp. <span id='price_show_" + data.id + "'>" +
                     currencyFormat(sell_price) +
@@ -379,7 +356,6 @@
                     "> " +
                     "</td>"
                 );
-
                 let td_del = $(
                     "<td align='center'>" +
                     "<button type='button' class='delete-row btn btn-sm btn-danger' value='Delete'><i class='fas fa-trash'></i></button>" +
@@ -388,10 +364,8 @@
                     "'>" +
                     "</td>"
                 );
-
                 // Append Tr Element
                 (tr.append(td_product_size).append(td_qty).append(td_price).append(td_del));
-
                 // Append To Table
                 $("#product_size tbody").append(tr);
                 getAccumulationPrice();
@@ -403,25 +377,20 @@
             let product_size_capital_price = $("#capital_price_" + product).val();
             let product_size_sell_price = $("#sell_price_" + product).val();
             let product_size_discount_price = $("#discount_" + product).val();
-
             let total_sell_price = 0;
             let total_discount_price = 0;
             let total_qty = parseInt(last_qty) + 1;
-
             if (parseInt(product_size_discount_price) > 0) {
                 total_discount_price = parseInt(product_size_discount_price) * total_qty;
                 total_sell_price = (parseInt(product_size_sell_price) * total_qty) - total_discount_price;
             } else {
                 total_sell_price = parseInt(product_size_sell_price) * total_qty;
             }
-
             let total_profit_price = total_sell_price - (parseInt(product_size_capital_price) * total_qty);
-
             $('#price_show_' + product).html(currencyFormat(total_sell_price));
             $('#qty_' + product).val(total_qty);
             $('#total_sell_price_' + product).val(total_sell_price);
             $('#total_profit_price_' + product).val(total_profit_price);
-
             getAccumulationPrice();
         }
 

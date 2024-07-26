@@ -5,9 +5,7 @@
 
 <body>
     <div class="container-scroller">
-        <!-- partial:partials/_navbar.html -->
         @include('layouts.navbar')
-        <!-- partial -->
         <div class="container-fluid page-body-wrapper">
             <div class="main-panel w-100">
                 <div class="content-wrapper">
@@ -253,15 +251,10 @@
                         </div>
                     </form>
                 </div>
-                <!-- partial:partials/_footer.html -->
                 @include('layouts.footer')
-                <!-- partial -->
             </div>
-            <!-- main-panel ends -->
         </div>
-        <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
     @include('layouts.script')
     @include('javascript.sales_order.script')
     @if (is_null($sales_order->customer_id))

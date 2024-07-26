@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <title>Invoice #{{ $sales_order->invoice_number }}</title>
-
     <style>
         .invoice-box {
             max-width: 800px;
@@ -84,7 +82,6 @@
             }
         }
 
-        /** RTL **/
         .invoice-box.rtl {
             direction: rtl;
             font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
@@ -99,7 +96,6 @@
         }
     </style>
 </head>
-
 <body>
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
@@ -111,7 +107,6 @@
                                 <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/renata_label_icon.png'))) }}"
                                     style="width: 100%; max-width: 300px" />
                             </td>
-
                             <td>
                                 <b>Invoice</b> : #{{ $sales_order->invoice_number }}<br />
                                 <b>Date & Time</b>: {{ date('d F Y H:i:s', strtotime($sales_order->created_at)) }}<br />
@@ -121,7 +116,6 @@
                     </table>
                 </td>
             </tr>
-
             <tr class="information">
                 <td colspan="3">
                     <table>
@@ -130,7 +124,6 @@
                                 Renata Label.<br />
                                 Jakarta, Indonesia<br />
                             </td>
-
                             <td>
                                 {{ $sales_order->customer->name ?? '' }}<br />
                                 {{ $sales_order->customer->phone ?? '' }}
@@ -139,25 +132,20 @@
                     </table>
                 </td>
             </tr>
-
             <tr class="heading">
                 <td colspan="3">Purchase Type</td>
             </tr>
-
             <tr class="details">
                 <td colspan="3">{{ $sales_order->type == 0 ? 'Offline' : 'Online' }}</td>
             </tr>
-
             <tr class="heading">
                 <td colspan="3">Payment Method</td>
             </tr>
-
             <tr class="details">
                 <td colspan="3">
                     {{ $sales_order->payment_type == 0 ? (!is_null($sales_order->payment_method_id) ? $sales_order->paymentMethod->name : 'Shopee') : 'Point' }}
                 </td>
             </tr>
-
             <tr class="heading">
                 <td>Product</td>
                 <td align="center">Discount</td>
@@ -212,5 +200,4 @@
         </table>
     </div>
 </body>
-
 </html>

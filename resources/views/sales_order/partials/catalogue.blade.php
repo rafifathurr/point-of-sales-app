@@ -58,7 +58,6 @@
                         <button type="button" onclick="addProduct({{ $per_product_size->id }})"
                             class="btn btn-sm btn-block btn-outline-primary rounded"
                             id="button_product_size_{{ $per_product_size->id }}">
-                            {{-- <i class="fa fa-plus me-2"></i> &nbsp; --}}
                             Add Product
                         </button>
                     </div>
