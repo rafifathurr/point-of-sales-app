@@ -79,7 +79,7 @@ class SalesOrderController extends Controller
         $input = $request->all();
 
         /**
-         * Request For Update Order
+         * Request For Create Order
          */
         if (!isset($input['update'])) {
             if (!is_null($input['payment_type']) && !is_null($input['price'])) {
@@ -119,6 +119,7 @@ class SalesOrderController extends Controller
                         ->whereHas('product', function ($query) use ($input) {
                             return $query->where('status', 1)->where('name', 'like', '%' . $input['query'] . '%');
                         })
+                        ->where('stock', '>', 0)
                         ->whereNull('deleted_by')
                         ->whereNull('deleted_at')
                         ->paginate(4);
@@ -130,6 +131,7 @@ class SalesOrderController extends Controller
                         ->whereHas('product', function ($query) {
                             return $query->where('status', 1);
                         })
+                        ->where('stock', '>', 0)
                         ->whereNull('deleted_by')
                         ->whereNull('deleted_at')
                         ->paginate(4);
