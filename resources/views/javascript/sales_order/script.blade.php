@@ -68,6 +68,11 @@
                 $('#customer_point').val(data.customer.point);
                 $('#point_result').val(data.customer.point);
                 catalogue();
+
+                if(data.customer.point < $('#total_sell_price').val()){
+                    $("#product_size tbody").empty();
+                    getAccumulationPrice();
+                }
             }).fail(function(xhr, status, error) {
                 alertError(error);
             });
@@ -109,7 +114,7 @@
                     });
                 }
             } else {
-                if ($('#point_result').val() != '') {
+                if ($('#point_result').val() != '' && !isNaN($('#point_result').val())) {
                     $('#waiting-container').addClass('d-block');
                     $('#catalogue').html('');
                     if (page != undefined) {
