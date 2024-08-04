@@ -33,7 +33,7 @@
                                             No. Invoice
                                         </th>
                                         <th>
-                                            Date & Time
+                                            Date
                                         </th>
                                         <th>
                                             Purchase Type

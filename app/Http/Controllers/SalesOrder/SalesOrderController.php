@@ -220,6 +220,8 @@ class SalesOrderController extends Controller
         $sales_order = SalesOrder::with(['paymentMethod'])
             ->whereNull('deleted_by')
             ->whereNull('deleted_at')
+            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         /**
@@ -231,7 +233,11 @@ class SalesOrderController extends Controller
                 /**
                  * Return Format Date & Time
                  */
-                return date('d F Y H:i:s', strtotime($data->created_at));
+                if (!is_null($data->date)) {
+                    return date('d F Y', strtotime($data->date));
+                } else {
+                    return date('d F Y', strtotime($data->created_at));
+                }
             })
             ->addColumn('type', function ($data) {
                 return $data->type == 0 ? 'Offline' : 'Online';
@@ -285,6 +291,7 @@ class SalesOrderController extends Controller
              */
             $request->validate([
                 'type' => 'required',
+                'date' => 'required',
                 'payment_type' => 'required',
                 'sales_order_item' => 'required',
                 'total_capital_price' => 'required',
@@ -315,6 +322,7 @@ class SalesOrderController extends Controller
                  */
                 $sales_order = SalesOrder::lockforUpdate()->create([
                     'invoice_number' => $invoice_number,
+                    'date' => $request->date,
                     'customer_id' => $request->customer,
                     'payment_type' => $request->payment_type,
                     'payment_method_id' => $request->payment_method,
@@ -1107,6 +1115,9 @@ class SalesOrderController extends Controller
     public function import(Request $request)
     {
         try {
+            /**
+             * Get Sales Order Import to Data Record
+             */
             $sales_order_import = new SalesOrderImport();
             Excel::import($sales_order_import, $request->file('file'));
             $sales_order_collection = $sales_order_import->getArray();
@@ -1126,6 +1137,7 @@ class SalesOrderController extends Controller
                 $sales_order = SalesOrder::lockforUpdate()->create([
                     'invoice_number' => $invoice_number,
                     'payment_type' => 0,
+                    'date' => $sales_order_record['date'],
                     'type' => $sales_order_record['type'],
                     'total_capital_price' => 0,
                     'total_sell_price' => $sales_order_record['total_sell_price'],
@@ -1575,6 +1587,7 @@ class SalesOrderController extends Controller
              */
             $request->validate([
                 'type' => 'required',
+                'date' => 'required',
                 'payment_type' => 'required',
                 'sales_order_item' => 'required',
                 'total_capital_price' => 'required',
@@ -1605,6 +1618,7 @@ class SalesOrderController extends Controller
                  */
                 $sales_order_updated = SalesOrder::where('id', $id)->update([
                     'customer_id' => $request->customer,
+                    'date' => $request->date,
                     'payment_method_id' => $request->payment_method,
                     'type' => $request->type,
                     'total_capital_price' => $request->total_capital_price,

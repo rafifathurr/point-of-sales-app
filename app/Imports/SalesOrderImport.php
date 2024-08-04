@@ -21,20 +21,36 @@ class SalesOrderImport implements ToArray
         $discount_price_order = 0;
         $grand_sell_price_order = 0;
         foreach ($rows as $index => $row) {
+            /**
+             * Get Record After Header
+             */
             if ($index > 0) {
-                if ($row[0] != null) {
-                    $explode_name_product = explode(' - ', $row[0]);
 
+                /**
+                 * Validation Excel not Empty
+                 */
+                if ($row[0] != null) {
+                    /**
+                     * Generate Slug Product and Product Size
+                     */
+                    $explode_name_product = explode(' - ', $row[0]);
                     $product_slug = Str::slug($explode_name_product[0]);
                     $product_size_slug = Str::slug($explode_name_product[1]);
 
-                    if (empty($this->data[$row[1]])) {
+                    /**
+                     * Validation Array with Spesific Index of Invoice
+                     */
+                    if (empty($this->data[$row[2]])) {
                         $total_sell_price_order = 0;
                         $discount_price_order = 0;
                         $grand_sell_price_order = 0;
 
-                        $this->data[$row[1]] = [
-                            'invoice' => $row[1],
+                        /**
+                         * Setting Up new Array Record from Row Excel
+                         */
+                        $this->data[$row[2]] = [
+                            'invoice' => $row[2],
+                            'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($row[1]))->format('Y-m-d'),
                             'type' => 1,
                             'total_sell_price' => 0,
                             'discount_price' => 0,
@@ -43,53 +59,94 @@ class SalesOrderImport implements ToArray
                             'sales_order_item' => [],
                         ];
 
-                        $sell_price = intval($row[3]) * intval($row[4]);
+                        /**
+                         * Get Sell Price with multiply Qty
+                         */
+                        $sell_price = intval($row[4]) * intval($row[5]);
 
-                        if ($row[6] != null) {
-                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]) - intval($row[6]);
+                        /**
+                         * Validation Sales Order Has Service Fee
+                         */
+                        if ($row[7] != null) {
+                            /**
+                             * Calculation Total Sell Price by minus Discount and Service Fee
+                             */
+                            $total_sell_price = (intval($row[4]) - intval($row[6])) * intval($row[5]) - intval($row[7]);
                         } else {
-                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]);
+                            /**
+                             * Calculation Total Sell Price by minus Discount
+                             */
+                            $total_sell_price = (intval($row[4]) - intval($row[6])) * intval($row[5]);
                         }
 
-                        $this->data[$row[1]]['sales_order_item'][$product_slug][$product_size_slug] = [
+                        /**
+                         * Update Record of Array
+                         */
+                        $this->data[$row[2]]['sales_order_item'][$product_slug][$product_size_slug] = [
                             'product_size_slug' => $product_size_slug,
-                            'qty' => $row[4],
-                            'capital_price' => $row[2],
-                            'sell_price' => $row[3],
-                            'discount_price' => $row[5],
+                            'qty' => $row[5],
+                            'capital_price' => $row[3],
+                            'sell_price' => $row[4],
+                            'discount_price' => $row[6],
                             'total_sell_price' => $total_sell_price,
                         ];
 
+                        /**
+                         * Total All Accumulation Price
+                         */
                         $total_sell_price_order += $sell_price;
-                        $discount_price_order += intval($row[5]) * intval($row[4]);
+                        $discount_price_order += intval($row[6]) * intval($row[5]);
                         $grand_sell_price_order += $total_sell_price;
-                        $this->data[$row[1]]['total_sell_price'] = $total_sell_price_order;
-                        $this->data[$row[1]]['discount_price'] = $discount_price_order;
-                        $this->data[$row[1]]['grand_sell_price'] = $grand_sell_price_order;
+
+                        /**
+                         * Update Record of Array
+                         */
+                        $this->data[$row[2]]['total_sell_price'] = $total_sell_price_order;
+                        $this->data[$row[2]]['discount_price'] = $discount_price_order;
+                        $this->data[$row[2]]['grand_sell_price'] = $grand_sell_price_order;
                     } else {
-                        $sell_price = intval($row[3]) * intval($row[4]);
+                        /**
+                         * Get Sell Price with multiply Qty
+                         */
+                        $sell_price = intval($row[4]) * intval($row[5]);
 
-                        if ($row[6] != null) {
-                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]) - intval($row[6]);
+                        /**
+                         * Validation Sales Order Has Service Fee
+                         */
+                        if ($row[7] != null) {
+                            /**
+                             * Calculation Total Sell Price by minus Discount and Service Fee
+                             */
+                            $total_sell_price = (intval($row[4]) - intval($row[6])) * intval($row[5]) - intval($row[7]);
                         } else {
-                            $total_sell_price = (intval($row[3]) - intval($row[5])) * intval($row[4]);
+                            /**
+                             * Calculation Total Sell Price by minus Discount
+                             */
+                            $total_sell_price = (intval($row[4]) - intval($row[6])) * intval($row[5]);
                         }
 
-                        $this->data[$row[1]]['sales_order_item'][$product_slug][$product_size_slug] = [
+                        $this->data[$row[2]]['sales_order_item'][$product_slug][$product_size_slug] = [
                             'product_size_slug' => $product_size_slug,
-                            'qty' => $row[4],
-                            'capital_price' => $row[2],
-                            'sell_price' => $row[3],
-                            'discount_price' => $row[5],
+                            'qty' => $row[5],
+                            'capital_price' => $row[3],
+                            'sell_price' => $row[4],
+                            'discount_price' => $row[6],
                             'total_sell_price' => $total_sell_price,
                         ];
 
+                        /**
+                         * Total All Accumulation Price
+                         */
                         $total_sell_price_order += $sell_price;
-                        $discount_price_order += intval($row[5]) * intval($row[4]);
+                        $discount_price_order += intval($row[6]) * intval($row[5]);
                         $grand_sell_price_order += $total_sell_price;
-                        $this->data[$row[1]]['total_sell_price'] = $total_sell_price_order;
-                        $this->data[$row[1]]['discount_price'] = $discount_price_order;
-                        $this->data[$row[1]]['grand_sell_price'] = $grand_sell_price_order;
+
+                        /**
+                         * Update Record of Array
+                         */
+                        $this->data[$row[2]]['total_sell_price'] = $total_sell_price_order;
+                        $this->data[$row[2]]['discount_price'] = $discount_price_order;
+                        $this->data[$row[2]]['grand_sell_price'] = $grand_sell_price_order;
                     }
                 }
             }

@@ -45,6 +45,11 @@
                                             <h4 class="card-title">Add Sales Order</h4>
                                             <hr>
                                             <div class="form-group">
+                                                <label for="type">Date <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="date" value="{{ date('Y-m-d') }}" class="form-control" id="date" name="date" required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="type">Purchase Type <span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" id="type" name="type" required>

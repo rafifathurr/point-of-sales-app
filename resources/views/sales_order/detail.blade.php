@@ -13,9 +13,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Date & Time</label>
+                            <label class="col-sm-3 col-form-label">Date Order</label>
                             <div class="col-sm-9 col-form-label">
-                                {{ date('d F Y H:i:s', strtotime($sales_order->created_at)) }}
+                                {{ !is_null($sales_order->date) ? date('d F Y', strtotime($sales_order->date)) : date('d F Y', strtotime($sales_order->created_at)) }}
                             </div>
                         </div>
                         @if (!is_null($sales_order->customer_id))

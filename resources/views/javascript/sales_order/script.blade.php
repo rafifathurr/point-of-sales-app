@@ -69,7 +69,7 @@
                 $('#point_result').val(data.customer.point);
                 catalogue();
 
-                if(data.customer.point < $('#total_sell_price').val()){
+                if (data.customer.point < $('#total_sell_price').val()) {
                     $("#product_size tbody").empty();
                     getAccumulationPrice();
                 }
@@ -279,9 +279,7 @@
                     searchable: false
                 },
             ],
-            order: [
-                [0, 'desc']
-            ]
+            order: []
         });
     }
 

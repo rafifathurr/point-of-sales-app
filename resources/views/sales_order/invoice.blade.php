@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <title>Invoice #{{ $sales_order->invoice_number }}</title>
@@ -96,6 +97,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
@@ -109,7 +111,9 @@
                             </td>
                             <td>
                                 <b>Invoice</b> : #{{ $sales_order->invoice_number }}<br />
-                                <b>Date & Time</b>: {{ date('d F Y H:i:s', strtotime($sales_order->created_at)) }}<br />
+                                <b>Created At</b>: {{ date('d F Y H:i:s', strtotime($sales_order->created_at)) }}<br />
+                                <b>Date Order</b>:
+                                {{ !is_null($sales_order->date) ? date('d F Y', strtotime($sales_order->date)) : date('d F Y', strtotime($sales_order->created_at)) }}<br />
                                 <b>Created</b>: {{ $sales_order->createdBy->name }}
                             </td>
                         </tr>
@@ -200,4 +204,5 @@
         </table>
     </div>
 </body>
+
 </html>

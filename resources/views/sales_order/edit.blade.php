@@ -48,6 +48,11 @@
                                             <h4 class="card-title">Edit Sales Order</h4>
                                             <hr>
                                             <div class="form-group">
+                                                <label for="type">Date <span class="text-danger">*</span></label>
+                                                <input type="date" value=" {{ !is_null($sales_order->date) ? $sales_order->date : date('Y-m-d', strtotime($sales_order->created_at)) }}" class="form-control"
+                                                    id="date" name="date" required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="type">Purchase Type <span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" id="type" name="type" required>
@@ -148,7 +153,8 @@
                                                 </thead>
                                                 <tbody id="table_body">
                                                     @foreach ($sales_order->salesOrderItem as $sales_order_item)
-                                                        <tr id='product_size_{{ $sales_order_item->product_size_id }}'>
+                                                        <tr
+                                                            id='product_size_{{ $sales_order_item->product_size_id }}'>
                                                             <td>
                                                                 {{ $sales_order_item->productSize->product->name . ' - ' . $sales_order_item->productSize->size }}
                                                                 <input type="hidden"
