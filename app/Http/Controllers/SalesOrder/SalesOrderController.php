@@ -229,6 +229,16 @@ class SalesOrderController extends Controller
          */
         $dataTable = DataTables::of($sales_order)
             ->addIndexColumn()
+            ->addColumn('date_ordering', function ($data) {
+                /**
+                 * Return Format Date & Time
+                 */
+                if (!is_null($data->date)) {
+                    return date('Y-m-d', strtotime($data->date));
+                } else {
+                    return date('Y-m-d', strtotime($data->created_at));
+                }
+            })
             ->addColumn('created_at', function ($data) {
                 /**
                  * Return Format Date & Time
@@ -273,7 +283,7 @@ class SalesOrderController extends Controller
                 $btn_action .= '</div>';
                 return $btn_action;
             })
-            ->only(['invoice_number', 'created_at', 'type', 'payment_method', 'grand_sell_price', 'action'])
+            ->only(['invoice_number','date_ordering', 'created_at', 'type', 'payment_method', 'grand_sell_price', 'action'])
             ->rawColumns(['grand_sell_price', 'action'])
             ->make(true);
 
