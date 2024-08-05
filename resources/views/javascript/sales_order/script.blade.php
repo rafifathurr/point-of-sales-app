@@ -247,11 +247,6 @@
                 }
             },
             columns: [{
-                    data: 'date_ordering',
-                    visible: false,
-                    searchable: false
-                },
-                {
                     data: 'DT_RowIndex',
                     width: '5%',
                     searchable: false
@@ -283,9 +278,14 @@
                     orderable: false,
                     searchable: false
                 },
+                {
+                    data: 'date_ordering',
+                    visible: false,
+                    searchable: false
+                },
             ],
             order: [
-                [0, 'desc']
+                [7, 'desc']
             ]
         });
     }
