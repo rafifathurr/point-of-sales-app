@@ -58,9 +58,14 @@
                     orderable: false,
                     searchable: false
                 },
+                {
+                    data: 'date_ordering',
+                    visible: false,
+                    searchable: false
+                },
             ],
             order: [
-                [0, 'desc']
+                [5, 'desc']
             ]
         });
     }

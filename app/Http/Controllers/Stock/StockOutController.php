@@ -117,6 +117,12 @@ class StockOutController extends Controller
                  */
                 return date('d F Y', strtotime($data->date));
             })
+            ->addColumn('date_ordering', function ($data) {
+                /**
+                 * Return Format Date
+                 */
+                return date('Y-m-d', strtotime($data->date));
+            })
             ->addColumn('qty', function ($data) {
                 return '<span class="text-danger">- ' . $data->qty . ' Pcs</span>';
             })
@@ -134,7 +140,7 @@ class StockOutController extends Controller
                 $btn_action .= '</div>';
                 return $btn_action;
             })
-            ->only(['product', 'date', 'qty', 'action'])
+            ->only(['product', 'date', 'date_ordering', 'qty', 'action'])
             ->rawColumns(['qty', 'action'])
             ->make(true);
 
