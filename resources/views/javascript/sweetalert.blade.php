@@ -17,7 +17,7 @@
     <script type="text/javascript">
         Swal.fire({
             icon: 'error',
-            title: '{{ Session::get('failed') }}',
+            title: '{!! Session::get('failed') !!}',
             customClass: {
                 confirmButton: 'btn btn-primary mb-3',
             },

@@ -134,7 +134,8 @@ class ProductController extends Controller
              */
             $name_check = Product::whereNull('deleted_by')
                 ->whereNull('deleted_at')
-                ->where('name', 'like', '%' . $request->name . '%')
+                ->where('name', $request->name)
+                ->where('name', strtolower($request->name))
                 ->first();
 
             /**
@@ -470,7 +471,8 @@ class ProductController extends Controller
              */
             $name_check = Product::whereNull('deleted_by')
                 ->whereNull('deleted_at')
-                ->where('name', 'like', '%' . $request->name . '%')
+                ->where('name', $request->name)
+                ->where('name', strtolower($request->name))
                 ->where('id', '!=', $id)
                 ->first();
 

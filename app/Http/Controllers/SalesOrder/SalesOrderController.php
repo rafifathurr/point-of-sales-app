@@ -283,7 +283,7 @@ class SalesOrderController extends Controller
                 $btn_action .= '</div>';
                 return $btn_action;
             })
-            ->only(['invoice_number','date_ordering', 'created_at', 'type', 'payment_method', 'grand_sell_price', 'action'])
+            ->only(['invoice_number', 'date_ordering', 'created_at', 'type', 'payment_method', 'grand_sell_price', 'action'])
             ->rawColumns(['grand_sell_price', 'action'])
             ->make(true);
 
@@ -1129,7 +1129,7 @@ class SalesOrderController extends Controller
              * Get Sales Order Import to Data Record
              */
             $sales_order_import = new SalesOrderImport();
-            Excel::import($sales_order_import, $request->file('file'));
+            Excel::import($sales_order_import, $request->file('file')->store('temp'));
             $sales_order_collection = $sales_order_import->getArray();
 
             /**
@@ -1140,6 +1140,29 @@ class SalesOrderController extends Controller
             foreach ($sales_order_collection as $invoice_number => $sales_order_record) {
                 $total_capital_price = 0;
                 $grand_profit_price = 0;
+
+                /**
+                 * Validation Unique Field Invoice Record
+                 */
+                $name_check = SalesOrder::whereNull('deleted_by')
+                    ->whereNull('deleted_at')
+                    ->where('invoice_number', $invoice_number)
+                    ->where('invoice_number', strtolower($invoice_number))
+                    ->first();
+
+                /**
+                 * Validation Unique Field Record
+                 */
+                if (!is_null($name_check)) {
+                    /**
+                     * Failed Store Record
+                     */
+                    DB::rollBack();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Invoice <b>'.$invoice_number.'</b> Already Exist'])
+                        ->withInput();
+                }
 
                 /**
                  * Create Sales Order Record
