@@ -30,6 +30,9 @@
                     Purchase Type
                 </th>
                 <th>
+                    Payment Type
+                </th>
+                <th>
                     Payment Method
                 </th>
                 <th>
@@ -39,16 +42,16 @@
                     Sell Price
                 </th>
                 <th>
-                    Capital Price
-                </th>
-                <th>
                     Discount
                 </th>
                 <th>
-                    Profit
+                    Total Sell Price
                 </th>
                 <th>
-                    Total Sell Price
+                    Total Capital Price
+                </th>
+                <th>
+                    Total Profit Price
                 </th>
             </tr>
         </thead>
@@ -78,19 +81,41 @@
                                 {{ $sales_order_data['invoice_number'] }}
                             </td>
                             <td rowspan="{{ count($sales_order_data['sales_order_item']) }}">
-                                {{ date('d F Y H:i:s', strtotime($sales_order_data['created_at'])) }}
+                                {{ !is_null($sales_order_data['date']) ? date('d F Y', strtotime($sales_order_data['date'])) : date('d F Y', strtotime($sales_order_data['created_at'])) }}
                             </td>
                             <td rowspan="{{ count($sales_order_data['sales_order_item']) }}">
                                 {{ $sales_order_data['type'] == 0 ? 'Offline' : 'Online' }}
                             </td>
                             <td rowspan="{{ count($sales_order_data['sales_order_item']) }}">
-                                {{ $sales_order_data['payment_method']['name'] }}
+                                {{ $sales_order_data['payment_type'] == 0 ? 'Non Point' : 'Point' }}
+                            </td>
+                            <td rowspan="{{ count($sales_order_data['sales_order_item']) }}">
+                                {{ $sales_order_data['payment_type'] == 0 ? (!is_null($sales_order_data['payment_method_id']) ? $sales_order_data['payment_method']['name'] : 'Shopee') : 'Point' }}
                             </td>
                         @endif
                         <td>
                             {{ $sales_order_item_data['product_size']['product']['name'] . ' - ' . $sales_order_item_data['product_size']['size'] . ' ' . $sales_order_item_data['qty'] . ' Pcs' }}
                         </td>
-                        @if ($product_index === 0)
+                        <td style="text-align:right">
+                            Rp.
+                            {{ number_format(intval($sales_order_item_data['sell_price']) * intval($sales_order_item_data['qty']), 0, ',', '.') }},-
+                        </td>
+                        <td style="text-align:right">
+                            Rp.
+                            {{ number_format(intval($sales_order_item_data['discount_price']) * intval($sales_order_item_data['qty']), 0, ',', '.') }},-
+                        </td>
+                        <td style="text-align:right">
+                            Rp.
+                            {{ number_format(intval($sales_order_item_data['total_sell_price']) * intval($sales_order_item_data['qty']), 0, ',', '.') }},-
+                        </td>
+                        <td style="text-align:right">
+                            Rp.
+                            {{ number_format(intval($sales_order_item_data['capital_price']) * intval($sales_order_item_data['qty']), 0, ',', '.') }},-
+                        </td>
+                        <td style="text-align:right">
+                            Rp. {{ number_format($sales_order_item_data['total_profit_price'], 0, ',', '.') }},-
+                        </td>
+                        {{-- @if ($product_index === 0)
                             <td style="text-align:right" rowspan="{{ count($sales_order_data['sales_order_item']) }}">
                                 Rp. {{ number_format($sales_order_data['total_sell_price'], 0, ',', '.') }},-
                             </td>
@@ -106,30 +131,30 @@
                             <td style="text-align:right" rowspan="{{ count($sales_order_data['sales_order_item']) }}">
                                 Rp. {{ number_format($sales_order_data['grand_sell_price'], 0, ',', '.') }},-
                             </td>
-                        @endif
+                        @endif --}}
                     </tr>
                 @endforeach
             @endforeach
         </tbody>
         <tfoot>
             <tr>
-                <td style="text-align:center" colspan="6">
+                <td style="text-align:center" colspan="7">
                     <b>Total</b>
                 </td>
                 <td style="text-align:right">
                     Rp. {{ number_format($sell_price, 0, ',', '.') }},-
                 </td>
                 <td style="text-align:right">
-                    Rp. {{ number_format($capital_price, 0, ',', '.') }},-
-                </td>
-                <td style="text-align:right">
                     Rp. {{ number_format($discount_price, 0, ',', '.') }},-
                 </td>
                 <td style="text-align:right">
-                    Rp. {{ number_format($total_profit_price, 0, ',', '.') }},-
+                    Rp. {{ number_format($total_sell_price, 0, ',', '.') }},-
                 </td>
                 <td style="text-align:right">
-                    Rp. {{ number_format($total_sell_price, 0, ',', '.') }},-
+                    Rp. {{ number_format($capital_price, 0, ',', '.') }},-
+                </td>
+                <td style="text-align:right">
+                    Rp. {{ number_format($total_profit_price, 0, ',', '.') }},-
                 </td>
             </tr>
         </tfoot>
