@@ -1129,7 +1129,7 @@ class SalesOrderController extends Controller
              * Get Sales Order Import to Data Record
              */
             $sales_order_import = new SalesOrderImport();
-            Excel::import($sales_order_import, $request->file('file')->store('temp'));
+            Excel::import($sales_order_import, $request->file('file'));
             $sales_order_collection = $sales_order_import->getArray();
 
             /**
