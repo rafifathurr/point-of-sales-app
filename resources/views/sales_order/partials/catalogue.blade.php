@@ -7,7 +7,7 @@
                 </div>
                 <div class="position-absolute" style="top: 10px; left: 10px;">
                     <div class="p-1 bg-primary text-white px-2 py-1 mr-1 rounded shadow">
-                        <b>{{ $per_product_size->product->categoryProduct->name }}</b>
+                        <b>{{ $per_product_size->product->categoryProduct->name ?? '-' }}</b>
                     </div>
                 </div>
                 <div class="p-3 rounded-bottom">
