@@ -21,9 +21,11 @@
                                                         {{ $product_size->product->name }} - {{ $product_size->size }}
                                                     </option>
                                                 @else
-                                                    <option value="{{ $product_size->id }}">
-                                                        {{ $product_size->product->name }} - {{ $product_size->size }}
-                                                    </option>
+                                                    @if (is_null($product_size->deleted_by))
+                                                        <option value="{{ $product_size->id }}">
+                                                            {{ $product_size->product->name }} - {{ $product_size->size }}
+                                                        </option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>

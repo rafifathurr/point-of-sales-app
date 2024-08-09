@@ -360,10 +360,7 @@ class StockOutController extends Controller
                 /**
                  * Get All Product
                  */
-                $product = ProductSize::with(['product'])
-                    ->whereNull('deleted_by')
-                    ->whereNull('deleted_at')
-                    ->get();
+                $product = ProductSize::with(['product'])->get();
 
                 /**
                  * Update Route
